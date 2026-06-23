@@ -1,0 +1,203 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* ── Fonts ── */
+  --font-sans: 'Inter', -apple-system, 'Segoe UI', Arial, sans-serif;
+  --font-mono: 'Geist Mono', monospace;
+
+  /* ── VoltusWave Brand Colors ── */
+  --color-navy-900: #14223D;
+  --color-navy-700: #1F3864;
+  --color-navy-500: #34507F;
+  --color-navy-300: #6B83AD;
+  --color-navy-100: #D8E0EE;
+  --color-navy-50:  #EEF2F8;
+
+  --color-teal-700: #246B6B;
+  --color-teal-500: #2E8B8B;
+  --color-teal-300: #7FBDBD;
+  --color-teal-50:  #E7F2F2;
+
+  --color-orange-700: #9E4810;
+  --color-orange-500: #C55A11;
+  --color-orange-300: #E59B6A;
+  --color-orange-50:  #FBEEE4;
+
+  /* ── Neutrals ── */
+  --color-ink-900: #0F1722;
+  --color-ink-700: #2B3645;
+  --color-ink-500: #5A6675;
+  --color-ink-300: #9AA6B4;
+  --color-line:    #E4E8EF;
+  --color-surface: #FFFFFF;
+  --color-canvas:  #F6F8FB;
+  --color-canvas-sunken: #EEF2F7;
+
+  /* ── Semantic ── */
+  --color-success: #2E8B8B;
+  --color-warning: #C55A11;
+  --color-danger:  #C0392B;
+  --color-info:    #2F6FB0;
+
+  /* ── Dataviz Categorical (8 hues) ── */
+  --color-viz-1: #1F3864;
+  --color-viz-2: #2E8B8B;
+  --color-viz-3: #C55A11;
+  --color-viz-4: #5B8DEF;
+  --color-viz-5: #8E6FB8;
+  --color-viz-6: #C99A2E;
+  --color-viz-7: #4A9B7F;
+  --color-viz-8: #B2566B;
+
+  /* ── shadcn token mappings ── */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Radius */
+  --radius-card:    12px;
+  --radius-tile:    10px;
+  --radius-control: 8px;
+  --radius-pill:    999px;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+}
+
+:root {
+  color-scheme: light;
+  --background: #F6F8FB;
+  --foreground: #0F1722;
+  --card: #FFFFFF;
+  --card-foreground: #0F1722;
+  --popover: #FFFFFF;
+  --popover-foreground: #0F1722;
+  --primary: #1F3864;
+  --primary-foreground: #FFFFFF;
+  --secondary: #EEF2F8;
+  --secondary-foreground: #1F3864;
+  --muted: #EEF2F7;
+  --muted-foreground: #5A6675;
+  --accent: #E7F2F2;
+  --accent-foreground: #246B6B;
+  --destructive: #C0392B;
+  --border: #E4E8EF;
+  --input: #E4E8EF;
+  --ring: #1F3864;
+  --radius: 0.75rem;
+
+  /* Chart tokens mapped to viz palette */
+  --chart-1: #1F3864;
+  --chart-2: #2E8B8B;
+  --chart-3: #C55A11;
+  --chart-4: #5B8DEF;
+  --chart-5: #8E6FB8;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-[#F6F8FB] text-[#0F1722] font-sans antialiased;
+    font-feature-settings: "kern" 1;
+  }
+  html {
+    @apply bg-[#F6F8FB];
+  }
+}
+
+/* ── Tabular nums for all data display ── */
+.tabular-nums,
+[data-metric],
+[data-value] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Shimmer skeleton animation ── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    #E4E8EF 25%,
+    #EEF2F7 50%,
+    #E4E8EF 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+/* ── KPI count-up animation ── */
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-count-up {
+  animation: countUp 0.5s ease-out forwards;
+}
+
+/* ── Chart card hover elevation ── */
+.chart-card {
+  border: 1px solid #E4E8EF;
+  box-shadow: 0 1px 2px rgba(15, 23, 34, 0.06);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.chart-card:hover {
+  box-shadow: 0 6px 20px rgba(15, 23, 34, 0.10);
+  border-color: #D8E0EE;
+}
+
+/* ── Scrollbar styling ── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F6F8FB;
+}
+::-webkit-scrollbar-thumb {
+  background: #D8E0EE;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9AA6B4;
+}
+
+/* ── Focus ring ── */
+*:focus-visible {
+  outline: 2px solid #1F3864;
+  outline-offset: 2px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
