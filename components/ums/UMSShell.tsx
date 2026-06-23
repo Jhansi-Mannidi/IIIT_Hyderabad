@@ -12,7 +12,11 @@ import { HostelMessDashboard } from './HostelMessDashboard'
 import { AttendanceDashboard } from './AttendanceDashboard'
 import { ResearchDashboard }    from './ResearchDashboard'
 import { PlacementsDashboard }  from './PlacementsDashboard'
+import { FeedbackIQACDashboard } from './FeedbackIQACDashboard'
+import { ScholarshipsAidDashboard } from './ScholarshipsAidDashboard'
 import { useRouter, usePathname } from 'next/navigation'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { useTheme } from './ThemeProvider'
 
 const DASHBOARD_TITLES: Record<string, { title: string; subtitle: string }> = {
   d0:  { title: 'Executive Cockpit', subtitle: 'Institutional overview — all domains' },
@@ -70,6 +74,9 @@ interface UMSShellProps {
 export function UMSShell({ currentPage, children }: UMSShellProps) {
   const router = useRouter()
   const pathname = usePathname()
+  const shouldReduceMotion = useReducedMotion()
+  const { theme } = useTheme()
+  const [mobileNavOpen, setMobileNavOpen] = useState(false)
   
   // Determine active ID from route or prop
   let activeId = 'd0'
@@ -83,6 +90,8 @@ export function UMSShell({ currentPage, children }: UMSShellProps) {
     else if (currentPage === 'attendance') activeId = 'd7'
     else if (currentPage === 'research')    activeId = 'd8'
     else if (currentPage === 'placements')  activeId = 'd9'
+    else if (currentPage === 'feedback') activeId = 'd10'
+    else if (currentPage === 'scholarships') activeId = 'd11'
   } else if (pathname?.includes('academic')) {
     activeId = 'd1'
   } else if (pathname?.includes('admissions')) {
@@ -99,55 +108,91 @@ export function UMSShell({ currentPage, children }: UMSShellProps) {
     activeId = 'd8'
   } else if (pathname?.includes('placements')) {
     activeId = 'd9'
+  } else if (pathname?.includes('feedback')) {
+    activeId = 'd10'
+  } else if (pathname?.includes('scholarships')) {
+    activeId = 'd11'
   } else if (pathname?.includes('finance')) {
     activeId = 'd3'
   }
 
   const meta = DASHBOARD_TITLES[activeId]
+  const dashboardContent = children ? (
+    children
+  ) : activeId === 'd0' ? (
+    <ExecutiveCockpit />
+  ) : activeId === 'd1' ? (
+    <AcademicDashboard />
+  ) : activeId === 'd2' ? (
+    <AdmissionsDashboard />
+  ) : activeId === 'd3' ? (
+    <FinanceDashboard />
+  ) : activeId === 'd4' ? (
+    <InstitutionalFinanceDashboard />
+  ) : activeId === 'd5' ? (
+    <HRPayrollDashboard />
+  ) : activeId === 'd6' ? (
+    <HostelMessDashboard />
+  ) : activeId === 'd7' ? (
+    <AttendanceDashboard />
+  ) : activeId === 'd8' ? (
+    <ResearchDashboard />
+  ) : activeId === 'd9' ? (
+    <PlacementsDashboard />
+  ) : activeId === 'd10' ? (
+    <FeedbackIQACDashboard />
+  ) : activeId === 'd11' ? (
+    <ScholarshipsAidDashboard />
+  ) : (
+    <ComingSoon id={activeId} />
+  )
 
   const handleNavigate = (id: string) => {
     const route = ROUTE_MAP[id]
+    setMobileNavOpen(false)
     router.push(route || '/')
   }
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-[#F6F8FB]">
+    <div
+      className="ums-app-shell flex flex-col h-screen overflow-hidden bg-[#F6F8FB] transition-colors duration-300"
+      data-theme={theme}
+    >
       {/* Top bar */}
-      <TopBar title={meta?.title ?? ''} subtitle={meta?.subtitle} />
+      <TopBar onMenuClick={() => setMobileNavOpen(true)} />
 
       {/* Body */}
-      <div className="flex flex-1 min-h-0 overflow-hidden">
+      <div className="ums-mobile-scroll-stage flex flex-1 min-h-0 overflow-hidden sm:overflow-hidden">
+        {mobileNavOpen && (
+          <button
+            type="button"
+            aria-label="Close navigation menu"
+            onClick={() => setMobileNavOpen(false)}
+            className="fixed inset-x-0 bottom-0 top-14 z-[55] bg-[#08111F]/45 backdrop-blur-[2px] sm:hidden"
+          />
+        )}
+
         {/* Side nav */}
-        <SideNav activeId={activeId} onNavigate={handleNavigate} />
+        <SideNav
+          activeId={activeId}
+          onNavigate={handleNavigate}
+          mobileOpen={mobileNavOpen}
+        />
 
         {/* Dashboard content */}
-        <main className="flex flex-1 min-h-0 min-w-0 overflow-hidden" id="main-content">
-          {children ? (
-            children
-          ) : activeId === 'd0' ? (
-            <ExecutiveCockpit />
-          ) : activeId === 'd1' ? (
-            <AcademicDashboard />
-          ) : activeId === 'd2' ? (
-            <AdmissionsDashboard />
-          ) : activeId === 'd3' ? (
-            <FinanceDashboard />
-          ) : activeId === 'd4' ? (
-            <InstitutionalFinanceDashboard />
-          ) : activeId === 'd5' ? (
-            <HRPayrollDashboard />
-          ) : activeId === 'd6' ? (
-            <HostelMessDashboard />
-          ) : activeId === 'd7' ? (
-            <AttendanceDashboard />
-          ) : activeId === 'd8' ? (
-            <ResearchDashboard />
-          ) : activeId === 'd9' ? (
-            <PlacementsDashboard />
-          ) : (
-            <ComingSoon id={activeId} />
-          )}
-        </main>
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.main
+            key={pathname ?? activeId}
+            className="flex min-w-0 flex-1 min-h-0 overflow-auto sm:overflow-hidden"
+            id="main-content"
+            initial={shouldReduceMotion ? false : { opacity: 0, x: 18, filter: 'blur(4px)' }}
+            animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+            exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: -14, filter: 'blur(3px)' }}
+            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {dashboardContent}
+          </motion.main>
+        </AnimatePresence>
       </div>
     </div>
   )

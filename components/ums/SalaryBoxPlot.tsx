@@ -1,6 +1,7 @@
 'use client'
 
 import { BranchSalary } from '@/lib/usePlacementsData'
+import { MotionCard } from './MotionCard'
 
 interface Props { data: BranchSalary[] }
 
@@ -13,7 +14,7 @@ export function SalaryBoxPlot({ data }: Props) {
   const sorted = [...data].sort((a, b) => b.avgLPA - a.avgLPA)
 
   return (
-    <div className="bg-white rounded-[12px] border border-[#E5ECEF] p-4">
+    <MotionCard className="bg-white rounded-[12px] border border-[#E5ECEF] p-4">
       <div className="mb-3">
         <h3 className="text-[13px] font-[700] text-[#0F1722]">Salary Distribution by Branch</h3>
         <p className="text-[11px] text-[#9AA6B4] mt-0.5">
@@ -102,6 +103,6 @@ export function SalaryBoxPlot({ data }: Props) {
       <p className="text-[10px] text-[#9AA6B4] italic mt-3">
         Salary sourced from placements_data aggregate grain (high/avg/low LPA per branch).
       </p>
-    </div>
+    </MotionCard>
   )
 }

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { ChevronDown, AlertTriangle, AlertCircle, Info, X } from 'lucide-react'
+import { MotionCard } from './MotionCard'
 
 interface AttendanceAICardProps {
   insight: {
@@ -30,7 +31,7 @@ export function AttendanceAICard({ insight, onDismiss, onAction }: AttendanceAIC
   const Icon = config.icon
 
   return (
-    <div className="flex flex-col gap-3 p-4 rounded-[10px] border-l-4" style={{ borderColor: config.color, backgroundColor: config.bg }}>
+    <MotionCard className="ai-severity-card flex flex-col gap-3 p-4 rounded-[10px] border-l-4" style={{ borderColor: config.color, backgroundColor: config.bg }}>
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-3 flex-1">
           <Icon size={18} style={{ color: config.color, marginTop: '2px', flexShrink: 0 }} />
@@ -87,6 +88,6 @@ export function AttendanceAICard({ insight, onDismiss, onAction }: AttendanceAIC
           {insight.domain}
         </span>
       </button>
-    </div>
+    </MotionCard>
   )
 }

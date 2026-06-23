@@ -1,5 +1,9 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
+import { InteractionProvider } from '@/components/ums/InteractionProvider'
+import { MotionProvider } from '@/components/ums/MotionProvider'
+import { ThemeProvider } from '@/components/ums/ThemeProvider'
+import { AnimatedNumberProvider } from '@/components/ums/AnimatedNumberProvider'
 import './globals.css'
 
 const inter = Inter({
@@ -16,7 +20,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  colorScheme: 'light',
+  colorScheme: 'light dark',
   themeColor: '#1F3864',
 }
 
@@ -26,9 +30,16 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} bg-[#F6F8FB]`}>
-      <body className="font-sans antialiased min-h-screen bg-[#F6F8FB] text-[#0F1722]">
-        {children}
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
+      <body className="font-sans antialiased min-h-screen bg-background text-foreground">
+        <ThemeProvider>
+          <MotionProvider>
+            <InteractionProvider>
+              <AnimatedNumberProvider />
+              {children}
+            </InteractionProvider>
+          </MotionProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { RefreshCw } from 'lucide-react'
 import { useResearchData } from '@/lib/useResearchData'
 import { ResearchKPITile } from './ResearchKPITile'
@@ -12,10 +12,19 @@ import { CenterLeaderboard } from './CenterLeaderboard'
 import { PhDPipelineFunnel } from './PhDPipelineFunnel'
 import { FacultyProductivityChart } from './FacultyProductivityChart'
 import { ResearchAICard } from './ResearchAICard'
+import { ActiveFilterSummary } from './ActiveFilterSummary'
+import { useInteractions } from './InteractionProvider'
+import { applyDashboardFilters } from '@/lib/dashboardFiltering'
 
 export function ResearchDashboard() {
-  const data = useResearchData()
+  const rawData = useResearchData()
   const [dismissed, setDismissed] = useState<Set<string>>(new Set())
+  const [filters, setFilters] = useState<Record<string, unknown>>({})
+  const { searchQuery, setDashboardFilters, refreshDashboard, runAction } = useInteractions()
+  const data = useMemo(
+    () => applyDashboardFilters(rawData, filters, searchQuery),
+    [rawData, filters, searchQuery],
+  )
 
   const visibleInsights = data.aiInsights.filter(i => !dismissed.has(i.id))
 
@@ -31,14 +40,23 @@ export function ResearchDashboard() {
               Research output, publication impact, PhD progression, thesis pipeline, research funding
             </p>
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 rounded-[8px] bg-white border border-[#D1D8DF] hover:bg-[#F6F8FB] shrink-0">
+          <button
+            onClick={() => refreshDashboard('Research')}
+            className="flex items-center gap-2 px-4 py-2 rounded-[8px] bg-white border border-[#D1D8DF] hover:bg-[#F6F8FB] shrink-0"
+          >
             <RefreshCw size={14} className="text-[#5A6B7A]" />
             <span className="text-[12px] font-[600] text-[#0F1722]">Refresh</span>
           </button>
         </div>
 
         {/* ── Filters ─────────────────────────────────────────────────── */}
-        <ResearchFilterBar />
+        <ResearchFilterBar
+          onFiltersChange={(nextFilters) => {
+            setFilters(nextFilters)
+            setDashboardFilters('Research', nextFilters)
+          }}
+        />
+        <ActiveFilterSummary dashboard="Research" filters={filters} searchQuery={searchQuery} />
 
         {/* ── KPI Tiles ───────────────────────────────────────────────── */}
         <section aria-label="Research KPIs">
@@ -78,7 +96,7 @@ export function ResearchDashboard() {
                   key={insight.id}
                   insight={insight}
                   onDismiss={() => setDismissed(prev => new Set(prev).add(insight.id))}
-                  onAction={() => console.log('[v0] Research action:', insight.action)}
+                  onAction={() => runAction('Research action started', insight.action)}
                 />
               ))}
             </div>

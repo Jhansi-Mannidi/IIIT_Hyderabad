@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { RefreshCw } from 'lucide-react'
 import { useAttendanceData } from '@/lib/useAttendanceData'
 import { AttendanceKPITile } from './AttendanceKPITile'
@@ -10,10 +10,19 @@ import { EmployeePunctualityHeatmap } from './EmployeePunctualityHeatmap'
 import { CourseAttendanceGauges } from './CourseAttendanceGauges'
 import { DepartmentComplianceChart } from './DepartmentComplianceChart'
 import { AttendanceAICard } from './AttendanceAICard'
+import { ActiveFilterSummary } from './ActiveFilterSummary'
+import { useInteractions } from './InteractionProvider'
+import { applyDashboardFilters } from '@/lib/dashboardFiltering'
 
 export function AttendanceDashboard() {
-  const data = useAttendanceData()
+  const rawData = useAttendanceData()
   const [dismissedInsights, setDismissedInsights] = useState<Set<string>>(new Set())
+  const [filters, setFilters] = useState<Record<string, unknown>>({})
+  const { searchQuery, setDashboardFilters, refreshDashboard, runAction } = useInteractions()
+  const data = useMemo(
+    () => applyDashboardFilters(rawData, filters, searchQuery),
+    [rawData, filters, searchQuery],
+  )
 
   const visibleInsights = data.aiInsights.filter(i => !dismissedInsights.has(i.id))
 
@@ -26,14 +35,23 @@ export function AttendanceDashboard() {
             <h1 className="text-[20px] font-[700] text-[#0F1722]">Attendance & Biometric</h1>
             <p className="text-[13px] text-[#9AA6B4] mt-1">Student attendance compliance & shortfall detection; employee attendance/punctuality</p>
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 rounded-[8px] bg-white border border-[#D1D8DF] hover:bg-[#F6F8FB]">
+          <button
+            onClick={() => refreshDashboard('Attendance')}
+            className="flex items-center gap-2 px-4 py-2 rounded-[8px] bg-white border border-[#D1D8DF] hover:bg-[#F6F8FB]"
+          >
             <RefreshCw size={14} className="text-[#5A6B7A]" />
             <span className="text-[12px] font-[600] text-[#0F1722]">Refresh</span>
           </button>
         </div>
 
         {/* Sticky Filters */}
-        <AttendanceFilterBar />
+        <AttendanceFilterBar
+          onFiltersChange={(nextFilters) => {
+            setFilters(nextFilters)
+            setDashboardFilters('Attendance', nextFilters)
+          }}
+        />
+        <ActiveFilterSummary dashboard="Attendance" filters={filters} searchQuery={searchQuery} />
 
         {/* KPI Strip */}
         <section aria-label="Attendance KPIs">
@@ -70,7 +88,7 @@ export function AttendanceDashboard() {
                   key={insight.id}
                   insight={insight}
                   onDismiss={() => setDismissedInsights(prev => new Set(prev).add(insight.id))}
-                  onAction={() => console.log(`Action: ${insight.action}`)}
+                  onAction={() => runAction('Attendance action started', insight.action)}
                 />
               ))}
             </div>

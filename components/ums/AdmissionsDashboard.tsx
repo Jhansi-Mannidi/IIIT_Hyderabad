@@ -11,11 +11,19 @@ import { RankBandChart } from './RankBandChart'
 import { StateMetricsChart } from './StateMetricsChart'
 import { ChannelBreakdownChart } from './ChannelBreakdownChart'
 import { AdmissionsAIInsightCard } from './AdmissionsAIInsightCard'
+import { ActiveFilterSummary } from './ActiveFilterSummary'
+import { useInteractions } from './InteractionProvider'
+import { applyDashboardFilters } from '@/lib/dashboardFiltering'
 
 export function AdmissionsDashboard() {
-  const data = useAdmissionsDashboardData()
+  const rawData = useAdmissionsDashboardData()
   const [filters, setFilters] = useState<AdmissionsFilters>({})
   const [dismissedInsights, setDismissedInsights] = useState<Set<string>>(new Set())
+  const { searchQuery, setDashboardFilters, refreshDashboard } = useInteractions()
+  const data = useMemo(
+    () => applyDashboardFilters(rawData, filters, searchQuery),
+    [rawData, filters, searchQuery],
+  )
 
   // Filter insights based on dismissed state
   const visibleInsights = useMemo(() => {
@@ -35,14 +43,23 @@ export function AdmissionsDashboard() {
             <h2 className="text-[18px] font-[700] text-[#0F1722]">Admissions & Enrollment Funnel</h2>
             <p className="text-[13px] text-[#5A6B7A] mt-1">Applicant journey, channel performance, reservation compliance</p>
           </div>
-          <button className="flex items-center gap-2 px-3 py-2 rounded-[8px] hover:bg-white border border-[#DFE7EF] transition-colors">
+          <button
+            onClick={() => refreshDashboard('Admissions')}
+            className="flex items-center gap-2 px-3 py-2 rounded-[8px] hover:bg-white border border-[#DFE7EF] transition-colors"
+          >
             <RefreshCw size={14} className="text-[#5A6B7A]" />
             <span className="text-[11px] font-[600] text-[#5A6B7A]">Refresh</span>
           </button>
         </div>
 
         {/* Filter Bar */}
-        <AdmissionsFilterBar onFiltersChange={setFilters} />
+        <AdmissionsFilterBar
+          onFiltersChange={(nextFilters) => {
+            setFilters(nextFilters)
+            setDashboardFilters('Admissions', nextFilters)
+          }}
+        />
+        <ActiveFilterSummary dashboard="Admissions" filters={filters} searchQuery={searchQuery} />
 
         {/* KPI Strip */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">

@@ -1,6 +1,7 @@
 'use client'
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts'
 import { ChannelMetric } from '@/lib/useAdmissionsDashboardData'
+import { MotionCard } from './MotionCard'
 
 interface ChannelBreakdownChartProps {
   data: ChannelMetric[]
@@ -15,21 +16,21 @@ export function ChannelBreakdownChart({ data }: ChannelBreakdownChartProps) {
   const colors = ['#5B8DEF', '#2E8B8B', '#C55A11', '#C99A2E']
 
   return (
-    <div className="flex flex-col gap-3 px-5 py-4 bg-white rounded-[10px] border border-[#DFE7EF]">
+    <MotionCard className="flex flex-col gap-3 px-5 py-4 bg-white rounded-[10px] border border-[#DFE7EF]">
       <div>
         <h3 className="text-[14px] font-[700] text-[#0F1722]">Enrolled by Channel</h3>
         <p className="text-[12px] text-[#5A6B7A] mt-0.5">Enrollment distribution across admission channels</p>
       </div>
 
-      <div className="w-full h-64">
+      <div className="w-full h-72">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart margin={{ top: 10, right: 20, left: 20, bottom: 10 }}>
             <Pie
               data={chartData}
               cx="50%"
               cy="50%"
-              innerRadius={50}
-              outerRadius={90}
+              innerRadius={64}
+              outerRadius={112}
               paddingAngle={2}
               dataKey="value"
             >
@@ -64,6 +65,6 @@ export function ChannelBreakdownChart({ data }: ChannelBreakdownChartProps) {
           </div>
         ))}
       </div>
-    </div>
+    </MotionCard>
   )
 }

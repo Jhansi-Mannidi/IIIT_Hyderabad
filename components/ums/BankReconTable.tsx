@@ -1,6 +1,7 @@
 'use client'
 
 import { BankReconItem } from '@/lib/useInstitutionalFinanceData'
+import { MotionCard } from './MotionCard'
 
 interface BankReconTableProps {
   data: BankReconItem[]
@@ -8,7 +9,7 @@ interface BankReconTableProps {
 
 export function BankReconTable({ data }: BankReconTableProps) {
   return (
-    <div className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
+    <MotionCard className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       <h3 className="text-[13px] font-[700] text-[#0F1722]">Bank Reconciliation Status</h3>
       <div className="overflow-x-auto">
         <table className="w-full text-[11px]">
@@ -42,6 +43,6 @@ export function BankReconTable({ data }: BankReconTableProps) {
           </tbody>
         </table>
       </div>
-    </div>
+    </MotionCard>
   )
 }

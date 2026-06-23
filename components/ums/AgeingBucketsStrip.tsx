@@ -2,6 +2,7 @@
 
 import { AlertTriangle, AlertCircle } from 'lucide-react'
 import { AgeingBucket } from '@/lib/useFinanceDashboardData'
+import { MotionCard } from './MotionCard'
 
 interface AgeingBucketsStripProps {
   buckets: AgeingBucket[]
@@ -10,7 +11,7 @@ interface AgeingBucketsStripProps {
 
 export function AgeingBucketsStrip({ buckets, onBucketClick }: AgeingBucketsStripProps) {
   return (
-    <div className="flex flex-col gap-4 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
+    <MotionCard className="flex flex-col gap-4 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       <div className="flex items-center justify-between">
         <h3 className="text-[13px] font-[700] text-[#0F1722] flex items-center gap-2">
           Outstanding Dues — Ageing Analysis
@@ -97,6 +98,6 @@ export function AgeingBucketsStrip({ buckets, onBucketClick }: AgeingBucketsStri
           <p className="font-['Courier'] text-[14px] font-[700]">{buckets.find(b => b.status === 'critical')?.count || 0}</p>
         </div>
       </div>
-    </div>
+    </MotionCard>
   )
 }

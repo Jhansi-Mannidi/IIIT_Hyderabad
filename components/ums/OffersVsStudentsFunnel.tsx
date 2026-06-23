@@ -1,6 +1,7 @@
 'use client'
 
 import { PlacementYear } from '@/lib/usePlacementsData'
+import { MotionCard } from './MotionCard'
 
 interface Props {
   current: PlacementYear
@@ -65,7 +66,7 @@ export function OffersVsStudentsFunnel({ current }: Props) {
   const maxW   = 100
 
   return (
-    <div className="bg-white rounded-[12px] border border-[#E5ECEF] p-4">
+    <MotionCard className="bg-white rounded-[12px] border border-[#E5ECEF] p-4">
       <div className="mb-4">
         <h3 className="text-[13px] font-[700] text-[#0F1722]">Offers vs Students Funnel</h3>
         <p className="text-[11px] text-[#9AA6B4] mt-0.5">
@@ -127,6 +128,6 @@ export function OffersVsStudentsFunnel({ current }: Props) {
           <span className="text-[10px] text-[#9AA6B4]">{bottom.note}</span>
         </div>
       </div>
-    </div>
+    </MotionCard>
   )
 }

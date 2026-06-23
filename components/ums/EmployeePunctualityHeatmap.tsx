@@ -1,6 +1,7 @@
 'use client'
 
 import { EmployeeBiometric } from '@/lib/useAttendanceData'
+import { MotionCard } from './MotionCard'
 
 interface EmployeePunctualityHeatmapProps {
   data: EmployeeBiometric[]
@@ -15,7 +16,7 @@ export function EmployeePunctualityHeatmap({ data, onCellClick }: EmployeePunctu
   }
 
   return (
-    <div className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
+    <MotionCard className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       <h3 className="text-[13px] font-[700] text-[#0F1722]">Employee Punctuality Heatmap (This Month)</h3>
       
       <div className="overflow-x-auto">
@@ -86,6 +87,6 @@ export function EmployeePunctualityHeatmap({ data, onCellClick }: EmployeePunctu
           <span className="text-[10px] font-[600] text-[#0F1722]">Absent</span>
         </div>
       </div>
-    </div>
+    </MotionCard>
   )
 }

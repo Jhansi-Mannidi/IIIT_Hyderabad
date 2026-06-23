@@ -2,6 +2,7 @@
 
 import { AlertTriangle, AlertCircle } from 'lucide-react'
 import { AttritionRiskEmployee } from '@/lib/useHRPayrollData'
+import { MotionCard } from './MotionCard'
 
 interface AttritionWatchlistTableProps {
   data: AttritionRiskEmployee[]
@@ -20,7 +21,7 @@ export function AttritionWatchlistTable({ data, onEmployeeClick }: AttritionWatc
   }
 
   return (
-    <div className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
+    <MotionCard className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       <h3 className="text-[13px] font-[700] text-[#0F1722]">Attrition Watchlist (Risk-Ranked)</h3>
       
       <div className="overflow-x-auto">
@@ -80,6 +81,6 @@ export function AttritionWatchlistTable({ data, onEmployeeClick }: AttritionWatc
           </tbody>
         </table>
       </div>
-    </div>
+    </MotionCard>
   )
 }

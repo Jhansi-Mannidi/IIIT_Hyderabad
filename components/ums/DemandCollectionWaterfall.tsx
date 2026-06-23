@@ -1,6 +1,7 @@
 'use client'
 
 import { WaterfallStep } from '@/lib/useFinanceDashboardData'
+import { MotionCard } from './MotionCard'
 
 interface DemandCollectionWaterfallProps {
   steps: WaterfallStep[]
@@ -11,7 +12,7 @@ export function DemandCollectionWaterfall({ steps }: DemandCollectionWaterfallPr
   const scale = 300 / maxValue
 
   return (
-    <div className="flex flex-col gap-4 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
+    <MotionCard className="flex flex-col gap-4 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       <div className="flex items-center justify-between">
         <h3 className="text-[13px] font-[700] text-[#0F1722]">Demand → Collection Waterfall</h3>
         <span className="text-[11px] text-[#9AA6B4]">Amount in ₹ Lakhs</span>
@@ -70,6 +71,6 @@ export function DemandCollectionWaterfall({ steps }: DemandCollectionWaterfallPr
           <p className="font-['Courier'] text-[14px] font-[700] text-[#C99A2E]">₹1.56L</p>
         </div>
       </div>
-    </div>
+    </MotionCard>
   )
 }

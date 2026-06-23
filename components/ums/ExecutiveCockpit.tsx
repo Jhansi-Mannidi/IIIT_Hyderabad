@@ -21,7 +21,7 @@ import {
   Funnel,
   LabelList,
 } from 'recharts'
-import { ChevronRight, Sparkles, PanelRightClose, PanelRightOpen, RefreshCw } from 'lucide-react'
+import { ChevronRight, Sparkles, PanelRightClose, RefreshCw } from 'lucide-react'
 import { useExecutiveCockpitData } from '@/lib/useExecutiveCockpitData'
 import { KPITile } from './KPITile'
 import { ChartCard } from './ChartCard'
@@ -33,6 +33,9 @@ import { DeptHealthStrip } from './DeptHealthStrip'
 import { MoversTable } from './MoversTable'
 import { VIZ, INK, SURFACE } from '@/lib/tokens'
 import { cn } from '@/lib/utils'
+import { useInteractions } from './InteractionProvider'
+import { applyDashboardFilters } from '@/lib/dashboardFiltering'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 
 // ── Tooltip style ─────────────────────────────────────────────────────────────
 const TOOLTIP_STYLE = {
@@ -49,6 +52,27 @@ const TICK_STYLE = { fill: '#9AA6B4', fontSize: 11 }
 function formatLakh(v: number) {
   if (v >= 100) return `₹${(v / 100).toFixed(1)}Cr`
   return `₹${v.toFixed(0)}L`
+}
+
+function formatProgramAxisLabel(value: unknown) {
+  return String(value)
+    .replaceAll('B.Tech', 'BTech')
+    .replaceAll('M.Tech', 'MTech')
+    .replaceAll('M.Sc', 'MSc')
+    .replaceAll('Ph.D', 'PhD')
+    .replace(/\s+(CSE|ECE|MTech|MBA|PhD|Math|IT)$/i, ' $1')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function formatCompactProgramAxisLabel(value: unknown) {
+  const label = formatProgramAxisLabel(value)
+    .replace('BTech ', 'BT-')
+    .replace('MTech ', 'MT-')
+    .replace('MSc ', 'MSc-')
+    .replace('Mechanical', 'Mech')
+
+  return label.length > 8 ? `${label.slice(0, 8)}...` : label
 }
 
 // ── Custom tooltip for trend chart ───────────────────────────────────────────
@@ -94,22 +118,58 @@ function DerivedBadge() {
   )
 }
 
+function ExecutiveAnalyticsStrip({
+  items,
+}: {
+  items: Array<{ label: string; value: string; detail?: string; tone?: string }>
+}) {
+  return (
+    <div className="mt-3 grid grid-cols-2 gap-2 rounded-[14px] border border-[#E5ECEF] bg-[#F8FAFD] p-3 sm:grid-cols-4">
+      {items.map((item) => (
+        <div key={item.label} className="min-w-0">
+          <p className="truncate text-[10px] font-[750] uppercase tracking-[0.07em] text-[#9AA6B4]">
+            {item.label}
+          </p>
+          <p
+            className="mt-1 truncate text-[13px] font-[850] tracking-[-0.02em] text-[#0F1722] tabular-nums"
+            style={item.tone ? { color: item.tone } : undefined}
+            title={item.value}
+          >
+            {item.value}
+          </p>
+          {item.detail && (
+            <p className="mt-0.5 truncate text-[10.5px] font-[600] text-[#6B7C99]" title={item.detail}>
+              {item.detail}
+            </p>
+          )}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function ExecutiveCockpit() {
   const { data, loading } = useExecutiveCockpitData()
   const [dismissedInsights, setDismissedInsights] = useState<string[]>([])
-  const [railOpen, setRailOpen] = useState(true)
+  const { aiInsightsOpen, refreshDashboard, searchQuery, setAiInsightsOpen } = useInteractions()
+  const shouldReduceMotion = useReducedMotion()
 
   const visibleInsights = useMemo(
     () => (data?.aiInsights ?? []).filter((i) => !dismissedInsights.includes(i.id)),
     [data, dismissedInsights],
   )
+  const filteredData = useMemo(
+    () => (data ? applyDashboardFilters(data, {}, searchQuery) : null),
+    [data, searchQuery],
+  )
 
   if (loading) return <SkeletonDashboard />
-  if (!data) return null
+  if (!filteredData) return null
 
-  const { kpis, trendSeries, domainHealth, placementFunnel, scholarshipDist, revenueBreakdown, programEnrollment, facultyLoad, lastUpdated } = data
+  const { kpis, trendSeries, domainHealth, placementFunnel, scholarshipDist, revenueBreakdown, programEnrollment, facultyLoad, lastUpdated } = filteredData
+  const executiveKpis = kpis.filter((kpi) => !['pass-rate', 'research-pubs'].includes(kpi.id))
 
   // Enrollment fill% for bar chart
   const enrollmentFill = programEnrollment.map((p) => ({
@@ -125,13 +185,45 @@ export function ExecutiveCockpit() {
     'Avg Load (hrs)': f.avgLoad,
   }))
 
+  const latestTrend = trendSeries[trendSeries.length - 1]
+  const firstTrend = trendSeries[0]
+  const revenueYtd = trendSeries.reduce((sum, point) => sum + point.revenue, 0)
+  const expenditureYtd = trendSeries.reduce((sum, point) => sum + point.expenditure, 0)
+  const avgAttendance = trendSeries.reduce((sum, point) => sum + point.attendance, 0) / trendSeries.length
+  const avgPassRate = trendSeries.reduce((sum, point) => sum + point.passRate, 0) / trendSeries.length
+  const attendanceRiskMonths = trendSeries.filter((point) => point.attendance < 85).length
+  const totalCapacity = programEnrollment.reduce((sum, program) => sum + program.capacity, 0)
+  const totalEnrolled = programEnrollment.reduce((sum, program) => sum + program.students, 0)
+  const avgProgramFill = totalCapacity ? (totalEnrolled / totalCapacity) * 100 : 0
+  const lowFillPrograms = enrollmentFill.filter((program) => program.fill < 80).length
+  const scholarshipStudents = scholarshipDist.reduce((sum, item) => sum + item.students, 0)
+  const scholarshipAmount = scholarshipDist.reduce((sum, item) => sum + item.amount, 0)
+  const topScholarshipCategory = scholarshipDist.reduce(
+    (top, item) => (item.amount > top.amount ? item : top),
+    scholarshipDist[0],
+  )
+
   return (
     <div className="flex flex-1 min-h-0 overflow-hidden">
       {/* ── Main content ── */}
-      <div className="flex-1 overflow-y-auto px-5 py-5 space-y-6 min-w-0">
+      <motion.div
+        className="flex-1 overflow-y-auto px-5 py-5 space-y-6 min-w-0"
+        initial={shouldReduceMotion ? false : 'hidden'}
+        animate="show"
+        variants={{
+          hidden: {},
+          show: { transition: { staggerChildren: 0.06, delayChildren: 0.04 } },
+        }}
+      >
 
         {/* ── Section label ── */}
-        <div className="flex items-center justify-between">
+        <motion.div
+          className="flex items-center justify-between"
+          variants={{
+            hidden: { opacity: 0, y: 10 },
+            show: { opacity: 1, y: 0 },
+          }}
+        >
           <div>
             <h2 className="text-[16px] font-[700] text-[#0F1722]">Executive Cockpit</h2>
             <p className="text-[12px] text-[#9AA6B4] mt-0.5">
@@ -140,32 +232,53 @@ export function ExecutiveCockpit() {
           </div>
           <button
             type="button"
+            onClick={() => refreshDashboard('Executive Cockpit')}
             className="flex items-center gap-1.5 text-[12px] text-[#5A6675] hover:text-[#1F3864] transition-colors"
           >
             <RefreshCw size={13} />
             Refresh
           </button>
-        </div>
+        </motion.div>
 
         {/* ── KPI strip ── */}
-        <section aria-label="Key performance indicators">
-          <div className="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-8 gap-3">
-            {kpis.map((kpi) => (
+        <motion.section
+          aria-label="Key performance indicators"
+          variants={{
+            hidden: { opacity: 0, y: 12 },
+            show: { opacity: 1, y: 0 },
+          }}
+        >
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(156px,1fr))] gap-3">
+            {executiveKpis.map((kpi) => (
               <KPITile key={kpi.id} metric={kpi} />
             ))}
           </div>
-        </section>
+        </motion.section>
 
         {/* ── SIGNATURE: Institutional Health Ribbon + Department Heat-Strip ── */}
-        <section aria-label="Health ribbon and department strip" className="space-y-4">
-          <HealthRibbon data={data.healthRibbon} />
-          <DeptHealthStrip data={data.deptHealthStrip} />
-        </section>
+        <motion.section
+          aria-label="Health ribbon and department strip"
+          className="space-y-4"
+          variants={{
+            hidden: { opacity: 0, y: 12 },
+            show: { opacity: 1, y: 0 },
+          }}
+        >
+          <HealthRibbon data={filteredData.healthRibbon} />
+          <DeptHealthStrip data={filteredData.deptHealthStrip} />
+        </motion.section>
 
         {/* ── Top Movers Table ── */}
-        <section aria-label="Top movers" className="mt-4">
-          <MoversTable data={data.movers} />
-        </section>
+        <motion.section
+          aria-label="Top movers"
+          className="mt-4"
+          variants={{
+            hidden: { opacity: 0, y: 12 },
+            show: { opacity: 1, y: 0 },
+          }}
+        >
+          <MoversTable data={filteredData.movers} />
+        </motion.section>
 
         {/* ── Trend + Revenue donut ── */}
         <section aria-label="Institutional trends" className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -250,6 +363,34 @@ export function ExecutiveCockpit() {
                 </LineChart>
               </ResponsiveContainer>
             </div>
+            <ExecutiveAnalyticsStrip
+              items={[
+                {
+                  label: 'Enrollment',
+                  value: latestTrend.enrollment.toLocaleString('en-IN'),
+                  detail: `${latestTrend.target.toLocaleString('en-IN')} target`,
+                  tone: VIZ[0],
+                },
+                {
+                  label: 'Revenue YTD',
+                  value: formatLakh(revenueYtd),
+                  detail: 'fee + allied income',
+                  tone: VIZ[1],
+                },
+                {
+                  label: 'Expense YTD',
+                  value: formatLakh(expenditureYtd),
+                  detail: `${((expenditureYtd / revenueYtd) * 100).toFixed(0)}% of revenue`,
+                  tone: VIZ[2],
+                },
+                {
+                  label: 'Net Position',
+                  value: formatLakh(revenueYtd - expenditureYtd),
+                  detail: `${(((revenueYtd - expenditureYtd) / revenueYtd) * 100).toFixed(1)}% margin`,
+                  tone: '#2E8B8B',
+                },
+              ]}
+            />
           </ChartCard>
 
           <ChartCard
@@ -260,20 +401,21 @@ export function ExecutiveCockpit() {
             updatedAt={lastUpdated}
             badge={<DerivedBadge />}
           >
-            <div className="h-52 flex flex-col">
-              <div className="flex-1">
+            <div className="flex min-h-[360px] flex-col">
+              <div className="min-h-[190px] flex-1">
                 <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
+                  <PieChart margin={{ top: 8, right: 8, bottom: 8, left: 8 }}>
                     <Pie
                       data={revenueBreakdown}
                       dataKey="amount"
                       nameKey="source"
                       cx="50%"
                       cy="50%"
-                      innerRadius="52%"
-                      outerRadius="75%"
+                      innerRadius="50%"
+                      outerRadius="88%"
                       paddingAngle={2}
-                      strokeWidth={0}
+                      stroke="#FFFFFF"
+                      strokeWidth={2}
                     >
                       {revenueBreakdown.map((entry, index) => (
                         <Cell key={entry.source} fill={VIZ[index % VIZ.length]} />
@@ -281,7 +423,7 @@ export function ExecutiveCockpit() {
                     </Pie>
                     <Tooltip
                       contentStyle={TOOLTIP_STYLE}
-                      formatter={(v: number) => [formatLakh(v), 'Amount']}
+                      formatter={(value) => [formatLakh(Number(value ?? 0)), 'Amount']}
                     />
                   </PieChart>
                 </ResponsiveContainer>
@@ -300,6 +442,34 @@ export function ExecutiveCockpit() {
                   </div>
                 ))}
               </div>
+              <ExecutiveAnalyticsStrip
+                items={[
+                  {
+                    label: 'Top Source',
+                    value: revenueBreakdown[0]?.source ?? 'Fees',
+                    detail: `${revenueBreakdown[0]?.pct.toFixed(0) ?? 0}% mix`,
+                    tone: VIZ[0],
+                  },
+                  {
+                    label: 'Categories',
+                    value: `${revenueBreakdown.length}`,
+                    detail: 'tracked streams',
+                    tone: VIZ[1],
+                  },
+                  {
+                    label: 'Revenue',
+                    value: formatLakh(revenueBreakdown.reduce((sum, item) => sum + item.amount, 0)),
+                    detail: 'current period',
+                    tone: VIZ[2],
+                  },
+                  {
+                    label: 'Diversity',
+                    value: 'Balanced',
+                    detail: 'multi-source mix',
+                    tone: '#2E8B8B',
+                  },
+                ]}
+              />
             </div>
           </ChartCard>
         </section>
@@ -354,6 +524,34 @@ export function ExecutiveCockpit() {
                 </AreaChart>
               </ResponsiveContainer>
             </div>
+            <ExecutiveAnalyticsStrip
+              items={[
+                {
+                  label: 'Current',
+                  value: `${latestTrend.attendance.toFixed(1)}%`,
+                  detail: 'latest month',
+                  tone: VIZ[1],
+                },
+                {
+                  label: 'Average',
+                  value: `${avgAttendance.toFixed(1)}%`,
+                  detail: 'AY average',
+                  tone: '#2E8B8B',
+                },
+                {
+                  label: 'Policy Gap',
+                  value: `${(latestTrend.attendance - 85).toFixed(1)} pts`,
+                  detail: 'vs 85% minimum',
+                  tone: latestTrend.attendance >= 85 ? '#2E8B8B' : '#C55A11',
+                },
+                {
+                  label: 'Risk Months',
+                  value: `${attendanceRiskMonths}`,
+                  detail: 'below policy',
+                  tone: attendanceRiskMonths ? '#C55A11' : '#2E8B8B',
+                },
+              ]}
+            />
           </ChartCard>
 
           <ChartCard
@@ -404,6 +602,34 @@ export function ExecutiveCockpit() {
                 </AreaChart>
               </ResponsiveContainer>
             </div>
+            <ExecutiveAnalyticsStrip
+              items={[
+                {
+                  label: 'Current',
+                  value: `${latestTrend.passRate.toFixed(1)}%`,
+                  detail: 'latest semester',
+                  tone: VIZ[0],
+                },
+                {
+                  label: 'Average',
+                  value: `${avgPassRate.toFixed(1)}%`,
+                  detail: 'AY average',
+                  tone: '#2E8B8B',
+                },
+                {
+                  label: 'NAAC Gap',
+                  value: `${(latestTrend.passRate - 90).toFixed(1)} pts`,
+                  detail: 'vs 90% benchmark',
+                  tone: latestTrend.passRate >= 90 ? '#2E8B8B' : '#C55A11',
+                },
+                {
+                  label: 'Movement',
+                  value: `${(latestTrend.passRate - firstTrend.passRate).toFixed(1)} pts`,
+                  detail: 'from year start',
+                  tone: latestTrend.passRate >= firstTrend.passRate ? '#2E8B8B' : '#C55A11',
+                },
+              ]}
+            />
           </ChartCard>
         </section>
 
@@ -474,6 +700,34 @@ export function ExecutiveCockpit() {
                 </BarChart>
               </ResponsiveContainer>
             </div>
+            <ExecutiveAnalyticsStrip
+              items={[
+                {
+                  label: 'Eligible',
+                  value: placementFunnel[0]?.count.toLocaleString('en-IN') ?? '0',
+                  detail: 'final-year pool',
+                  tone: VIZ[0],
+                },
+                {
+                  label: 'Offers',
+                  value: placementFunnel.find((item) => item.stage === 'Offered')?.count.toLocaleString('en-IN') ?? '0',
+                  detail: 'released YTD',
+                  tone: VIZ[1],
+                },
+                {
+                  label: 'Joined',
+                  value: placementFunnel[placementFunnel.length - 1]?.count.toLocaleString('en-IN') ?? '0',
+                  detail: 'accepted outcomes',
+                  tone: '#2E8B8B',
+                },
+                {
+                  label: 'Conversion',
+                  value: `${(placementFunnel[placementFunnel.length - 1]?.rate ?? 0).toFixed(1)}%`,
+                  detail: 'eligible to joined',
+                  tone: VIZ[2],
+                },
+              ]}
+            />
           </ChartCard>
 
           <ChartCard
@@ -489,8 +743,8 @@ export function ExecutiveCockpit() {
                 <BarChart
                   data={enrollmentFill}
                   layout="vertical"
-                  margin={{ top: 4, right: 40, bottom: 4, left: 72 }}
-                  barSize={10}
+                  margin={{ top: 8, right: 44, bottom: 8, left: 18 }}
+                  barSize={12}
                 >
                   <CartesianGrid stroke={SURFACE.line} strokeWidth={0.6} horizontal={false} />
                   <XAxis
@@ -504,15 +758,17 @@ export function ExecutiveCockpit() {
                   <YAxis
                     type="category"
                     dataKey="program"
-                    tick={{ fill: INK[500], fontSize: 10 }}
+                    tick={{ fill: INK[500], fontSize: 10.5, fontWeight: 700 }}
+                    tickFormatter={formatCompactProgramAxisLabel}
                     axisLine={false}
                     tickLine={false}
-                    width={68}
+                    width={56}
+                    interval={0}
                   />
                   <ReferenceLine x={80} stroke={VIZ[2]} strokeWidth={1} strokeDasharray="3 3" />
                   <Tooltip
                     contentStyle={TOOLTIP_STYLE}
-                    formatter={(v: number) => [`${v.toFixed(1)}%`, 'Fill Rate']}
+                    formatter={(value) => [`${Number(value ?? 0).toFixed(1)}%`, 'Fill Rate']}
                   />
                   <Bar dataKey="fill" name="Fill Rate %" radius={[0, 4, 4, 0]}>
                     {enrollmentFill.map((entry) => (
@@ -526,13 +782,41 @@ export function ExecutiveCockpit() {
                     <LabelList
                       dataKey="fill"
                       position="right"
-                      formatter={(v: number) => `${v.toFixed(0)}%`}
+                      formatter={(value) => `${Number(value ?? 0).toFixed(0)}%`}
                       style={{ fill: INK[700], fontSize: 10, fontWeight: 600 }}
                     />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </div>
+            <ExecutiveAnalyticsStrip
+              items={[
+                {
+                  label: 'Filled Seats',
+                  value: totalEnrolled.toLocaleString('en-IN'),
+                  detail: `${totalCapacity.toLocaleString('en-IN')} capacity`,
+                  tone: VIZ[0],
+                },
+                {
+                  label: 'Avg Fill',
+                  value: `${avgProgramFill.toFixed(1)}%`,
+                  detail: 'all programs',
+                  tone: avgProgramFill >= 85 ? '#2E8B8B' : '#C55A11',
+                },
+                {
+                  label: 'Underfilled',
+                  value: `${lowFillPrograms}`,
+                  detail: 'below 80%',
+                  tone: lowFillPrograms ? '#C55A11' : '#2E8B8B',
+                },
+                {
+                  label: 'Threshold',
+                  value: '80%',
+                  detail: 'sanctioned fill line',
+                  tone: VIZ[2],
+                },
+              ]}
+            />
           </ChartCard>
         </section>
 
@@ -570,6 +854,34 @@ export function ExecutiveCockpit() {
                 </BarChart>
               </ResponsiveContainer>
             </div>
+            <ExecutiveAnalyticsStrip
+              items={[
+                {
+                  label: 'Full-Time',
+                  value: facultyLoad.reduce((sum, item) => sum + item.fullTime, 0).toLocaleString('en-IN'),
+                  detail: 'faculty base',
+                  tone: VIZ[0],
+                },
+                {
+                  label: 'Contractual',
+                  value: facultyLoad.reduce((sum, item) => sum + item.contractual, 0).toLocaleString('en-IN'),
+                  detail: 'support load',
+                  tone: VIZ[2],
+                },
+                {
+                  label: 'Avg Load',
+                  value: `${(facultyLoad.reduce((sum, item) => sum + item.avgLoad, 0) / facultyLoad.length).toFixed(1)}h`,
+                  detail: 'weekly teaching',
+                  tone: '#2E8B8B',
+                },
+                {
+                  label: 'Departments',
+                  value: `${facultyLoad.length}`,
+                  detail: 'tracked units',
+                  tone: VIZ[1],
+                },
+              ]}
+            />
           </ChartCard>
 
           <ChartCard
@@ -631,23 +943,62 @@ export function ExecutiveCockpit() {
                 </BarChart>
               </ResponsiveContainer>
             </div>
+            <ExecutiveAnalyticsStrip
+              items={[
+                {
+                  label: 'Beneficiaries',
+                  value: scholarshipStudents.toLocaleString('en-IN'),
+                  detail: 'students covered',
+                  tone: VIZ[0],
+                },
+                {
+                  label: 'Amount',
+                  value: formatLakh(scholarshipAmount),
+                  detail: 'aid disbursed',
+                  tone: VIZ[1],
+                },
+                {
+                  label: 'Top Category',
+                  value: topScholarshipCategory?.category ?? 'Merit',
+                  detail: formatLakh(topScholarshipCategory?.amount ?? 0),
+                  tone: VIZ[2],
+                },
+                {
+                  label: 'Avg Aid',
+                  value: formatLakh(scholarshipAmount / Math.max(scholarshipDist.length, 1)),
+                  detail: 'per category',
+                  tone: '#2E8B8B',
+                },
+              ]}
+            />
           </ChartCard>
         </section>
 
         {/* Bottom spacing */}
         <div className="h-6" />
-      </div>
+      </motion.div>
 
       {/* ── AI Insights Rail ── */}
-      <aside
+      <motion.aside
         className={cn(
           'flex-shrink-0 border-l border-[#E4E8EF] bg-[#F6F8FB] transition-all duration-300 overflow-hidden flex flex-col',
-          railOpen ? 'w-72' : 'w-0 border-l-0',
+          aiInsightsOpen ? 'w-72' : 'w-0 border-l-0',
         )}
+        layout
+        initial={false}
+        animate={{ opacity: aiInsightsOpen ? 1 : 0.92 }}
+        transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
         aria-label="AI Insights"
       >
-        {railOpen && (
-          <>
+        <AnimatePresence initial={false}>
+          {aiInsightsOpen && (
+          <motion.div
+            className="flex min-h-0 flex-1 flex-col"
+            initial={shouldReduceMotion ? false : { opacity: 0, x: 18 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: 14 }}
+            transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+          >
             {/* Rail header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-[#E4E8EF] bg-white">
               <div className="flex items-center gap-2">
@@ -661,7 +1012,7 @@ export function ExecutiveCockpit() {
               </div>
               <button
                 type="button"
-                onClick={() => setRailOpen(false)}
+                onClick={() => setAiInsightsOpen(false)}
                 aria-label="Close AI insights rail"
                 className="text-[#9AA6B4] hover:text-[#5A6675] transition-colors"
               >
@@ -678,45 +1029,35 @@ export function ExecutiveCockpit() {
 
             {/* Insight cards */}
             <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3">
-              {visibleInsights.length === 0 ? (
-                <div className="text-center py-10">
-                  <Sparkles size={24} className="mx-auto text-[#D8E0EE] mb-2" />
-                  <p className="text-[12px] text-[#9AA6B4]">No active insights</p>
-                </div>
-              ) : (
-                visibleInsights.map((insight) => (
-                  <AIInsightCard
-                    key={insight.id}
-                    insight={insight}
-                    onDismiss={(id) =>
-                      setDismissedInsights((prev) => [...prev, id])
-                    }
-                  />
-                ))
-              )}
+              <AnimatePresence mode="popLayout">
+                {visibleInsights.length === 0 ? (
+                  <motion.div
+                    key="empty-insights"
+                    className="text-center py-10"
+                    initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
+                  >
+                    <Sparkles size={24} className="mx-auto text-[#D8E0EE] mb-2" />
+                    <p className="text-[12px] text-[#9AA6B4]">No active insights</p>
+                  </motion.div>
+                ) : (
+                  visibleInsights.map((insight) => (
+                    <AIInsightCard
+                      key={insight.id}
+                      insight={insight}
+                      onDismiss={(id) =>
+                        setDismissedInsights((prev) => [...prev, id])
+                      }
+                    />
+                  ))
+                )}
+              </AnimatePresence>
             </div>
-          </>
-        )}
-      </aside>
-
-      {/* Rail toggle when closed */}
-      {!railOpen && (
-        <button
-          type="button"
-          onClick={() => setRailOpen(true)}
-          aria-label="Open AI insights rail"
-          className="fixed right-4 bottom-6 flex items-center gap-2 px-3 py-2 rounded-[8px] bg-[#1F3864] text-white text-[12px] font-[600] shadow-lg hover:bg-[#34507F] transition-colors z-30"
-        >
-          <Sparkles size={13} />
-          AI Insights
-          {visibleInsights.length > 0 && (
-            <span className="text-[10px] font-[800] w-4 h-4 rounded-full bg-[#C55A11] text-white flex items-center justify-center">
-              {visibleInsights.length}
-            </span>
+          </motion.div>
           )}
-          <PanelRightOpen size={13} />
-        </button>
-      )}
+        </AnimatePresence>
+      </motion.aside>
     </div>
   )
 }

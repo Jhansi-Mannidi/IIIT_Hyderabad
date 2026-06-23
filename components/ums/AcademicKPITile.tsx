@@ -2,6 +2,7 @@
 
 import { TrendingUp, TrendingDown, Zap } from 'lucide-react'
 import { LineChart, Line, ResponsiveContainer } from 'recharts'
+import { motion, useReducedMotion } from 'framer-motion'
 
 interface AcademicKPITileProps {
   label: string
@@ -22,15 +23,27 @@ export function AcademicKPITile({
 }: AcademicKPITileProps) {
   const isPositive = delta >= 0
   const sparkData = sparkline.map((v, i) => ({ x: i, y: v }))
+  const shouldReduceMotion = useReducedMotion()
 
   return (
-    <div className="bg-white border border-[#E8EEF5] rounded-[10px] p-4 flex flex-col justify-between h-full hover:border-[#2E8B8B] transition-colors">
+    <motion.div
+      className="bg-white border border-[#E8EEF5] rounded-[10px] p-4 flex flex-col justify-between h-full hover:border-[#2E8B8B] transition-colors"
+      layout
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 12, scale: 0.985 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: '-30px' }}
+      whileHover={shouldReduceMotion ? undefined : { y: -3, scale: 1.01 }}
+      whileTap={shouldReduceMotion ? undefined : { scale: 0.99 }}
+      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+    >
       {/* Label + Derived Badge */}
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-medium text-[#6B7C99]">{label}</span>
+      <div className="mb-2 flex min-w-0 items-center justify-between gap-2">
+        <span title={label} className="min-w-0 flex-1 truncate text-xs font-medium text-[#6B7C99]">
+          {label}
+        </span>
         {derived && (
-          <span className="text-[10px] bg-[#E8F5F5] text-[#2E8B8B] px-2 py-0.5 rounded font-semibold">
-            [Derived]
+          <span className="max-w-[54px] flex-shrink-0 truncate text-[9px] bg-[#E8F5F5] text-[#2E8B8B] px-1.5 py-0.5 rounded font-bold" title="Derived">
+            Calc
           </span>
         )}
       </div>
@@ -75,6 +88,6 @@ export function AcademicKPITile({
           {delta < 0 ? '' : '+'}
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }

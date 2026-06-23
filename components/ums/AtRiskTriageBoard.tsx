@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { ChevronDown, ChevronRight, AlertTriangle, TrendingDown, Users } from 'lucide-react'
 import { StudentPerformance } from '@/lib/useAcademicDashboardData'
+import { useTheme } from './ThemeProvider'
 
 interface AtRiskTriageBoardProps {
   students: StudentPerformance[]
@@ -13,12 +14,27 @@ export function AtRiskTriageBoard({
   students,
   onStudentClick,
 }: AtRiskTriageBoardProps) {
+  const { theme } = useTheme()
+  const isDark = theme === 'dark'
   const [sortBy, setSortBy] = useState<'risk' | 'sgpa' | 'attendance'>('risk')
   const [filterStatus, setFilterStatus] = useState<'all' | 'critical' | 'warning' | 'at-risk'>(
     'all'
   )
 
   const getRiskColor = (status: string): string => {
+    if (isDark) {
+      switch (status) {
+        case 'critical':
+          return 'bg-[#2A111C] hover:bg-[#341624] border-l-4 border-[#B2566B]'
+        case 'warning':
+          return 'bg-[#271B0D] hover:bg-[#302210] border-l-4 border-[#C55A11]'
+        case 'at-risk':
+          return 'bg-[#251F0E] hover:bg-[#302811] border-l-4 border-[#C99A2E]'
+        default:
+          return 'bg-[#0B1728] hover:bg-[#102344] border-l-4 border-[#2E8B8B]'
+      }
+    }
+
     switch (status) {
       case 'critical':
         return 'bg-[#FFF0F0] border-l-4 border-[#B2566B]'
@@ -34,6 +50,19 @@ export function AtRiskTriageBoard({
   const getRiskBadgeColor = (
     status: string
   ): { bg: string; text: string; icon: string } => {
+    if (isDark) {
+      switch (status) {
+        case 'critical':
+          return { bg: 'rgba(178, 86, 107, 0.22)', text: '#F2A7BA', icon: '●' }
+        case 'warning':
+          return { bg: 'rgba(197, 90, 17, 0.24)', text: '#F4A261', icon: '▲' }
+        case 'at-risk':
+          return { bg: 'rgba(201, 154, 46, 0.24)', text: '#F4D06F', icon: '◆' }
+        default:
+          return { bg: 'rgba(46, 139, 139, 0.22)', text: '#8FE0DE', icon: '✓' }
+      }
+    }
+
     switch (status) {
       case 'critical':
         return { bg: '#FFDDDD', text: '#8B3A3A', icon: '●' }
@@ -88,6 +117,8 @@ export function AtRiskTriageBoard({
               className={`px-3 py-1.5 rounded-[6px] text-xs font-semibold transition-colors ${
                 filterStatus === status
                   ? 'bg-[#2E8B8B] text-white'
+                  : isDark
+                  ? 'bg-[#0B1728] border border-[#263448] text-[#A8B6C8] hover:border-[#2E8B8B] hover:bg-[#102344]'
                   : 'bg-white border border-[#E8EEF5] text-[#6B7C99] hover:border-[#2E8B8B]'
               }`}
             >
@@ -121,7 +152,7 @@ export function AtRiskTriageBoard({
               <button
                 key={student.studentId}
                 onClick={() => onStudentClick?.(student)}
-                className={`w-full px-6 py-4 text-left hover:bg-opacity-75 transition-all ${riskColor}`}
+                className={`w-full px-6 py-4 text-left transition-all ${riskColor}`}
               >
                 <div className="grid grid-cols-12 gap-4 items-center">
                   {/* Risk Badge */}

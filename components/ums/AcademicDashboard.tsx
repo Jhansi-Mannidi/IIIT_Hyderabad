@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { SkeletonDashboard } from './SkeletonDashboard'
 import { useAcademicDashboardData, StudentPerformance } from '@/lib/useAcademicDashboardData'
 import { AcademicKPITile } from './AcademicKPITile'
@@ -13,13 +13,16 @@ import { AtRiskTriageBoard } from './AtRiskTriageBoard'
 import { TranscriptDrawer } from './TranscriptDrawer'
 import { AcademicAIInsightCard } from './AcademicAIInsightCard'
 import { RefreshCw } from 'lucide-react'
+import { ActiveFilterSummary } from './ActiveFilterSummary'
+import { useInteractions } from './InteractionProvider'
+import { applyDashboardFilters } from '@/lib/dashboardFiltering'
 
 interface AcademicDashboardProps {
   isLoading?: boolean
 }
 
 export function AcademicDashboard({ isLoading: initialLoading = false }: AcademicDashboardProps) {
-  const data = useAcademicDashboardData()
+  const rawData = useAcademicDashboardData()
   const [isLoading] = useState(initialLoading)
   const [selectedStudent, setSelectedStudent] = useState<StudentPerformance | null>(null)
   const [filters, setFilters] = useState<AcademicFilters>({
@@ -31,6 +34,11 @@ export function AcademicDashboard({ isLoading: initialLoading = false }: Academi
     sgpaMin: 0,
   })
   const [dismissedInsights, setDismissedInsights] = useState<Set<string>>(new Set())
+  const { searchQuery, setDashboardFilters, refreshDashboard } = useInteractions()
+  const data = useMemo(
+    () => applyDashboardFilters(rawData, filters, searchQuery),
+    [rawData, filters, searchQuery],
+  )
 
   // Filter at-risk students based on applied filters
   const filteredAtRiskStudents = data.atRiskStudents.filter((student) => {
@@ -55,7 +63,7 @@ export function AcademicDashboard({ isLoading: initialLoading = false }: Academi
   const visibleInsights = data.aiInsights.filter((i) => !dismissedInsights.has(i.id))
 
   return (
-    <div className="min-h-screen bg-[#F8FAFB]">
+    <div className="flex-1 min-h-0 overflow-y-auto bg-[#F8FAFB]">
       {/* Transcript Drawer */}
       <TranscriptDrawer
         student={selectedStudent}
@@ -63,16 +71,19 @@ export function AcademicDashboard({ isLoading: initialLoading = false }: Academi
       />
 
       {/* Main Content */}
-      <div className="p-6 space-y-6">
+      <div className="w-full max-w-[1800px] mx-auto px-4 sm:px-5 py-5 space-y-5">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-[#1F3864]">Academic Performance & Records</h1>
+            <h1 className="text-[24px] font-[850] tracking-[-0.03em] text-[#1F3864]">Academic Performance & Records</h1>
             <p className="text-sm text-[#6B7C99] mt-1">
               Outcomes, grade distributions, credit progression, and early at-risk detection
             </p>
           </div>
-          <button className="px-4 py-2 rounded-[8px] border border-[#E8EEF5] bg-white text-[#1F3864] hover:bg-[#F5F8FB] transition-colors text-sm font-semibold flex items-center gap-2">
+          <button
+            onClick={() => refreshDashboard('Academic')}
+            className="inline-flex h-10 w-fit items-center gap-2 rounded-[10px] border border-[#E8EEF5] bg-white px-4 text-sm font-semibold text-[#1F3864] transition-colors hover:bg-[#F5F8FB]"
+          >
             <RefreshCw size={16} />
             Refresh
           </button>
@@ -89,11 +100,18 @@ export function AcademicDashboard({ isLoading: initialLoading = false }: Academi
 
         {/* Filter Bar */}
         <section aria-label="Filters">
-          <AcademicFilterBar onFiltersChange={setFilters} />
+          <AcademicFilterBar
+            onFiltersChange={(nextFilters) => {
+              setFilters(nextFilters)
+              setDashboardFilters('Academic', nextFilters)
+            }}
+          />
         </section>
 
+        <ActiveFilterSummary dashboard="Academic" filters={filters} searchQuery={searchQuery} />
+
         {/* Charts Grid */}
-        <section aria-label="Performance charts" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <section aria-label="Performance charts" className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           <GradeDistributionHistogram data={data.gradeDistribution} />
           <PassRateHeatmap data={data.passRateHeatmap} />
           <SGPATrendChart data={data.sgpaTrend} />
@@ -127,7 +145,7 @@ export function AcademicDashboard({ isLoading: initialLoading = false }: Academi
         )}
 
         {/* Last Updated */}
-        <div className="text-xs text-[#6B7C99] text-right">
+        <div className="pb-4 text-xs text-[#6B7C99] text-right">
           Last updated: {data.lastUpdated}
         </div>
       </div>

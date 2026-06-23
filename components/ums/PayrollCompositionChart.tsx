@@ -2,6 +2,7 @@
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { PayrollComponent } from '@/lib/useHRPayrollData'
+import { MotionCard } from './MotionCard'
 
 interface PayrollCompositionChartProps {
   data: PayrollComponent[]
@@ -15,7 +16,7 @@ export function PayrollCompositionChart({ data }: PayrollCompositionChartProps) 
   }))
 
   return (
-    <div className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
+    <MotionCard className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       <div className="flex items-center justify-between">
         <h3 className="text-[13px] font-[700] text-[#0F1722]">Payroll Composition (Earnings vs Deductions)</h3>
         <span className="text-[11px] text-[#9AA6B4]">Amount in ₹ Lakhs</span>
@@ -54,6 +55,6 @@ export function PayrollCompositionChart({ data }: PayrollCompositionChartProps) 
           <p className="font-['Courier'] text-[13px] font-[700] text-[#E74C3C]">₹{(data.reduce((sum, d) => sum + d.pf + d.tax + d.other, 0) / 100).toFixed(1)}L</p>
         </div>
       </div>
-    </div>
+    </MotionCard>
   )
 }

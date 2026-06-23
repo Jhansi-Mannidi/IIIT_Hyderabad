@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { AlertTriangle, AlertCircle, Info, ChevronDown, ChevronUp, X, Zap } from 'lucide-react'
 import { AdmissionsAIInsight } from '@/lib/useAdmissionsDashboardData'
+import { MotionCard } from './MotionCard'
 
 interface AdmissionsAIInsightCardProps {
   insight: AdmissionsAIInsight
@@ -21,7 +22,7 @@ export function AdmissionsAIInsightCard({ insight, onDismiss }: AdmissionsAIInsi
   const SeverityIcon = config.icon
 
   return (
-    <div className={`flex flex-col gap-3 px-4 py-3 rounded-[10px] border-2 ${config.bg} ${config.border}`}>
+    <MotionCard className={`ai-severity-card flex flex-col gap-3 px-4 py-3 rounded-[10px] border-2 ${config.bg} ${config.border}`}>
       {/* Header */}
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-start gap-2 flex-1">
@@ -76,6 +77,6 @@ export function AdmissionsAIInsightCard({ insight, onDismiss }: AdmissionsAIInsi
         </div>
         <span className="text-[10px] font-[600] text-[#5A6B7A]">{insight.category}</span>
       </button>
-    </div>
+    </MotionCard>
   )
 }

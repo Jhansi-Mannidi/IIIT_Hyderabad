@@ -1,6 +1,7 @@
 'use client'
 
 import { CostCenter } from '@/lib/useInstitutionalFinanceData'
+import { MotionCard } from './MotionCard'
 
 interface CostCenterTreemapProps {
   data: CostCenter[]
@@ -19,7 +20,7 @@ export function CostCenterTreemap({ data, onCenterClick }: CostCenterTreemapProp
   }
 
   return (
-    <div className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
+    <MotionCard className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       <div className="flex items-center justify-between">
         <h3 className="text-[13px] font-[700] text-[#0F1722]">Cost-Center Spend Distribution</h3>
         <span className="text-[11px] text-[#9AA6B4]">Size = Spend | Color = Utilization</span>
@@ -86,6 +87,6 @@ export function CostCenterTreemap({ data, onCenterClick }: CostCenterTreemapProp
           <p className="font-['Courier'] text-[13px] font-[700]">{(totalActual / totalBudget * 100).toFixed(1)}%</p>
         </div>
       </div>
-    </div>
+    </MotionCard>
   )
 }

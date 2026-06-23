@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { RefreshCw } from 'lucide-react'
 import { usePlacementsData } from '@/lib/usePlacementsData'
 import { PlacementsKPITile }      from './PlacementsKPITile'
@@ -12,13 +12,22 @@ import { SalaryBoxPlot }          from './SalaryBoxPlot'
 import { RecruiterTrendLine }     from './RecruiterTrendLine'
 import { OffersVsStudentsFunnel } from './OffersVsStudentsFunnel'
 import { GrievanceStatusTiles }   from './GrievanceStatusTiles'
+import { ActiveFilterSummary } from './ActiveFilterSummary'
+import { useInteractions } from './InteractionProvider'
+import { applyDashboardFilters } from '@/lib/dashboardFiltering'
 
 const PLACEMENT_TARGET = 90   // institutional target %
 
 export function PlacementsDashboard() {
-  const data = usePlacementsData()
+  const rawData = usePlacementsData()
 
   const [dismissedInsights, setDismissedInsights] = useState<Set<string>>(new Set())
+  const [filters, setFilters] = useState<Record<string, unknown>>({})
+  const { searchQuery, setDashboardFilters, refreshDashboard, runAction } = useInteractions()
+  const data = useMemo(
+    () => applyDashboardFilters(rawData, filters, searchQuery),
+    [rawData, filters, searchQuery],
+  )
 
   const dismiss = (id: string) =>
     setDismissedInsights(prev => new Set(prev).add(id))
@@ -28,28 +37,37 @@ export function PlacementsDashboard() {
 
   return (
     <div className="flex-1 overflow-y-auto bg-[#F6F8FB]">
-      <div className="w-full max-w-[1920px] mx-auto px-4 py-4 space-y-4">
+      <div className="w-full max-w-[1800px] mx-auto px-3 py-4 space-y-4 sm:px-5 sm:py-5">
 
         {/* Page header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-[20px] font-[700] text-[#0F1722]">Placements & Career Outcomes</h1>
-            <p className="text-[13px] text-[#9AA6B4] mt-0.5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
+            <h1 className="text-[22px] font-[850] leading-tight tracking-[-0.03em] text-[#0F1722] sm:text-[20px]">Placements & Career Outcomes</h1>
+            <p className="mt-1 max-w-[36rem] text-[12px] leading-5 text-[#9AA6B4] sm:text-[13px]">
               Placement rates, salary distribution, recruiter engagement, branch-wise outcomes
             </p>
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 rounded-[8px] bg-white border border-[#D1D8DF] hover:bg-[#F6F8FB]">
+          <button
+            onClick={() => refreshDashboard('Placements')}
+            className="inline-flex h-10 w-fit items-center gap-2 rounded-[10px] border border-[#D1D8DF] bg-white px-4 hover:bg-[#F6F8FB]"
+          >
             <RefreshCw size={14} className="text-[#5A6B7A]" />
             <span className="text-[12px] font-[600] text-[#0F1722]">Refresh</span>
           </button>
         </div>
 
         {/* 1. Sticky filter bar */}
-        <PlacementsFilterBar />
+        <PlacementsFilterBar
+          onFiltersChange={(nextFilters) => {
+            setFilters(nextFilters)
+            setDashboardFilters('Placements', nextFilters)
+          }}
+        />
+        <ActiveFilterSummary dashboard="Placements" filters={filters} searchQuery={searchQuery} />
 
         {/* 2. KPI strip */}
         <section aria-label="Placement KPIs">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div className="grid grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             {data.kpis.map(kpi => (
               <PlacementsKPITile key={kpi.id} kpi={kpi} />
             ))}
@@ -60,7 +78,7 @@ export function PlacementsDashboard() {
         <section aria-label="Branch outcomes and gauge" className="grid grid-cols-1 lg:grid-cols-[1fr_240px] gap-4 items-start">
           <BranchOutcomeStrip
             data={data.branchSalary}
-            onBranchClick={_b => {}}
+            onBranchClick={(branch) => runAction('Branch outcome opened', `${branch.branch} placement outcome is selected.`)}
           />
           <PlacementGauge current={current} target={PLACEMENT_TARGET} />
         </section>
@@ -72,7 +90,7 @@ export function PlacementsDashboard() {
             <SalaryBoxPlot data={data.branchSalary} />
             <RecruiterTrendLine
               data={data.recruiterTrend}
-              onPointClick={_pt => {}}
+              onPointClick={(point) => runAction('Recruiter trend point selected', `${point.year} recruiter activity is selected.`)}
             />
           </div>
 
@@ -81,7 +99,7 @@ export function PlacementsDashboard() {
             <OffersVsStudentsFunnel current={current} />
             <GrievanceStatusTiles
               data={data.grievances}
-              onTileClick={_status => {}}
+              onTileClick={(status) => runAction('Grievance status opened', `${status} grievances are selected.`)}
             />
           </div>
         </section>

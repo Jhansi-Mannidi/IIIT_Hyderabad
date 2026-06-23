@@ -1,6 +1,7 @@
 'use client'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { RankBand } from '@/lib/useAdmissionsDashboardData'
+import { MotionCard } from './MotionCard'
 
 interface RankBandChartProps {
   data: RankBand[]
@@ -10,7 +11,7 @@ export function RankBandChart({ data }: RankBandChartProps) {
   const colors = ['#5B8DEF', '#2E8B8B', '#C55A11', '#C99A2E', '#B2566B']
 
   return (
-    <div className="flex flex-col gap-3 px-5 py-4 bg-white rounded-[10px] border border-[#DFE7EF]">
+    <MotionCard className="flex flex-col gap-3 px-5 py-4 bg-white rounded-[10px] border border-[#DFE7EF]">
       <div>
         <h3 className="text-[14px] font-[700] text-[#0F1722]">JEE Rank Distribution</h3>
         <p className="text-[12px] text-[#5A6B7A] mt-0.5">Applicants and enrollees by rank bands</p>
@@ -54,6 +55,6 @@ export function RankBandChart({ data }: RankBandChartProps) {
           <p className="text-[14px] font-[700] text-[#1F3864] tabular-nums">4,842</p>
         </div>
       </div>
-    </div>
+    </MotionCard>
   )
 }

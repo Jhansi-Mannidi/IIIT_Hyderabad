@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { Info, Badge } from 'lucide-react'
 import { FunnelStage } from '@/lib/useAdmissionsDashboardData'
+import { MotionCard } from './MotionCard'
 
 interface ConversionFunnelProps {
   data: FunnelStage[]
@@ -13,7 +14,7 @@ export function ConversionFunnel({ data, onStageClick }: ConversionFunnelProps) 
   const maxCount = Math.max(...data.map((s) => s.count))
 
   return (
-    <div className="flex flex-col gap-4 px-5 py-4 bg-white rounded-[10px] border border-[#DFE7EF]">
+    <MotionCard className="flex flex-col gap-4 px-5 py-4 bg-white rounded-[10px] border border-[#DFE7EF]">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -128,6 +129,6 @@ export function ConversionFunnel({ data, onStageClick }: ConversionFunnelProps) 
           </span>
         </div>
       </div>
-    </div>
+    </MotionCard>
   )
 }

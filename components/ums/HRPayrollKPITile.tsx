@@ -1,6 +1,7 @@
 'use client'
 
 import { TrendingUp, TrendingDown } from 'lucide-react'
+import { motion, useReducedMotion } from 'framer-motion'
 
 interface HRPayrollKPITileProps {
   id: string
@@ -24,6 +25,7 @@ export function HRPayrollKPITile({
   format = 'number',
 }: HRPayrollKPITileProps) {
   const isPositive = delta >= 0
+  const shouldReduceMotion = useReducedMotion()
   
   const formatValue = () => {
     if (format === 'percentage') return `${value.toFixed(1)}%`
@@ -35,14 +37,25 @@ export function HRPayrollKPITile({
   }
 
   return (
-    <div className="flex flex-col gap-3 p-4 rounded-[12px] bg-white border border-[#E5ECEF]">
+    <motion.div
+      className="flex flex-col gap-3 p-4 rounded-[12px] bg-white border border-[#E5ECEF]"
+      layout
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 12, scale: 0.985 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: '-30px' }}
+      whileHover={shouldReduceMotion ? undefined : { y: -3, scale: 1.01 }}
+      whileTap={shouldReduceMotion ? undefined : { scale: 0.99 }}
+      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+    >
       <div className="flex items-start justify-between">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <p className="text-[11px] font-[600] text-[#5A6B7A] uppercase tracking-wide">{label}</p>
+          <div className="mb-1 flex min-w-0 items-center gap-2">
+            <p title={label} className="min-w-0 flex-1 truncate text-[11px] font-[700] text-[#5A6B7A] uppercase tracking-wide">
+              {label}
+            </p>
             {isDerived && (
-              <span className="px-1.5 py-0.5 rounded-[4px] bg-[#EEF2F8] text-[9px] font-[600] text-[#1F3864]">
-                [Derived]
+              <span className="max-w-[54px] flex-shrink-0 truncate px-1.5 py-0.5 rounded-[4px] bg-[#EEF2F8] text-[9px] font-[800] text-[#1F3864]" title="Derived">
+                Calc
               </span>
             )}
           </div>
@@ -73,6 +86,6 @@ export function HRPayrollKPITile({
         </span>
         <span className="text-[11px] text-[#9AA6B4]">vs target</span>
       </div>
-    </div>
+    </motion.div>
   )
 }

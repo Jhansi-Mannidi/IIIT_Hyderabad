@@ -2,6 +2,7 @@
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { EducationLoanMetric } from '@/lib/useFinanceDashboardData'
+import { MotionCard } from './MotionCard'
 
 interface EducationLoanChartProps {
   data: EducationLoanMetric[]
@@ -14,7 +15,7 @@ export function EducationLoanChart({ data }: EducationLoanChartProps) {
   }))
 
   return (
-    <div className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
+    <MotionCard className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       <div className="flex items-center justify-between">
         <h3 className="text-[13px] font-[700] text-[#0F1722]">Education Loan Uptake by Category</h3>
         <span className="text-[11px] text-[#9AA6B4]">Student Count</span>
@@ -50,6 +51,6 @@ export function EducationLoanChart({ data }: EducationLoanChartProps) {
           <Bar dataKey="nonBeneficiaries" name="Non-Beneficiaries" fill="#D1D8DF" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
-    </div>
+    </MotionCard>
   )
 }

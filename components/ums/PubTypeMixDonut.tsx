@@ -2,6 +2,7 @@
 
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
 import { TypeMixSlice } from '@/lib/useResearchData'
+import { MotionCard } from './MotionCard'
 
 interface PubTypeMixDonutProps {
   data: TypeMixSlice[]
@@ -11,20 +12,20 @@ export function PubTypeMixDonut({ data }: PubTypeMixDonutProps) {
   const total = data.reduce((s, d) => s + d.n, 0)
 
   return (
-    <div className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
+    <MotionCard className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       <h3 className="text-[13px] font-[700] text-[#0F1722]">Publication Type Mix</h3>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-5">
         {/* Donut */}
-        <div className="shrink-0" style={{ width: 140, height: 140 }}>
+        <div className="shrink-0" style={{ width: 176, height: 176 }}>
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={data}
                 cx="50%"
                 cy="50%"
-                innerRadius={42}
-                outerRadius={60}
+                innerRadius={54}
+                outerRadius={78}
                 paddingAngle={2}
                 dataKey="n"
                 startAngle={90}
@@ -74,6 +75,6 @@ export function PubTypeMixDonut({ data }: PubTypeMixDonutProps) {
         <p className="text-[10px] text-[#9AA6B4] mb-0.5">Total Publications</p>
         <p className="font-['Courier_New',monospace] text-[13px] font-[700]">{total}</p>
       </div>
-    </div>
+    </MotionCard>
   )
 }

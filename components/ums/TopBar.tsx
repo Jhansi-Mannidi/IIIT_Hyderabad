@@ -1,37 +1,86 @@
 'use client'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import {
   Search,
   Bell,
   ChevronDown,
   Calendar,
+  Menu,
   Zap,
   User,
   LogOut,
   Settings,
   Moon,
   Sun,
+  Sparkles,
 } from 'lucide-react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { useTheme } from './ThemeProvider'
+import { useInteractions } from './InteractionProvider'
 
 interface TopBarProps {
-  title: string
-  subtitle?: string
+  onMenuClick?: () => void
 }
 
 const PERIODS = ['Today', 'This Week', 'This Month', 'This Semester', 'AY 2024-25', 'AY 2023-24']
 const SCOPES = ['All Programs', 'B.Tech', 'M.Tech', 'MBA', 'Ph.D', 'M.Sc']
+const DASHBOARD_SEARCH_ITEMS = [
+  { title: 'Executive Cockpit', subtitle: 'Institutional overview and AI insights', href: '/', keywords: 'overview leadership kpi institutional' },
+  { title: 'Academic Performance', subtitle: 'Courses, grades, pass rate, at-risk students', href: '/dashboard/academic', keywords: 'academic grades sgpa attendance students' },
+  { title: 'Admissions Funnel', subtitle: 'Applications, conversions, rank bands', href: '/dashboard/admissions', keywords: 'admissions enrollment funnel category rank state' },
+  { title: 'Student Finance', subtitle: 'Fees, dues, collections, refunds', href: '/dashboard/finance', keywords: 'finance fees payment ageing refund collection' },
+  { title: 'Institutional Finance', subtitle: 'Budget, projects, vouchers, assets', href: '/dashboard/institutional-finance', keywords: 'budget bank reconciliation cost center assets' },
+  { title: 'HR, Payroll & Workforce', subtitle: 'Headcount, payroll, leave, attrition', href: '/dashboard/hr-payroll', keywords: 'hr payroll workforce appraisal attrition leave' },
+  { title: 'Hostel & Mess', subtitle: 'Occupancy, mess economics, utilities', href: '/dashboard/hostel-mess', keywords: 'hostel mess room occupancy utility quarters' },
+  { title: 'Attendance & Biometric', subtitle: 'Shortfalls, compliance, punctuality', href: '/dashboard/attendance', keywords: 'attendance biometric detention compliance punctuality' },
+  { title: 'Research & Publications', subtitle: 'Papers, impact, PhD pipeline', href: '/dashboard/research', keywords: 'research publication phd impact faculty' },
+  { title: 'Placements', subtitle: 'Offers, packages, recruiters, outcomes', href: '/dashboard/placements', keywords: 'placements salary recruiter offers company branch' },
+  { title: 'Feedback & IQAC', subtitle: 'Ratings, NAAC readiness, quality actions', href: '/dashboard/feedback', keywords: 'feedback iqac naac quality ratings audit improvement' },
+  { title: 'Scholarships & Aid', subtitle: 'Aid coverage, disbursals, beneficiaries', href: '/dashboard/scholarships', keywords: 'scholarships aid beneficiaries disbursement donor support' },
+]
 
-export function TopBar({ title, subtitle }: TopBarProps) {
+export function TopBar({ onMenuClick }: TopBarProps) {
+  const router = useRouter()
   const [period, setPeriod] = useState('AY 2024-25')
   const [scope, setScope] = useState('All Programs')
   const [showPeriod, setShowPeriod] = useState(false)
   const [showScope, setShowScope] = useState(false)
   const [showUser, setShowUser] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
   const [notifCount] = useState(4)
+  const { theme, toggleTheme } = useTheme()
+  const { aiInsightsOpen, searchQuery, setSearchQuery, toggleAiInsights, runAction } = useInteractions()
+  const isDark = theme === 'dark'
+  const filteredSearchItems = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase()
+    if (!query) return DASHBOARD_SEARCH_ITEMS
+
+    return DASHBOARD_SEARCH_ITEMS.filter((item) =>
+      `${item.title} ${item.subtitle} ${item.keywords}`.toLowerCase().includes(query),
+    )
+  }, [searchQuery])
+
+  const openResult = (href: string) => {
+    router.push(href)
+    setSearchOpen(false)
+    runAction('Search result opened', 'Navigated to the selected dashboard.')
+  }
 
   return (
-    <header className="sticky top-0 z-40 h-14 bg-[#1F3864] flex items-center px-4 gap-3 shadow-[0_1px_0_rgba(255,255,255,0.08)]">
+    <header
+      className="sticky top-0 z-40 h-14 bg-[#1F3864] flex items-center px-4 gap-3 shadow-[0_1px_0_rgba(255,255,255,0.08),0_14px_32px_rgba(8,17,31,0.18)] backdrop-blur supports-[backdrop-filter]:bg-[#1F3864]/95"
+    >
+      <button
+        type="button"
+        onClick={onMenuClick}
+        aria-label="Open navigation menu"
+        className="flex h-8 w-8 items-center justify-center rounded-[8px] text-[#D8E0EE] transition-colors hover:bg-[#34507F] sm:hidden"
+      >
+        <Menu size={17} />
+      </button>
+
       {/* Brand */}
       <div className="flex items-center gap-2 flex-shrink-0">
         <div className="w-7 h-7 rounded-[6px] bg-[#C55A11] flex items-center justify-center">
@@ -50,15 +99,6 @@ export function TopBar({ title, subtitle }: TopBarProps) {
       {/* Divider */}
       <div className="w-px h-5 bg-[#34507F] mx-1 flex-shrink-0" />
 
-      {/* Dashboard title */}
-      <div className="flex flex-col leading-none min-w-0">
-        <span className="text-[14px] font-[700] text-white truncate">{title}</span>
-        {subtitle && (
-          <span className="text-[11px] text-[#6B83AD] truncate">{subtitle}</span>
-        )}
-      </div>
-
-      {/* Spacer */}
       <div className="flex-1" />
 
       {/* Global filters */}
@@ -67,17 +107,24 @@ export function TopBar({ title, subtitle }: TopBarProps) {
         <div className="relative">
           <button
             type="button"
-            onClick={() => { setShowScope((v) => !v); setShowPeriod(false) }}
+            onClick={() => { setShowScope((v) => !v); setShowPeriod(false); setShowUser(false) }}
             className="flex items-center gap-1.5 h-7 px-2.5 rounded-[6px] bg-[#34507F] hover:bg-[#6B83AD] text-[12px] font-[500] text-white transition-colors"
             aria-expanded={showScope}
           >
             {scope}
             <ChevronDown size={12} />
           </button>
-          {showScope && (
-            <div className="absolute right-0 top-9 w-36 rounded-[8px] bg-white border border-[#E4E8EF] shadow-lg py-1 z-50">
+          <AnimatePresence>
+            {showScope && (
+            <motion.div
+              className="absolute right-0 top-9 w-36 rounded-[8px] bg-white border border-[#E4E8EF] shadow-lg py-1 z-50"
+              initial={{ opacity: 0, y: -6, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -4, scale: 0.96 }}
+              transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
+            >
               {SCOPES.map((s) => (
-                <button
+                <motion.button
                   key={s}
                   type="button"
                   className={cn(
@@ -86,20 +133,23 @@ export function TopBar({ title, subtitle }: TopBarProps) {
                       ? 'bg-[#EEF2F8] text-[#1F3864] font-[600]'
                       : 'text-[#2B3645] hover:bg-[#F6F8FB]',
                   )}
-                  onClick={() => { setScope(s); setShowScope(false) }}
+                  onClick={() => { setScope(s); setShowScope(false); runAction('Scope applied', `Dashboard scope changed to ${s}.`) }}
+                  whileHover={{ x: 2 }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   {s}
-                </button>
+                </motion.button>
               ))}
-            </div>
-          )}
+            </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Period picker */}
         <div className="relative">
           <button
             type="button"
-            onClick={() => { setShowPeriod((v) => !v); setShowScope(false) }}
+            onClick={() => { setShowPeriod((v) => !v); setShowScope(false); setShowUser(false) }}
             className="flex items-center gap-1.5 h-7 px-2.5 rounded-[6px] bg-[#34507F] hover:bg-[#6B83AD] text-[12px] font-[500] text-white transition-colors"
             aria-expanded={showPeriod}
           >
@@ -107,10 +157,17 @@ export function TopBar({ title, subtitle }: TopBarProps) {
             {period}
             <ChevronDown size={12} />
           </button>
-          {showPeriod && (
-            <div className="absolute right-0 top-9 w-40 rounded-[8px] bg-white border border-[#E4E8EF] shadow-lg py-1 z-50">
+          <AnimatePresence>
+            {showPeriod && (
+            <motion.div
+              className="absolute right-0 top-9 w-40 rounded-[8px] bg-white border border-[#E4E8EF] shadow-lg py-1 z-50"
+              initial={{ opacity: 0, y: -6, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -4, scale: 0.96 }}
+              transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
+            >
               {PERIODS.map((p) => (
-                <button
+                <motion.button
                   key={p}
                   type="button"
                   className={cn(
@@ -119,13 +176,16 @@ export function TopBar({ title, subtitle }: TopBarProps) {
                       ? 'bg-[#EEF2F8] text-[#1F3864] font-[600]'
                       : 'text-[#2B3645] hover:bg-[#F6F8FB]',
                   )}
-                  onClick={() => { setPeriod(p); setShowPeriod(false) }}
+                  onClick={() => { setPeriod(p); setShowPeriod(false); runAction('Period applied', `Dashboard period changed to ${p}.`) }}
+                  whileHover={{ x: 2 }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   {p}
-                </button>
+                </motion.button>
               ))}
-            </div>
-          )}
+            </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
@@ -133,13 +193,137 @@ export function TopBar({ title, subtitle }: TopBarProps) {
       <button
         type="button"
         aria-label="Search (⌘K)"
-        className="hidden sm:flex items-center gap-2 h-7 px-3 rounded-[6px] bg-[#34507F] hover:bg-[#6B83AD] text-[12px] text-[#D8E0EE] transition-colors"
+        onClick={() => setSearchOpen(true)}
+        className="hidden sm:flex h-8 w-[210px] items-center gap-2 rounded-[8px] bg-[#34507F] px-3 text-[12px] text-[#D8E0EE] transition-colors hover:bg-[#6B83AD] md:w-[260px] xl:w-[320px]"
       >
         <Search size={12} />
-        <span className="hidden md:inline">Search</span>
+        <span className="hidden flex-1 text-left md:inline">Search dashboards, KPIs...</span>
         <kbd className="hidden md:inline text-[10px] px-1 py-0.5 rounded bg-[#1F3864] text-[#6B83AD]">
           ⌘K
         </kbd>
+      </button>
+      <AnimatePresence>
+        {searchOpen && (
+          <motion.div
+            className="fixed inset-0 z-[70] flex items-start justify-center bg-[#08111F]/55 px-3 pt-[9vh] backdrop-blur-md sm:px-6 sm:pt-[11vh]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onMouseDown={() => setSearchOpen(false)}
+          >
+            <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-label="Global search"
+              className="w-full max-w-3xl overflow-hidden rounded-[24px] border border-white/70 bg-white/95 shadow-[0_28px_90px_rgba(8,17,31,0.34)] backdrop-blur-xl dark:border-[#263448] dark:bg-[#0B1728]/96"
+              initial={{ opacity: 0, y: 18, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 18, scale: 0.97 }}
+              transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+              onMouseDown={(event) => event.stopPropagation()}
+            >
+              <div className="border-b border-[#E4E8EF] bg-gradient-to-r from-[#F8FAFD] to-white px-4 py-4 dark:border-[#263448] dark:from-[#0F1B2E] dark:to-[#0B1728] sm:px-5">
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-[10px] font-[900] uppercase tracking-[0.14em] text-[#2E8B8B]">Command Center</p>
+                    <h2 className="mt-0.5 text-[16px] font-[850] tracking-[-0.03em] text-[#0F1722] dark:text-white">
+                      Search dashboards and insights
+                    </h2>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setSearchOpen(false)}
+                    className="rounded-[10px] border border-[#D8E0EE] bg-white px-2.5 py-1.5 text-[11px] font-[800] text-[#5A6675] shadow-sm transition-colors hover:bg-[#EEF2F8] dark:border-[#263448] dark:bg-[#111827] dark:text-[#A8B6C8]"
+                  >
+                    ESC
+                  </button>
+                </div>
+                <div className="flex h-12 items-center gap-3 rounded-[16px] border border-[#D8E0EE] bg-white px-4 shadow-[0_12px_30px_rgba(31,56,100,0.08)] dark:border-[#263448] dark:bg-[#111827]">
+                  <Search size={18} className="flex-shrink-0 text-[#2E8B8B]" />
+                  <input
+                    autoFocus
+                    value={searchQuery}
+                    onChange={(event) => setSearchQuery(event.target.value)}
+                    placeholder="Search dashboards, KPIs, insights, filters..."
+                    className="h-full flex-1 border-0 bg-transparent text-[15px] font-[650] text-[#0F1722] outline-none placeholder:text-[#9AA6B4] dark:text-white"
+                  />
+                  <kbd className="hidden rounded-[8px] bg-[#EEF2F8] px-2 py-1 text-[10px] font-[800] text-[#6B83AD] sm:inline-flex dark:bg-[#0B1728]">
+                    ⌘K
+                  </kbd>
+                </div>
+              </div>
+              <div className="max-h-[min(520px,58vh)] overflow-y-auto p-3 sm:p-4">
+                <div className="mb-2 flex items-center justify-between px-1">
+                  <p className="text-[11px] font-[850] uppercase tracking-[0.09em] text-[#6B7C99] dark:text-[#8EA3C1]">
+                    {filteredSearchItems.length} results
+                  </p>
+                  <p className="hidden text-[11px] font-[650] text-[#9AA6B4] sm:block">
+                    Press any result to navigate
+                  </p>
+                </div>
+                {filteredSearchItems.length === 0 ? (
+                  <div className="rounded-[18px] border border-dashed border-[#D8E0EE] px-4 py-12 text-center dark:border-[#263448]">
+                    <p className="text-[14px] font-[800] text-[#0F1722] dark:text-white">No matching dashboard found</p>
+                    <p className="mt-1 text-[12px] text-[#9AA6B4]">Try finance, attendance, research, placements, scholarships, or admissions.</p>
+                  </div>
+                ) : (
+                  filteredSearchItems.map((item) => (
+                    <motion.button
+                      key={item.href}
+                      type="button"
+                      onClick={() => openResult(item.href)}
+                      className="group mb-1.5 flex w-full items-center justify-between gap-4 rounded-[16px] border border-transparent px-3 py-3 text-left transition-all hover:border-[#D8E0EE] hover:bg-[#F8FAFD] hover:shadow-[0_10px_28px_rgba(31,56,100,0.08)] dark:hover:border-[#263448] dark:hover:bg-[#111827]"
+                      whileHover={{ x: 3 }}
+                      whileTap={{ scale: 0.99 }}
+                    >
+                      <span className="flex min-w-0 items-center gap-3">
+                        <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[13px] bg-[#E8F5F5] text-[#2E8B8B]">
+                          <Search size={16} />
+                        </span>
+                        <span className="min-w-0">
+                          <span className="block truncate text-[14px] font-[850] text-[#0F1722] dark:text-white">{item.title}</span>
+                          <span className="mt-0.5 block truncate text-[12px] font-[550] text-[#5A6675] dark:text-[#A8B6C8]">{item.subtitle}</span>
+                        </span>
+                      </span>
+                      <span className="flex-shrink-0 rounded-full bg-[#EEF2F8] px-2.5 py-1 text-[11px] font-[850] text-[#2E8B8B] opacity-0 transition-opacity group-hover:opacity-100 dark:bg-[#0B1728]">
+                        Open
+                      </span>
+                    </motion.button>
+                  ))
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* AI Insights */}
+      <button
+        type="button"
+        onClick={toggleAiInsights}
+        aria-pressed={aiInsightsOpen}
+        aria-label={aiInsightsOpen ? 'Disable AI insights' : 'Enable AI insights'}
+        title={aiInsightsOpen ? 'Disable AI insights' : 'Enable AI insights'}
+        className={cn(
+          'hidden md:flex items-center gap-1.5 h-8 px-2.5 rounded-[7px] text-[12px] font-[700] transition-all',
+          aiInsightsOpen
+            ? 'bg-[#2E8B8B] text-white shadow-[0_8px_20px_rgba(46,139,139,0.24)]'
+            : 'bg-[#34507F] text-[#D8E0EE] hover:bg-[#6B83AD] hover:text-white',
+        )}
+      >
+        <Sparkles size={13} />
+        AI Insights
+      </button>
+
+      {/* Theme toggle */}
+      <button
+        type="button"
+        onClick={toggleTheme}
+        aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+        title={isDark ? 'Light mode' : 'Dark mode'}
+        className="flex items-center justify-center w-8 h-8 rounded-[6px] text-[#D8E0EE] hover:bg-[#34507F] transition-colors"
+      >
+        {isDark ? <Sun size={16} /> : <Moon size={16} />}
       </button>
 
       {/* Notifications */}
@@ -147,6 +331,7 @@ export function TopBar({ title, subtitle }: TopBarProps) {
         <button
           type="button"
           aria-label={`${notifCount} notifications`}
+          onClick={() => runAction('Notifications opened', `${notifCount} priority alerts are ready for review.`)}
           className="flex items-center justify-center w-8 h-8 rounded-[6px] text-[#D8E0EE] hover:bg-[#34507F] transition-colors"
         >
           <Bell size={16} />
@@ -162,7 +347,7 @@ export function TopBar({ title, subtitle }: TopBarProps) {
       <div className="relative flex-shrink-0">
         <button
           type="button"
-          onClick={() => setShowUser((v) => !v)}
+          onClick={() => { setShowUser((v) => !v); setShowPeriod(false); setShowScope(false) }}
           aria-label="User menu"
           className="flex items-center gap-2 h-8 px-2 rounded-[6px] hover:bg-[#34507F] transition-colors"
           aria-expanded={showUser}
@@ -173,8 +358,15 @@ export function TopBar({ title, subtitle }: TopBarProps) {
           <span className="hidden md:block text-[12px] font-[500] text-[#D8E0EE]">Director</span>
           <ChevronDown size={12} className="text-[#6B83AD]" />
         </button>
-        {showUser && (
-          <div className="absolute right-0 top-10 w-44 rounded-[8px] bg-white border border-[#E4E8EF] shadow-lg py-1 z-50">
+        <AnimatePresence>
+          {showUser && (
+          <motion.div
+            className="absolute right-0 top-10 w-44 rounded-[8px] bg-white border border-[#E4E8EF] shadow-lg py-1 z-50"
+            initial={{ opacity: 0, y: -6, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -4, scale: 0.96 }}
+            transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
+          >
             <div className="px-3 py-2 border-b border-[#F6F8FB]">
               <p className="text-[13px] font-[600] text-[#0F1722]">Dr. R. Sharma</p>
               <p className="text-[11px] text-[#9AA6B4]">Director, IIIT</p>
@@ -184,17 +376,24 @@ export function TopBar({ title, subtitle }: TopBarProps) {
               { icon: User, label: 'Profile' },
               { icon: LogOut, label: 'Sign out' },
             ].map(({ icon: Icon, label }) => (
-              <button
+              <motion.button
                 key={label}
                 type="button"
+                onClick={() => {
+                  setShowUser(false)
+                  runAction(`${label} opened`, `${label} action is now active in this prototype.`)
+                }}
                 className="flex items-center gap-2 w-full px-3 py-1.5 text-[13px] text-[#2B3645] hover:bg-[#F6F8FB] transition-colors"
+                whileHover={{ x: 2 }}
+                whileTap={{ scale: 0.98 }}
               >
                 <Icon size={13} className="text-[#9AA6B4]" />
                 {label}
-              </button>
+              </motion.button>
             ))}
-          </div>
-        )}
+          </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </header>
   )

@@ -2,6 +2,7 @@
 
 import { AlertCircle, Clock, CheckCircle2 } from 'lucide-react'
 import { GrievanceBucket } from '@/lib/usePlacementsData'
+import { MotionCard } from './MotionCard'
 
 interface Props {
   data: GrievanceBucket[]
@@ -46,7 +47,7 @@ export function GrievanceStatusTiles({ data, onTileClick }: Props) {
   const total = data.reduce((s, d) => s + d.n, 0)
 
   return (
-    <div className="bg-white rounded-[12px] border border-[#E5ECEF] p-4">
+    <MotionCard className="bg-white rounded-[12px] border border-[#E5ECEF] p-4">
       <div className="mb-4">
         <h3 className="text-[13px] font-[700] text-[#0F1722]">Grievance Status</h3>
         <p className="text-[11px] text-[#9AA6B4] mt-0.5">
@@ -102,6 +103,6 @@ export function GrievanceStatusTiles({ data, onTileClick }: Props) {
           </p>
         </div>
       )}
-    </div>
+    </MotionCard>
   )
 }

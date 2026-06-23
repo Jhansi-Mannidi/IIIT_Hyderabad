@@ -6,6 +6,7 @@ import {
   Tooltip, ResponsiveContainer, ZAxis, ReferenceLine,
 } from 'recharts'
 import { ImpactPoint } from '@/lib/useResearchData'
+import { MotionCard } from './MotionCard'
 
 // Center → color mapping
 const CENTER_COLORS: Record<string, string> = {
@@ -67,7 +68,7 @@ export function ImpactConstellation({ data }: ImpactConstellationProps) {
                / data.filter(p => p.impactFactor > 0).length
 
   return (
-    <div className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
+    <MotionCard className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
@@ -154,6 +155,6 @@ export function ImpactConstellation({ data }: ImpactConstellationProps) {
       <p className="text-[10px] text-[#9AA6B4] border-t border-[#F0F4F7] pt-2">
         Note: Citation depth beyond Google H5 requires external enrichment (Scopus / Scholar). Bubble size uses H5 as proxy.
       </p>
-    </div>
+    </MotionCard>
   )
 }

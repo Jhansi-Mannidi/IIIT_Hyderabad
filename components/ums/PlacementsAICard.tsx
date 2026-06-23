@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { AlertTriangle, AlertCircle, Info, ChevronDown, X } from 'lucide-react'
 import { PlacementsAIInsight } from '@/lib/usePlacementsData'
+import { MotionCard } from './MotionCard'
 
 const SEV = {
   critical: { Icon: AlertTriangle, color: '#E74C3C', bg: '#FEF0EE' },
@@ -20,8 +21,8 @@ export function PlacementsAICard({ insight, onDismiss }: Props) {
   const { Icon, color, bg } = SEV[insight.severity]
 
   return (
-    <div
-      className="rounded-[10px] border-l-[4px] p-4"
+    <MotionCard
+      className="ai-severity-card rounded-[10px] border-l-[4px] p-4"
       style={{ borderColor: color, backgroundColor: bg }}
     >
       {/* Header row */}
@@ -85,6 +86,6 @@ export function PlacementsAICard({ insight, onDismiss }: Props) {
       >
         {insight.action}
       </button>
-    </div>
+    </MotionCard>
   )
 }

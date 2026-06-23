@@ -5,6 +5,7 @@ import {
   Tooltip, Legend, ResponsiveContainer,
 } from 'recharts'
 import { PubTrendPoint } from '@/lib/useResearchData'
+import { MotionCard } from './MotionCard'
 
 interface PublicationTrendAreaProps {
   data: PubTrendPoint[]
@@ -16,7 +17,7 @@ export function PublicationTrendArea({ data }: PublicationTrendAreaProps) {
   const yoyPct  = prev ? (((latest.total - prev.total) / prev.total) * 100).toFixed(1) : null
 
   return (
-    <div className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
+    <MotionCard className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
@@ -112,6 +113,6 @@ export function PublicationTrendArea({ data }: PublicationTrendAreaProps) {
           <p className="font-['Courier_New',monospace] text-[13px] font-[700] text-[#C55A11]">{latest.patent}</p>
         </div>
       </div>
-    </div>
+    </MotionCard>
   )
 }

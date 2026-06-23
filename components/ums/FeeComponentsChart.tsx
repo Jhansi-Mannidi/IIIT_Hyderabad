@@ -2,6 +2,7 @@
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { FeeComponent } from '@/lib/useFinanceDashboardData'
+import { MotionCard } from './MotionCard'
 
 interface FeeComponentsChartProps {
   data: FeeComponent[]
@@ -9,7 +10,7 @@ interface FeeComponentsChartProps {
 
 export function FeeComponentsChart({ data }: FeeComponentsChartProps) {
   return (
-    <div className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
+    <MotionCard className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       <div className="flex items-center justify-between">
         <h3 className="text-[13px] font-[700] text-[#0F1722]">Fee Components Breakdown</h3>
         <span className="text-[11px] text-[#9AA6B4]">Amount in ₹ Lakhs</span>
@@ -52,6 +53,6 @@ export function FeeComponentsChart({ data }: FeeComponentsChartProps) {
           <Bar dataKey="misc" fill="#4A9B7F" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
-    </div>
+    </MotionCard>
   )
 }

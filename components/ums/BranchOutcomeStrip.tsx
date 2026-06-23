@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { BranchSalary } from '@/lib/usePlacementsData'
+import { MotionCard } from './MotionCard'
 
 interface Props {
   data: BranchSalary[]
@@ -28,7 +29,7 @@ export function BranchOutcomeStrip({ data, onBranchClick }: Props) {
   const sorted = [...data].sort((a, b) => b.placementRate - a.placementRate)
 
   return (
-    <div className="bg-white rounded-[12px] border border-[#E5ECEF] p-4">
+    <MotionCard className="bg-white rounded-[12px] border border-[#E5ECEF] p-4">
       {/* Card header */}
       <div className="flex items-start justify-between mb-4">
         <div>
@@ -196,6 +197,6 @@ export function BranchOutcomeStrip({ data, onBranchClick }: Props) {
       <p className="text-[10px] text-[#9AA6B4] italic mt-2">
         Note: salary distribution beyond high/avg/low is unavailable — offer-level data required for full box-plot.
       </p>
-    </div>
+    </MotionCard>
   )
 }

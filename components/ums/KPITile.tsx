@@ -1,9 +1,9 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
-import { TrendingUp, TrendingDown, AlertTriangle, AlertCircle, Info } from 'lucide-react'
+import { TrendingUp, TrendingDown } from 'lucide-react'
 import { ResponsiveContainer, LineChart, Line, Tooltip } from 'recharts'
 import { cn } from '@/lib/utils'
 import type { KPIMetric } from '@/lib/useExecutiveCockpitData'
+import { motion, useReducedMotion } from 'framer-motion'
 
 interface KPITileProps {
   metric: KPIMetric
@@ -17,14 +17,7 @@ const PROVENANCE_BADGE: Record<KPIMetric['provenance'], { label: string; cls: st
 }
 
 export function KPITile({ metric, onClick }: KPITileProps) {
-  const [visible, setVisible] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
-
-  // Animate in on mount
-  useEffect(() => {
-    const t = setTimeout(() => setVisible(true), 80)
-    return () => clearTimeout(t)
-  }, [])
+  const shouldReduceMotion = useReducedMotion()
 
   const isPositiveDelta = metric.delta > 0
   const deltaColor = isPositiveDelta ? 'text-[#2E8B8B]' : 'text-[#C55A11]'
@@ -56,41 +49,47 @@ export function KPITile({ metric, onClick }: KPITileProps) {
   }
 
   return (
-    <div
-      ref={ref}
+    <motion.div
       onClick={onClick}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
       onKeyDown={onClick ? (e) => e.key === 'Enter' && onClick() : undefined}
       aria-label={`${metric.label}: ${metric.value}, ${isPositiveDelta ? 'up' : 'down'} ${Math.abs(metric.delta).toFixed(1)}% ${metric.deltaLabel}`}
       className={cn(
-        'chart-card relative flex flex-col gap-3 rounded-[12px] bg-white p-5 cursor-pointer select-none',
-        'transition-all duration-200 hover:-translate-y-0.5',
+        'chart-card relative flex min-h-[148px] flex-col rounded-[12px] bg-white p-4 cursor-pointer select-none overflow-hidden',
+        'transition-colors duration-200',
         breachBorder || 'border-[#E4E8EF]',
-        !visible && 'opacity-0 translate-y-1',
-        visible && 'opacity-100 translate-y-0',
-        'transition-opacity duration-300',
       )}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 12, scale: 0.98 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: '-20px' }}
+      whileHover={shouldReduceMotion ? undefined : { y: -4, scale: 1.015 }}
+      whileTap={shouldReduceMotion ? undefined : { scale: 0.99 }}
+      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
     >
       {/* Header row */}
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex items-center gap-2 min-w-0">
+      <div className="flex min-h-[22px] items-start justify-between gap-2">
+        <div className="flex min-w-0 flex-1 items-center gap-2 pr-1">
           {breachDot && (
             <span
               className={cn('inline-block w-2 h-2 rounded-full flex-shrink-0 mt-0.5', breachDot)}
               aria-label={`${metric.breachLevel} threshold breach`}
             />
           )}
-          <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#5A6675] truncate leading-4">
+          <span
+            title={metric.label}
+            className="block max-w-full truncate text-[10.5px] font-[800] uppercase tracking-[0.075em] text-[#5A6675] leading-4"
+          >
             {metric.label}
           </span>
         </div>
         {badge && (
           <span
             className={cn(
-              'flex-shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded-full border',
+              'max-w-[58px] flex-shrink-0 truncate text-[9px] font-[800] px-1.5 py-0.5 rounded-full border leading-4',
               badge.cls,
             )}
+            title={badge.label}
           >
             {badge.label}
           </span>
@@ -98,32 +97,35 @@ export function KPITile({ metric, onClick }: KPITileProps) {
       </div>
 
       {/* Value */}
-      <div className={cn('animate-count-up')}>
+      <div className={cn('animate-count-up mt-2 min-h-[34px]')}>
         <span
           data-metric
-          className="text-[28px] font-[700] leading-none tracking-[-0.01em] text-[#14223D] tabular-nums"
+          className="block truncate text-[clamp(1.55rem,2.1vw,1.85rem)] font-[800] leading-none tracking-[-0.035em] text-[#14223D] tabular-nums"
+          title={metric.value}
         >
           {metric.value}
         </span>
       </div>
 
       {/* Delta chip + sparkline */}
-      <div className="flex items-end justify-between gap-2">
-        <div className="flex items-center gap-1.5">
+      <div className="mt-2 flex min-h-[34px] items-end justify-between gap-2">
+        <div className="min-w-0 flex-1">
           <span
             className={cn(
-              'inline-flex items-center gap-1 text-[12px] font-[600]',
+              'inline-flex items-center gap-1 text-[11px] font-[800]',
               deltaColor,
             )}
           >
             <DeltaIcon size={13} strokeWidth={2.5} aria-hidden />
             {Math.abs(metric.delta).toFixed(1)}%
           </span>
-          <span className="text-[11px] text-[#9AA6B4]">{metric.deltaLabel}</span>
+          <span className="mt-0.5 block truncate text-[10px] font-[600] text-[#9AA6B4]" title={metric.deltaLabel}>
+            {metric.deltaLabel}
+          </span>
         </div>
 
         {/* Inline sparkline */}
-        <div className="w-20 h-8 flex-shrink-0" aria-hidden>
+        <div className="h-8 w-16 flex-shrink-0 opacity-90" aria-hidden>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={sparkData}>
               <Line
@@ -144,9 +146,11 @@ export function KPITile({ metric, onClick }: KPITileProps) {
 
       {/* Progress bar toward target */}
       {hasTarget && (
-        <div className="mt-1">
+        <div className="mt-auto pt-3">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-[10px] text-[#9AA6B4]">{metric.targetLabel}</span>
+            <span className="truncate pr-2 text-[9.5px] font-[700] uppercase tracking-[0.055em] text-[#9AA6B4]" title={metric.targetLabel}>
+              {metric.targetLabel}
+            </span>
             <span className="text-[10px] font-[600] text-[#5A6675] tabular-nums">
               {progress.toFixed(0)}%
             </span>
@@ -174,16 +178,6 @@ export function KPITile({ metric, onClick }: KPITileProps) {
         </div>
       )}
 
-      {/* Breach alert icon */}
-      {metric.breach && (
-        <span className="absolute top-4 right-4" aria-hidden>
-          {metric.breachLevel === 'danger' ? (
-            <AlertCircle size={15} className="text-[#C0392B]" />
-          ) : (
-            <AlertTriangle size={15} className="text-[#C55A11]" />
-          )}
-        </span>
-      )}
-    </div>
+    </motion.div>
   )
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { RefreshCw } from 'lucide-react'
 import { useFinanceDashboardData } from '@/lib/useFinanceDashboardData'
 import { FinanceKPITile } from './FinanceKPITile'
@@ -12,10 +12,19 @@ import { RefundTrendChart } from './RefundTrendChart'
 import { PaymentChannelChart } from './PaymentChannelChart'
 import { EducationLoanChart } from './EducationLoanChart'
 import { FinanceAIInsightCard } from './FinanceAIInsightCard'
+import { ActiveFilterSummary } from './ActiveFilterSummary'
+import { useInteractions } from './InteractionProvider'
+import { applyDashboardFilters } from '@/lib/dashboardFiltering'
 
 export function FinanceDashboard() {
-  const data = useFinanceDashboardData()
+  const rawData = useFinanceDashboardData()
   const [dismissedInsights, setDismissedInsights] = useState<Set<string>>(new Set())
+  const [filters, setFilters] = useState<Record<string, unknown>>({})
+  const { searchQuery, setDashboardFilters, refreshDashboard, runAction } = useInteractions()
+  const data = useMemo(
+    () => applyDashboardFilters(rawData, filters, searchQuery),
+    [rawData, filters, searchQuery],
+  )
 
   const visibleInsights = data.aiInsights.filter(i => !dismissedInsights.has(i.id))
 
@@ -28,14 +37,23 @@ export function FinanceDashboard() {
             <h1 className="text-[20px] font-[700] text-[#0F1722]">Student Finance & Fee Realization</h1>
             <p className="text-[13px] text-[#9AA6B4] mt-1">Fee demand, collections, ageing, refunds, and instalment exposure</p>
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 rounded-[8px] bg-white border border-[#D1D8DF] hover:bg-[#F6F8FB] transition-colors">
+          <button
+            onClick={() => refreshDashboard('Student Finance')}
+            className="flex items-center gap-2 px-4 py-2 rounded-[8px] bg-white border border-[#D1D8DF] hover:bg-[#F6F8FB] transition-colors"
+          >
             <RefreshCw size={14} className="text-[#5A6B7A]" />
             <span className="text-[12px] font-[600] text-[#0F1722]">Refresh</span>
           </button>
         </div>
 
         {/* Filter Bar */}
-        <FinanceFilterBar />
+        <FinanceFilterBar
+          onFiltersChange={(nextFilters) => {
+            setFilters(nextFilters)
+            setDashboardFilters('Student Finance', nextFilters)
+          }}
+        />
+        <ActiveFilterSummary dashboard="Student Finance" filters={filters} searchQuery={searchQuery} />
 
         {/* KPI Strip */}
         <section aria-label="Finance KPIs">
@@ -75,7 +93,7 @@ export function FinanceDashboard() {
                   key={insight.id}
                   insight={insight}
                   onDismiss={() => setDismissedInsights(prev => new Set(prev).add(insight.id))}
-                  onAction={() => console.log(`Action: ${insight.action}`)}
+                  onAction={() => runAction('Finance action started', insight.action)}
                 />
               ))}
             </div>

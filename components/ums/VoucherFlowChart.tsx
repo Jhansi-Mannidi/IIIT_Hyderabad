@@ -2,6 +2,7 @@
 
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { VoucherFlow } from '@/lib/useInstitutionalFinanceData'
+import { MotionCard } from './MotionCard'
 
 interface VoucherFlowChartProps {
   data: VoucherFlow[]
@@ -9,7 +10,7 @@ interface VoucherFlowChartProps {
 
 export function VoucherFlowChart({ data }: VoucherFlowChartProps) {
   return (
-    <div className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
+    <MotionCard className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       <h3 className="text-[13px] font-[700] text-[#0F1722]">Voucher & GL Posting Flow</h3>
       <ResponsiveContainer width="100%" height={240}>
         <AreaChart data={data}>
@@ -27,6 +28,6 @@ export function VoucherFlowChart({ data }: VoucherFlowChartProps) {
           <Area type="monotone" dataKey="glPostings" fill="#C55A11" stroke="#C55A11" />
         </AreaChart>
       </ResponsiveContainer>
-    </div>
+    </MotionCard>
   )
 }

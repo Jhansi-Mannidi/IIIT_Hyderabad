@@ -113,17 +113,321 @@
   --chart-5: #8E6FB8;
 }
 
+.dark {
+  color-scheme: dark;
+  --background: #0B1120;
+  --foreground: #F8FAFC;
+  --card: #111827;
+  --card-foreground: #F8FAFC;
+  --popover: #111827;
+  --popover-foreground: #F8FAFC;
+  --primary: #8FB4F8;
+  --primary-foreground: #08111F;
+  --secondary: #162033;
+  --secondary-foreground: #DDE7F7;
+  --muted: #162033;
+  --muted-foreground: #AAB7C8;
+  --accent: #12323A;
+  --accent-foreground: #8FE0DE;
+  --destructive: #F87171;
+  --border: #263448;
+  --input: #263448;
+  --ring: #8FB4F8;
+  --chart-1: #8FB4F8;
+  --chart-2: #7FDBDB;
+  --chart-3: #F4A261;
+  --chart-4: #9BB8FF;
+  --chart-5: #C4A7F3;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-[#F6F8FB] text-[#0F1722] font-sans antialiased;
+    @apply bg-background text-foreground font-sans antialiased;
     font-feature-settings: "kern" 1;
   }
   html {
-    @apply bg-[#F6F8FB];
+    @apply bg-background;
   }
+}
+
+html,
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.ums-mobile-scroll-stage {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scrollbar-gutter: stable;
+}
+
+.ums-mobile-scroll-stage::-webkit-scrollbar {
+  height: 8px;
+}
+
+.ums-mobile-scroll-stage::-webkit-scrollbar-track {
+  background: rgba(216, 224, 238, 0.55);
+}
+
+.ums-mobile-scroll-stage::-webkit-scrollbar-thumb {
+  background: rgba(31, 56, 100, 0.32);
+  border-radius: 999px;
+}
+
+.ums-mobile-scroll-stage::-webkit-scrollbar-thumb:hover {
+  background: rgba(31, 56, 100, 0.48);
+}
+
+@media (max-width: 640px) {
+  .ums-mobile-scroll-stage {
+    height: calc(100dvh - 3.5rem);
+    min-height: 0;
+    padding-bottom: 12px;
+    overflow: hidden;
+    overscroll-behavior: contain;
+    touch-action: pan-x pan-y;
+  }
+
+  aside[aria-label="Domain navigation"] {
+    height: calc(100dvh - 3.5rem);
+    max-height: calc(100dvh - 3.5rem);
+  }
+
+  #main-content {
+    height: calc(100dvh - 3.5rem);
+    min-height: 0;
+    overflow: auto !important;
+    overscroll-behavior: contain;
+    touch-action: pan-x pan-y;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-gutter: stable both-edges;
+  }
+
+  #main-content,
+  #main-content * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(31, 56, 100, 0.36) rgba(216, 224, 238, 0.36);
+  }
+
+  #main-content::-webkit-scrollbar,
+  #main-content *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  #main-content::-webkit-scrollbar-track,
+  #main-content *::-webkit-scrollbar-track {
+    border-radius: 999px;
+    background: rgba(216, 224, 238, 0.34);
+  }
+
+  #main-content::-webkit-scrollbar-thumb,
+  #main-content *::-webkit-scrollbar-thumb {
+    min-height: 42px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(31, 56, 100, 0.44), rgba(46, 139, 139, 0.46));
+  }
+
+  #main-content::-webkit-scrollbar-corner,
+  #main-content *::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  #main-content > div {
+    min-width: 0;
+    width: 100%;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #main-content :is(.flex-1.overflow-y-auto, [class*="overflow-y-auto"]) {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  #main-content :is([class*="px-5"], [class*="px-6"]) {
+    padding-left: 0.875rem !important;
+    padding-right: 0.875rem !important;
+  }
+
+  #main-content :is([class*="py-5"], [class*="py-6"]) {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+
+  #main-content :is(.chart-card, .rounded-\[12px\].border, .rounded-\[10px\].border) {
+    border-radius: 18px !important;
+  }
+
+  #main-content :is(table, .recharts-wrapper, .recharts-responsive-container) {
+    max-width: 100%;
+  }
+
+  #main-content :is(table) {
+    min-width: max-content;
+  }
+
+  #main-content :is(.grid, .chart-card, section[aria-label], .rounded-\[12px\].border, .rounded-\[10px\].border) {
+    min-width: 0;
+  }
+
+  #main-content :is(.ums-chart-card-body, .ums-analytics-chart-frame) {
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  #main-content .ums-chart-card-body .recharts-responsive-container,
+  #main-content .ums-analytics-chart-frame .recharts-responsive-container {
+    min-width: 460px !important;
+    min-height: 220px !important;
+  }
+
+  #main-content .ums-chart-card-body .recharts-wrapper,
+  #main-content .ums-analytics-chart-frame .recharts-wrapper {
+    min-width: 460px !important;
+  }
+
+  #main-content .ums-chart-card-body .recharts-surface,
+  #main-content .ums-analytics-chart-frame .recharts-surface {
+    overflow: visible;
+  }
+
+  #main-content .overflow-x-auto {
+    overflow-x: auto !important;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 18% 8%, rgba(46, 139, 139, 0.10), transparent 28rem),
+    radial-gradient(circle at 85% 0%, rgba(197, 90, 17, 0.08), transparent 24rem);
+}
+
+/* Dark-mode compatibility for the existing VoltusWave fixed hex utility palette. */
+.dark .bg-\[\#F6F8FB\],
+.dark .bg-\[\#F8FAFB\],
+.dark .bg-\[\#F5F8FB\],
+.dark .bg-\[\#EEF2F7\] {
+  background-color: #0B1120;
+}
+
+.dark .bg-white,
+.dark .bg-\[\#FFFFFF\] {
+  background-color: #111827;
+}
+
+.dark .bg-\[\#EEF2F8\],
+.dark .bg-\[\#D8E0EE\],
+.dark .bg-\[\#E8F5F5\],
+.dark .bg-\[\#E7F2F2\] {
+  background-color: #162033;
+}
+
+.dark .bg-\[\#14223D\] {
+  background-color: #08111F;
+}
+
+.dark .bg-\[\#1F3864\] {
+  background-color: #102344;
+}
+
+.dark .bg-\[\#34507F\] {
+  background-color: #1C3358;
+}
+
+.dark .hover\:bg-\[\#F6F8FB\]:hover,
+.dark .hover\:bg-\[\#F5F8FB\]:hover,
+.dark .hover\:bg-\[\#EEF2F8\]:hover {
+  background-color: #1B263A;
+}
+
+.dark .hover\:bg-\[\#34507F\]:hover,
+.dark .hover\:bg-\[\#6B83AD\]:hover,
+.dark .hover\:bg-\[\#1F3864\]:hover {
+  background-color: #263F68;
+}
+
+.dark .text-\[\#0F1722\],
+.dark .text-\[\#14223D\] {
+  color: #F8FAFC;
+}
+
+.dark .text-\[\#2B3645\],
+.dark .text-\[\#5A6675\] {
+  color: #C6D0DF;
+}
+
+.dark .text-\[\#9AA6B4\],
+.dark .text-\[\#6B83AD\] {
+  color: #93A4BA;
+}
+
+.dark .text-\[\#D8E0EE\] {
+  color: #DDE7F7;
+}
+
+.dark .text-\[\#1F3864\],
+.dark .text-\[\#246B6B\] {
+  color: #8FE0DE;
+}
+
+.dark .border-\[\#E4E8EF\],
+.dark .border-\[\#F6F8FB\],
+.dark .border-\[\#D8E0EE\],
+.dark .border-\[\#E5ECEF\],
+.dark .border-\[\#E8EEF5\],
+.dark .border-\[\#DFE7EF\],
+.dark .border-\[\#D1D8DF\],
+.dark .border-\[\#1F3864\] {
+  border-color: #263448;
+}
+
+.dark select,
+.dark input {
+  color-scheme: dark;
+}
+
+button,
+select,
+input {
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+}
+
+button:hover {
+  box-shadow: 0 8px 20px rgba(15, 23, 34, 0.06);
+}
+
+.dark .chart-card {
+  border-color: #263448;
+  background-color: #111827;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+.dark .chart-card:hover {
+  border-color: #3A4A61;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
 }
 
 /* ── Tabular nums for all data display ── */
@@ -200,4 +504,837 @@
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ── Final theme harmonization: keep fixed hex utility classes visually consistent ── */
+:root {
+  --vw-shell: #F3F6FA;
+  --vw-surface: rgba(255, 255, 255, 0.94);
+  --vw-surface-strong: #FFFFFF;
+  --vw-surface-muted: #EEF3F8;
+  --vw-line-soft: rgba(31, 56, 100, 0.12);
+  --vw-text-strong: #0F1722;
+  --vw-text-muted: #667386;
+  --vw-glow-teal: rgba(46, 139, 139, 0.12);
+  --vw-glow-orange: rgba(197, 90, 17, 0.10);
+}
+
+.dark {
+  --vw-shell: #07101D;
+  --vw-surface: rgba(14, 24, 41, 0.92);
+  --vw-surface-strong: #101B2E;
+  --vw-surface-muted: #16233A;
+  --vw-line-soft: rgba(143, 180, 248, 0.16);
+  --vw-text-strong: #F8FAFC;
+  --vw-text-muted: #A8B6C8;
+  --vw-glow-teal: rgba(127, 219, 219, 0.14);
+  --vw-glow-orange: rgba(244, 162, 97, 0.10);
+}
+
+body {
+  background:
+    radial-gradient(circle at 16% 0%, var(--vw-glow-teal), transparent 30rem),
+    radial-gradient(circle at 88% 4%, var(--vw-glow-orange), transparent 26rem),
+    var(--vw-shell) !important;
+}
+
+.dark body,
+.dark #main-content,
+.dark .bg-\[\#F6F8FB\],
+.dark .bg-\[\#F8FAFB\],
+.dark .bg-\[\#F5F8FB\],
+.dark .bg-\[\#EEF2F7\] {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(46, 139, 139, 0.10), transparent 34rem),
+    radial-gradient(circle at 86% 12%, rgba(91, 141, 239, 0.10), transparent 28rem),
+    var(--vw-shell) !important;
+}
+
+.dark .bg-white,
+.dark .bg-\[\#FFFFFF\],
+.dark .bg-\[\#EEF2F8\],
+.dark .bg-\[\#E8F5F5\],
+.dark .bg-\[\#E7F2F2\] {
+  background-color: var(--vw-surface-strong) !important;
+}
+
+.dark .chart-card,
+.dark .rounded-\[12px\].bg-white,
+.dark .rounded-\[10px\].bg-white,
+.dark section.bg-white {
+  background:
+    linear-gradient(145deg, rgba(20, 33, 54, 0.96), rgba(12, 22, 38, 0.96)) !important;
+  border-color: var(--vw-line-soft) !important;
+  color: var(--vw-text-strong) !important;
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+}
+
+.chart-card,
+.rounded-\[12px\].bg-white,
+.rounded-\[10px\].bg-white,
+section.bg-white {
+  border-color: var(--vw-line-soft) !important;
+  box-shadow:
+    0 16px 38px rgba(31, 56, 100, 0.09),
+    inset 0 1px 0 rgba(255, 255, 255, 0.70) !important;
+}
+
+.dark .text-\[\#0F1722\],
+.dark .text-\[\#14223D\],
+.dark .text-\[\#1F3864\] {
+  color: var(--vw-text-strong) !important;
+}
+
+.dark .text-\[\#2B3645\],
+.dark .text-\[\#5A6675\],
+.dark .text-\[\#5A6B7A\],
+.dark .text-\[\#6B7C99\] {
+  color: #C2CCDA !important;
+}
+
+.dark .text-\[\#9AA6B4\],
+.dark .text-\[\#6B83AD\] {
+  color: var(--vw-text-muted) !important;
+}
+
+.dark .border-\[\#E4E8EF\],
+.dark .border-\[\#E5ECEF\],
+.dark .border-\[\#E8EEF5\],
+.dark .border-\[\#DFE7EF\],
+.dark .border-\[\#D1D8DF\],
+.dark .border-\[\#F6F8FB\] {
+  border-color: var(--vw-line-soft) !important;
+}
+
+.dark select,
+.dark input,
+.dark textarea {
+  background-color: #0D1728 !important;
+  border-color: var(--vw-line-soft) !important;
+  color: var(--vw-text-strong) !important;
+}
+
+.dark option {
+  background-color: #101B2E;
+  color: var(--vw-text-strong);
+}
+
+.dark .recharts-cartesian-grid line {
+  stroke: rgba(168, 182, 200, 0.18) !important;
+}
+
+.dark .recharts-text,
+.dark .recharts-label,
+.dark .recharts-legend-item-text {
+  fill: #A8B6C8 !important;
+  color: #A8B6C8 !important;
+}
+
+.dark .recharts-surface {
+  overflow: visible;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #07101D;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #263448;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #3A4A61;
+}
+
+/* ── Professional dashboard composition layer ─────────────────────────────── */
+#main-content {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0)),
+    var(--vw-shell);
+}
+
+#main-content > div {
+  position: relative;
+}
+
+#main-content h1,
+#main-content h2,
+#main-content h3 {
+  letter-spacing: -0.018em;
+}
+
+#main-content .rounded-\[12px\].border,
+#main-content .rounded-\[10px\].border,
+#main-content .chart-card {
+  position: relative;
+  min-width: 0;
+  border-radius: 16px !important;
+  border-color: rgba(31, 56, 100, 0.10) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(250, 252, 255, 0.94)) !important;
+  box-shadow:
+    0 18px 42px rgba(31, 56, 100, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.82) inset !important;
+}
+
+#main-content section[class*="grid"] {
+  align-items: stretch;
+}
+
+#main-content section[class*="grid"] > * {
+  min-width: 0;
+  height: 100%;
+}
+
+#main-content section[class*="grid"] > * > :is(.rounded-\[12px\], .rounded-\[10px\], .chart-card) {
+  min-height: 100%;
+}
+
+#main-content :is(.rounded-\[12px\].border, .rounded-\[10px\].border, .chart-card) {
+  overflow: visible;
+}
+
+#main-content section[aria-label*="insight" i],
+#main-content section[aria-label*="insights" i] {
+  border-radius: 18px !important;
+  border-color: rgba(31, 56, 100, 0.10) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(250, 252, 255, 0.96)) !important;
+  box-shadow:
+    0 18px 44px rgba(31, 56, 100, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.82) !important;
+}
+
+#main-content :is(.chart-card, .rounded-\[12px\].border, .rounded-\[10px\].border) > :first-child {
+  min-width: 0;
+}
+
+#main-content :is(.chart-card, .rounded-\[12px\].border, .rounded-\[10px\].border) h3,
+#main-content :is(.chart-card, .rounded-\[12px\].border, .rounded-\[10px\].border) p {
+  min-width: 0;
+}
+
+#main-content table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+#main-content thead th {
+  white-space: nowrap;
+}
+
+#main-content tbody tr {
+  transition:
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+#main-content tbody tr:hover {
+  transform: translateY(-1px);
+}
+
+#main-content .rounded-\[12px\].border:hover,
+#main-content .rounded-\[10px\].border:hover,
+#main-content .chart-card:hover {
+  border-color: rgba(46, 139, 139, 0.22) !important;
+  box-shadow:
+    0 22px 54px rgba(31, 56, 100, 0.12),
+    0 1px 0 rgba(255, 255, 255, 0.90) inset !important;
+}
+
+#main-content [aria-label*="KPI"] .rounded-\[12px\],
+#main-content [aria-label*="metric"] .rounded-\[12px\],
+#main-content [aria-label*="metrics"] .rounded-\[12px\] {
+  overflow: hidden;
+}
+
+#main-content [aria-label*="KPI"] .rounded-\[12px\]::before,
+#main-content [aria-label*="metric"] .rounded-\[12px\]::before,
+#main-content [aria-label*="metrics"] .rounded-\[12px\]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(46, 139, 139, 0.10), transparent 9rem),
+    linear-gradient(90deg, rgba(31, 56, 100, 0.04), transparent 45%);
+}
+
+#main-content select,
+#main-content input {
+  min-height: 34px;
+  border-color: rgba(31, 56, 100, 0.14) !important;
+  background-color: rgba(255, 255, 255, 0.96) !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.70) inset;
+}
+
+#main-content select:focus,
+#main-content input:focus {
+  border-color: rgba(46, 139, 139, 0.55) !important;
+  box-shadow:
+    0 0 0 3px rgba(46, 139, 139, 0.10),
+    0 1px 0 rgba(255, 255, 255, 0.70) inset;
+}
+
+#main-content .recharts-wrapper {
+  font-family: var(--font-sans);
+}
+
+#main-content .recharts-cartesian-grid line {
+  stroke: rgba(31, 56, 100, 0.10);
+}
+
+#main-content .recharts-text,
+#main-content .recharts-label,
+#main-content .recharts-legend-item-text {
+  fill: #64748B;
+  color: #64748B !important;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+#main-content .recharts-yAxis .recharts-cartesian-axis-tick-value {
+  dominant-baseline: middle;
+}
+
+#main-content .recharts-bar-rectangle path,
+#main-content .recharts-sector,
+#main-content .recharts-curve {
+  filter: drop-shadow(0 5px 8px rgba(31, 56, 100, 0.08));
+}
+
+.dark #main-content {
+  background:
+    radial-gradient(circle at 14% 0%, rgba(46, 139, 139, 0.10), transparent 30rem),
+    radial-gradient(circle at 88% 8%, rgba(91, 141, 239, 0.10), transparent 28rem),
+    var(--vw-shell) !important;
+}
+
+.dark #main-content .rounded-\[12px\].border,
+.dark #main-content .rounded-\[10px\].border,
+.dark #main-content .chart-card {
+  border-color: rgba(143, 180, 248, 0.16) !important;
+  background:
+    linear-gradient(145deg, rgba(20, 33, 54, 0.96), rgba(10, 19, 34, 0.98)) !important;
+  box-shadow:
+    0 22px 54px rgba(0, 0, 0, 0.34),
+    0 1px 0 rgba(255, 255, 255, 0.05) inset !important;
+}
+
+.dark #main-content section[aria-label*="insight" i],
+.dark #main-content section[aria-label*="insights" i] {
+  border-color: rgba(127, 219, 219, 0.14) !important;
+  background:
+    linear-gradient(180deg, rgba(17, 28, 45, 0.98), rgba(11, 20, 35, 0.96)) !important;
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content .ai-severity-card {
+  border-top-color: rgba(127, 219, 219, 0.16) !important;
+  border-right-color: rgba(127, 219, 219, 0.16) !important;
+  border-bottom-color: rgba(127, 219, 219, 0.16) !important;
+  background:
+    linear-gradient(180deg, rgba(20, 31, 49, 0.96), rgba(12, 22, 38, 0.96)) !important;
+  box-shadow:
+    0 16px 38px rgba(0, 0, 0, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.055) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content .ai-severity-card :is(p, span, li) {
+  color: #DDE7F7 !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content .ai-severity-card :is(button:not([style*="backgroundColor"]), button:not([style*="background-color"])) {
+  color: #DDE7F7 !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content .ai-severity-card button:hover {
+  background-color: rgba(127, 219, 219, 0.10) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content .ai-severity-card [class*="bg-white"] {
+  background-color: rgba(255, 255, 255, 0.10) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content .ai-severity-card .bg-white\/50,
+.ums-app-shell[data-theme="dark"] #main-content .ai-severity-card .bg-white\/70 {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.dark #main-content .rounded-\[12px\].border:hover,
+.dark #main-content .rounded-\[10px\].border:hover,
+.dark #main-content .chart-card:hover {
+  border-color: rgba(127, 219, 219, 0.24) !important;
+  box-shadow:
+    0 26px 64px rgba(0, 0, 0, 0.42),
+    0 1px 0 rgba(255, 255, 255, 0.06) inset !important;
+}
+
+.dark #main-content [aria-label*="KPI"] .rounded-\[12px\]::before,
+.dark #main-content [aria-label*="metric"] .rounded-\[12px\]::before,
+.dark #main-content [aria-label*="metrics"] .rounded-\[12px\]::before {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(127, 219, 219, 0.11), transparent 9rem),
+    linear-gradient(90deg, rgba(143, 180, 248, 0.06), transparent 45%);
+}
+
+.dark #main-content select,
+.dark #main-content input {
+  background-color: rgba(8, 17, 31, 0.92) !important;
+  border-color: rgba(143, 180, 248, 0.16) !important;
+}
+
+.dark #main-content .recharts-cartesian-grid line {
+  stroke: rgba(168, 182, 200, 0.16) !important;
+}
+
+.dark #main-content .recharts-text,
+.dark #main-content .recharts-label,
+.dark #main-content .recharts-legend-item-text {
+  fill: #A8B6C8 !important;
+  color: #A8B6C8 !important;
+}
+
+/* ── Authoritative shell theme overrides ──────────────────────────────────── */
+.ums-app-shell[data-theme="light"],
+.ums-app-shell[data-theme="light"] #main-content,
+.ums-app-shell[data-theme="light"] #main-content > div {
+  background:
+    radial-gradient(circle at 16% -10%, rgba(46, 139, 139, 0.12), transparent 30rem),
+    radial-gradient(circle at 86% 0%, rgba(197, 90, 17, 0.08), transparent 24rem),
+    #F3F6FA !important;
+  color: #0F1722 !important;
+}
+
+.ums-app-shell[data-theme="dark"],
+.ums-app-shell[data-theme="dark"] #main-content,
+.ums-app-shell[data-theme="dark"] #main-content > div {
+  background:
+    radial-gradient(circle at 18% -8%, rgba(46, 139, 139, 0.16), transparent 34rem),
+    radial-gradient(circle at 86% 6%, rgba(91, 141, 239, 0.12), transparent 30rem),
+    linear-gradient(180deg, #07101D 0%, #08111F 48%, #050B14 100%) !important;
+  color: #F8FAFC !important;
+}
+
+.ums-app-shell[data-theme="light"] #main-content :is(.chart-card, .bg-white, .bg-\[\#FFFFFF\], .rounded-\[12px\], .rounded-\[10px\]) {
+  border-color: rgba(31, 56, 100, 0.10) !important;
+}
+
+.ums-app-shell[data-theme="light"] #main-content :is(.chart-card, .bg-white, .bg-\[\#FFFFFF\]):is(.rounded-\[12px\], .rounded-\[10px\], .rounded-lg),
+.ums-app-shell[data-theme="light"] #main-content :is(.chart-card) {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(249, 252, 255, 0.96)) !important;
+  color: #0F1722 !important;
+  box-shadow:
+    0 18px 42px rgba(31, 56, 100, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.86) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(.chart-card, .bg-white, .bg-\[\#FFFFFF\], .bg-\[\#EEF2F8\], .bg-\[\#F6F8FB\], .bg-\[\#F8FAFB\]):is(.rounded-\[12px\], .rounded-\[10px\], .rounded-lg),
+.ums-app-shell[data-theme="dark"] #main-content :is(.chart-card) {
+  background:
+    linear-gradient(145deg, rgba(20, 33, 54, 0.98), rgba(9, 18, 32, 0.98)) !important;
+  border-color: rgba(143, 180, 248, 0.18) !important;
+  color: #F8FAFC !important;
+  box-shadow:
+    0 24px 58px rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.055) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content [class*="rounded"][class*="border"]:not([style*="background"]) {
+  background:
+    linear-gradient(145deg, rgba(20, 33, 54, 0.98), rgba(9, 18, 32, 0.98)) !important;
+  border-color: rgba(143, 180, 248, 0.18) !important;
+  color: #F8FAFC !important;
+  --tw-gradient-from: rgba(20, 33, 54, 0.98) !important;
+  --tw-gradient-to: rgba(9, 18, 32, 0.98) !important;
+  --tw-gradient-stops: rgba(20, 33, 54, 0.98), rgba(9, 18, 32, 0.98) !important;
+}
+
+.ums-app-shell[data-theme="light"] #main-content [class*="rounded"][class*="border"]:not([style*="background"]) {
+  border-color: rgba(31, 56, 100, 0.10) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(.bg-\[\#F6F8FB\], .bg-\[\#F8FAFB\], .bg-\[\#F5F8FB\], .bg-\[\#EEF2F7\]) {
+  background-color: transparent !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(.text-\[\#0F1722\], .text-\[\#14223D\], .text-\[\#1F3864\]) {
+  color: #F8FAFC !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(.text-\[\#2B3645\], .text-\[\#5A6675\], .text-\[\#5A6B7A\], .text-\[\#6B7C99\]) {
+  color: #C5D0DE !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(.text-\[\#617588\], .text-\[\#9AA6B4\], .text-\[\#6B83AD\]) {
+  color: #93A4BA !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content .text-\[\#1A2D47\] {
+  color: #F8FAFC !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(.border-\[\#E4E8EF\], .border-\[\#E5ECEF\], .border-\[\#E8EEF5\], .border-\[\#DFE7EF\], .border-\[\#D1D8DF\], .border-\[\#F6F8FB\], .border-\[\#E0E6F2\], .border-\[\#D9E1ED\]) {
+  border-color: rgba(143, 180, 248, 0.18) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(.bg-\[\#F5F7FB\], .bg-\[\#F9FAFB\], .bg-\[\#F0F2F7\], .bg-\[\#F0F4F7\]) {
+  background-color: rgba(8, 17, 31, 0.58) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(input, select, textarea, button.bg-white) {
+  background-color: rgba(8, 17, 31, 0.88) !important;
+  border-color: rgba(143, 180, 248, 0.18) !important;
+  color: #F8FAFC !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content .recharts-wrapper,
+.ums-app-shell[data-theme="dark"] #main-content .recharts-surface {
+  background: transparent !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content .recharts-cartesian-grid line {
+  stroke: rgba(168, 182, 200, 0.16) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(.recharts-text, .recharts-label, .recharts-legend-item-text) {
+  fill: #A8B6C8 !important;
+  color: #A8B6C8 !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content .recharts-tooltip-wrapper {
+  filter: drop-shadow(0 18px 34px rgba(0, 0, 0, 0.36));
+}
+
+.ums-app-shell[data-theme="dark"] #main-content .recharts-tooltip-wrapper :is(
+  .recharts-default-tooltip,
+  [class*="tooltip"],
+  div
+) {
+  background:
+    linear-gradient(145deg, rgba(16, 27, 46, 0.98), rgba(7, 16, 29, 0.98)) !important;
+  border: 1px solid rgba(143, 180, 248, 0.22) !important;
+  color: #F8FAFC !important;
+  box-shadow:
+    0 18px 36px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content .recharts-tooltip-wrapper :is(
+  p,
+  span,
+  li,
+  .recharts-tooltip-label,
+  .recharts-tooltip-item,
+  .recharts-tooltip-item-name,
+  .recharts-tooltip-item-value
+) {
+  color: #F8FAFC !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(
+  [role="tooltip"],
+  [class*="tooltip"],
+  [class*="Tooltip"],
+  [class*="popover"],
+  [class*="Popover"]
+) {
+  background:
+    linear-gradient(145deg, rgba(16, 27, 46, 0.98), rgba(7, 16, 29, 0.98)) !important;
+  border-color: rgba(143, 180, 248, 0.22) !important;
+  color: #F8FAFC !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content .recharts-tooltip-wrapper :is(.bg-white, .rounded-\[8px\]) {
+  background: #101B2E !important;
+  border-color: rgba(143, 180, 248, 0.18) !important;
+}
+
+/* Dark-mode hover states must never flash back to light surfaces. */
+.ums-app-shell[data-theme="dark"] #main-content :is(
+  .hover\:bg-white:hover,
+  .hover\:bg-\[\#F9FAFB\]:hover,
+  .hover\:bg-\[\#F6F8FB\]:hover,
+  .hover\:bg-\[\#F5F8FB\]:hover,
+  .hover\:bg-\[\#F0F3F8\]:hover,
+  .hover\:bg-\[\#EEF2F8\]:hover,
+  .hover\:bg-\[\#EEF2F7\]:hover,
+  .hover\:bg-\[\#E0E6F2\]:hover
+) {
+  background:
+    linear-gradient(90deg, rgba(46, 139, 139, 0.12), rgba(143, 180, 248, 0.06)) !important;
+  color: #F8FAFC !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content tr:hover,
+.ums-app-shell[data-theme="dark"] #main-content tbody tr:hover,
+.ums-app-shell[data-theme="dark"] #main-content [role="row"]:hover {
+  background:
+    linear-gradient(90deg, rgba(46, 139, 139, 0.13), rgba(16, 27, 46, 0.72)) !important;
+  color: #F8FAFC !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content tr:hover :is(td, th, div, span, button) {
+  color: inherit;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content tr:hover :is(.text-\[\#1A2D47\], .text-\[\#617588\], .text-\[\#0F1722\], .text-\[\#2B3645\]) {
+  color: #F8FAFC !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content button:hover {
+  border-color: rgba(127, 219, 219, 0.28) !important;
+}
+
+/* Executive KPI strip: keep cards aligned and premium at every viewport width. */
+#main-content [aria-label="Key performance indicators"] {
+  container-type: inline-size;
+}
+
+#main-content [aria-label="Key performance indicators"] > div {
+  align-items: stretch;
+}
+
+#main-content [aria-label="Key performance indicators"] .chart-card {
+  min-width: 0;
+  isolation: isolate;
+}
+
+#main-content :is([aria-label*="KPI"], [aria-label*="metric"], [aria-label*="performance indicators"]) > div > * {
+  min-width: 0;
+  overflow: hidden;
+}
+
+#main-content :is([aria-label*="KPI"], [aria-label*="metric"], [aria-label*="performance indicators"]) :is(p, span, div) {
+  min-width: 0;
+}
+
+#main-content :is([aria-label*="KPI"], [aria-label*="metric"], [aria-label*="performance indicators"]) :is(p, span) {
+  overflow-wrap: anywhere;
+}
+
+#main-content :is([aria-label*="KPI"], [aria-label*="metric"], [aria-label*="performance indicators"]) .rounded-\[10px\],
+#main-content :is([aria-label*="KPI"], [aria-label*="metric"], [aria-label*="performance indicators"]) .rounded-\[12px\] {
+  min-height: 142px;
+  display: flex;
+  flex-direction: column;
+}
+
+#main-content :is([aria-label*="KPI"], [aria-label*="metric"], [aria-label*="performance indicators"]) svg {
+  flex-shrink: 0;
+}
+
+#main-content :is([aria-label*="KPI"], [aria-label*="metric"], [aria-label*="performance indicators"]) [class*="Derived"],
+#main-content :is([aria-label*="KPI"], [aria-label*="metric"], [aria-label*="performance indicators"]) [class*="derived"] {
+  white-space: nowrap;
+}
+
+#main-content [aria-label="Key performance indicators"] .chart-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.55), transparent 34%),
+    radial-gradient(circle at 84% 16%, rgba(46, 139, 139, 0.10), transparent 7rem);
+  opacity: 0.75;
+  z-index: -1;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content [aria-label="Key performance indicators"] .chart-card::after {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.055), transparent 34%),
+    radial-gradient(circle at 84% 16%, rgba(127, 219, 219, 0.12), transparent 7rem);
+}
+
+.ums-app-shell[data-theme="dark"] #main-content [aria-label="Health ribbon and department strip"] > div:first-child {
+  border-color: rgba(127, 219, 219, 0.14) !important;
+  background:
+    radial-gradient(circle at 16% 0%, rgba(46, 139, 139, 0.14), transparent 18rem),
+    linear-gradient(180deg, rgba(17, 28, 45, 0.98), rgba(11, 20, 35, 0.96)) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content [aria-label="Health ribbon and department strip"] > div:first-child > div:nth-child(3) {
+  border-color: rgba(127, 219, 219, 0.12) !important;
+  background:
+    linear-gradient(180deg, rgba(13, 23, 40, 0.94), rgba(8, 17, 31, 0.94)) !important;
+}
+
+/* ── Theme-aware left navigation polish ───────────────────────────────────── */
+.ums-app-shell[data-theme="light"] aside[aria-label="Domain navigation"] {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(245, 248, 252, 0.90)) !important;
+}
+
+.ums-app-shell[data-theme="dark"] aside[aria-label="Domain navigation"] {
+  background:
+    radial-gradient(circle at 20% 0%, rgba(46, 139, 139, 0.12), transparent 18rem),
+    linear-gradient(180deg, rgba(7, 16, 29, 0.98), rgba(5, 11, 20, 0.98)) !important;
+}
+
+.ums-app-shell aside[aria-label="Domain navigation"] button:focus-visible {
+  outline: 2px solid rgba(46, 139, 139, 0.78);
+  outline-offset: -2px;
+}
+
+.ums-app-shell[data-theme="light"] aside[aria-label="Domain navigation"] button[aria-current="page"] {
+  background:
+    linear-gradient(135deg, #1F3864, #2E4D7A) !important;
+}
+
+.ums-app-shell[data-theme="dark"] aside[aria-label="Domain navigation"] button[aria-current="page"] {
+  background:
+    linear-gradient(135deg, #1F3864, #102344) !important;
+}
+
+.ums-app-shell[data-theme="light"] aside[aria-label="Domain navigation"] button:not([aria-current="page"]):hover {
+  background:
+    linear-gradient(90deg, rgba(31, 56, 100, 0.08), rgba(46, 139, 139, 0.08)) !important;
+}
+
+.ums-app-shell[data-theme="dark"] aside[aria-label="Domain navigation"] button:not([aria-current="page"]):hover {
+  background:
+    linear-gradient(90deg, rgba(46, 139, 139, 0.12), rgba(31, 56, 100, 0.28)) !important;
+}
+
+.ums-app-shell aside[aria-label="Domain navigation"] {
+  letter-spacing: -0.005em;
+}
+
+.ums-app-shell aside[aria-label="Domain navigation"] nav button {
+  min-height: 36px;
+}
+
+.ums-app-shell[data-theme="light"] aside[aria-label="Domain navigation"] nav button[aria-current="page"] svg,
+.ums-app-shell[data-theme="dark"] aside[aria-label="Domain navigation"] nav button[aria-current="page"] svg {
+  filter: drop-shadow(0 4px 8px rgba(46, 139, 139, 0.22));
+}
+
+.ums-app-shell[data-theme="light"] aside[aria-label="Domain navigation"] [class*="bg-\[\#F6F8FB\]"] {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(238, 242, 248, 0.84)) !important;
+}
+
+.ums-app-shell[data-theme="dark"] aside[aria-label="Domain navigation"] [class*="bg-\[\#0B1728\]"] {
+  background:
+    linear-gradient(180deg, rgba(15, 28, 48, 0.92), rgba(7, 16, 29, 0.92)) !important;
+}
+
+/* ── Final dark theme hardening: override pastel/inline card surfaces globally. */
+.ums-app-shell[data-theme="dark"] {
+  --vw-shell: #050B14;
+  --vw-surface: rgba(14, 24, 41, 0.96);
+  --vw-surface-strong: #101B2E;
+  --vw-surface-muted: #16233A;
+  --vw-line-soft: rgba(143, 180, 248, 0.18);
+  color-scheme: dark;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(
+  .chart-card,
+  .ai-severity-card,
+  section.bg-white,
+  [class*="bg-white"][class*="rounded"],
+  [class*="bg-\[\#FFFFFF\]"][class*="rounded"],
+  [class*="bg-\[\#FFF"][class*="rounded"],
+  [class*="bg-\[\#FE"][class*="rounded"],
+  [class*="bg-\[\#FA"][class*="rounded"],
+  [class*="bg-\[\#F0"][class*="rounded"],
+  [class*="bg-\[\#E8"][class*="rounded"],
+  [class*="bg-\[\#D1"][class*="rounded"],
+  [class*="rounded"][class*="border"]
+) {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(46, 139, 139, 0.10), transparent 14rem),
+    linear-gradient(145deg, rgba(20, 33, 54, 0.98), rgba(8, 17, 31, 0.98)) !important;
+  border-color: rgba(143, 180, 248, 0.18) !important;
+  color: #F8FAFC !important;
+  box-shadow:
+    0 22px 54px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.055) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(.ai-severity-card) {
+  border-top-color: rgba(143, 180, 248, 0.18) !important;
+  border-right-color: rgba(143, 180, 248, 0.18) !important;
+  border-bottom-color: rgba(143, 180, 248, 0.18) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(
+  .bg-\[\#F6F8FB\],
+  .bg-\[\#F8FAFB\],
+  .bg-\[\#F5F8FB\],
+  .bg-\[\#F5F7FB\],
+  .bg-\[\#F9FAFB\],
+  .bg-\[\#F0F2F7\],
+  .bg-\[\#F0F4F7\],
+  .bg-\[\#EEF2F7\],
+  .bg-\[\#EEF2F8\],
+  .bg-\[\#E8F5F5\],
+  .bg-\[\#E7F2F2\],
+  .bg-\[\#D1F2F2\],
+  .bg-\[\#FCE8D6\],
+  .bg-\[\#FADBD8\],
+  .bg-\[\#FEF0EE\],
+  .bg-\[\#FEF7ED\],
+  .bg-\[\#FFF4ED\],
+  .bg-\[\#FFF9E6\],
+  .bg-\[\#F0F9FA\]
+) {
+  background-color: rgba(13, 23, 40, 0.82) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(
+  .text-\[\#0F1722\],
+  .text-\[\#14223D\],
+  .text-\[\#1F3864\],
+  .text-\[\#1A2D47\],
+  .text-\[\#2B3645\]
+) {
+  color: #F8FAFC !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(
+  .text-\[\#5A6675\],
+  .text-\[\#5A6B7A\],
+  .text-\[\#617588\],
+  .text-\[\#6B7C99\],
+  .text-\[\#6B83AD\],
+  .text-\[\#9AA6B4\]
+) {
+  color: #A8B6C8 !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(
+  input,
+  select,
+  textarea,
+  button.bg-white,
+  button[class*="bg-\[\#EEF2F8\]"],
+  button[class*="bg-\[\#F6F8FB\]"]
+) {
+  background: rgba(8, 17, 31, 0.88) !important;
+  border-color: rgba(143, 180, 248, 0.18) !important;
+  color: #F8FAFC !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(button:hover, tr:hover, tbody tr:hover) {
+  background:
+    linear-gradient(90deg, rgba(46, 139, 139, 0.14), rgba(143, 180, 248, 0.07)) !important;
+  color: #F8FAFC !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(.recharts-wrapper, .recharts-surface, .recharts-responsive-container) {
+  background: transparent !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(.recharts-text, .recharts-label, .recharts-legend-item-text) {
+  fill: #A8B6C8 !important;
+  color: #A8B6C8 !important;
 }

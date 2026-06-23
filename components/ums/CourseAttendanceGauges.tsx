@@ -1,6 +1,7 @@
 'use client'
 
 import { CourseAttendance } from '@/lib/useAttendanceData'
+import { MotionCard } from './MotionCard'
 
 interface CourseAttendanceGaugesProps {
   data: CourseAttendance[]
@@ -9,7 +10,7 @@ interface CourseAttendanceGaugesProps {
 
 export function CourseAttendanceGauges({ data, thresholdPercent = 75 }: CourseAttendanceGaugesProps) {
   return (
-    <div className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
+    <MotionCard className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       <h3 className="text-[13px] font-[700] text-[#0F1722]">Course Attendance Gauges (75% Threshold)</h3>
       
       <div className="space-y-3">
@@ -54,6 +55,6 @@ export function CourseAttendanceGauges({ data, thresholdPercent = 75 }: CourseAt
           )
         })}
       </div>
-    </div>
+    </MotionCard>
   )
 }

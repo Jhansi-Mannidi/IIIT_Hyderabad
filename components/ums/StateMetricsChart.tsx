@@ -1,6 +1,7 @@
 'use client'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { StateMetric } from '@/lib/useAdmissionsDashboardData'
+import { MotionCard } from './MotionCard'
 
 interface StateMetricsChartProps {
   data: StateMetric[]
@@ -14,7 +15,7 @@ export function StateMetricsChart({ data }: StateMetricsChartProps) {
   }
 
   return (
-    <div className="flex flex-col gap-3 px-5 py-4 bg-white rounded-[10px] border border-[#DFE7EF]">
+    <MotionCard className="flex flex-col gap-3 px-5 py-4 bg-white rounded-[10px] border border-[#DFE7EF]">
       <div>
         <h3 className="text-[14px] font-[700] text-[#0F1722]">State-wise Conversion Rates</h3>
         <p className="text-[12px] text-[#5A6B7A] mt-0.5">Top performing states and areas needing attention</p>
@@ -62,6 +63,6 @@ export function StateMetricsChart({ data }: StateMetricsChartProps) {
           <span className="text-[10px] text-[#5A6B7A]">{'Low (<20%)'}</span>
         </div>
       </div>
-    </div>
+    </MotionCard>
   )
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import { BlockOccupancy } from '@/lib/useHostelMessData'
+import { MotionCard } from './MotionCard'
 
 interface BlockOccupancyWallProps {
   data: BlockOccupancy[]
@@ -15,7 +16,7 @@ export function BlockOccupancyWall({ data, onBlockClick }: BlockOccupancyWallPro
   }
 
   return (
-    <div className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
+    <MotionCard className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       <h3 className="text-[13px] font-[700] text-[#0F1722]">Block Occupancy Wall</h3>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -90,6 +91,6 @@ export function BlockOccupancyWall({ data, onBlockClick }: BlockOccupancyWallPro
           </p>
         </div>
       </div>
-    </div>
+    </MotionCard>
   )
 }

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { ChevronDown, AlertTriangle, AlertCircle, Info, X } from 'lucide-react'
 import { ResearchAIInsight } from '@/lib/useResearchData'
+import { MotionCard } from './MotionCard'
 
 interface ResearchAICardProps {
   insight: ResearchAIInsight
@@ -21,8 +22,8 @@ export function ResearchAICard({ insight, onDismiss, onAction }: ResearchAICardP
   const { Icon, color, bg } = CONFIG[insight.severity]
 
   return (
-    <div
-      className="flex flex-col gap-3 p-4 rounded-[10px] border-l-4"
+    <MotionCard
+      className="ai-severity-card flex flex-col gap-3 p-4 rounded-[10px] border-l-4"
       style={{ borderColor: color, backgroundColor: bg }}
     >
       {/* Header */}
@@ -94,6 +95,6 @@ export function ResearchAICard({ insight, onDismiss, onAction }: ResearchAICardP
           {insight.domain}
         </span>
       </button>
-    </div>
+    </MotionCard>
   )
 }

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { ChevronDown, AlertTriangle, AlertCircle, Info, TrendingUp, X, Clock } from 'lucide-react'
 import { AcademicAIInsight } from '@/lib/useAcademicDashboardData'
+import { MotionCard } from './MotionCard'
 
 interface AcademicAIInsightCardProps {
   insight: AcademicAIInsight
@@ -38,8 +39,8 @@ export function AcademicAIInsightCard({
   }
 
   return (
-    <div
-      className={`border rounded-[8px] p-4 space-y-3 ${getSeverityBg(insight.severity)}`}
+    <MotionCard
+      className={`ai-severity-card border rounded-[8px] p-4 space-y-3 ${getSeverityBg(insight.severity)}`}
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
@@ -128,6 +129,6 @@ export function AcademicAIInsightCard({
           Snooze
         </button>
       </div>
-    </div>
+    </MotionCard>
   )
 }

@@ -2,6 +2,7 @@
 import { Sankey, Tooltip, YAxis, XAxis, Node, ResponsiveContainer } from 'recharts'
 import { Info } from 'lucide-react'
 import { SankeyNode, SankeyLink } from '@/lib/useAdmissionsDashboardData'
+import { MotionCard } from './MotionCard'
 
 interface PreferenceFlowSankeyProps {
   nodes: SankeyNode[]
@@ -20,7 +21,7 @@ export function PreferenceFlowSankey({ nodes, links }: PreferenceFlowSankeyProps
   }
 
   return (
-    <div className="flex flex-col gap-3 px-5 py-4 bg-white rounded-[10px] border border-[#DFE7EF]">
+    <MotionCard className="flex flex-col gap-3 px-5 py-4 bg-white rounded-[10px] border border-[#DFE7EF]">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -90,6 +91,6 @@ export function PreferenceFlowSankey({ nodes, links }: PreferenceFlowSankeyProps
           <strong>Divergence:</strong> When a student receives an allotment in a lower preference but opts to join at that choice instead of waiting for a higher preference. Monitor divergence for preference form clarity improvements.
         </p>
       </div>
-    </div>
+    </MotionCard>
   )
 }

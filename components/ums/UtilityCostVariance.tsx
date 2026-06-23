@@ -2,6 +2,7 @@
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { UtilityCost } from '@/lib/useHostelMessData'
+import { MotionCard } from './MotionCard'
 
 interface UtilityCostVarianceProps {
   data: UtilityCost[]
@@ -19,13 +20,14 @@ export function UtilityCostVariance({ data }: UtilityCostVarianceProps) {
   const totalVariance = totalBudget - totalActual
 
   return (
-    <div className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
+    <MotionCard className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       <div className="flex items-center justify-between">
         <h3 className="text-[13px] font-[700] text-[#0F1722]">Utility Cost Variance (Budget vs Actual)</h3>
         <span className="text-[11px] text-[#9AA6B4]">Amount in ₹ Lakhs</span>
       </div>
 
-      <ResponsiveContainer width="100%" height={240}>
+      <div className="ums-analytics-chart-frame h-[240px] min-w-0">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={220} debounce={80}>
         <BarChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" stroke="#E5ECEF" vertical={false} />
           <XAxis dataKey="utility" fontSize={11} fill="#5A6B7A" />
@@ -41,6 +43,7 @@ export function UtilityCostVariance({ data }: UtilityCostVarianceProps) {
           <Bar dataKey="unfavorable" fill="#E74C3C" name="Over Budget" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
+      </div>
 
       <div className="flex gap-4 p-3 bg-[#F6F8FB] rounded-[8px]">
         <div>
@@ -58,6 +61,6 @@ export function UtilityCostVariance({ data }: UtilityCostVarianceProps) {
           </p>
         </div>
       </div>
-    </div>
+    </MotionCard>
   )
 }

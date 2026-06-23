@@ -1,6 +1,7 @@
 'use client'
 
 import { RoomStatus } from '@/lib/useHostelMessData'
+import { MotionCard } from './MotionCard'
 
 interface RoomStatusChartProps {
   data: RoomStatus[]
@@ -10,7 +11,7 @@ export function RoomStatusChart({ data }: RoomStatusChartProps) {
   const total = data.reduce((sum, item) => sum + item.count, 0)
 
   return (
-    <div className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
+    <MotionCard className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       <h3 className="text-[13px] font-[700] text-[#0F1722]">Room Status Distribution</h3>
       
       <div className="space-y-3">
@@ -53,6 +54,6 @@ export function RoomStatusChart({ data }: RoomStatusChartProps) {
         <p className="text-[10px] text-[#9AA6B4] mb-1">Total Rooms</p>
         <p className="font-['Courier'] text-[13px] font-[700]">{total}</p>
       </div>
-    </div>
+    </MotionCard>
   )
 }

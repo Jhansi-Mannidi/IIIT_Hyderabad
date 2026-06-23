@@ -1,6 +1,7 @@
 'use client'
 
 import { PhDStage } from '@/lib/useResearchData'
+import { MotionCard } from './MotionCard'
 
 interface PhDPipelineFunnelProps {
   data: PhDStage[]
@@ -11,7 +12,7 @@ export function PhDPipelineFunnel({ data, onStageClick }: PhDPipelineFunnelProps
   const maxN = data[0]?.n ?? 1
 
   return (
-    <div className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
+    <MotionCard className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       <h3 className="text-[13px] font-[700] text-[#0F1722]">PhD Scholar Pipeline</h3>
       <p className="text-[11px] text-[#9AA6B4] -mt-2">Registered → Coursework → Synopsis → Submission → Defended</p>
 
@@ -66,6 +67,6 @@ export function PhDPipelineFunnel({ data, onStageClick }: PhDPipelineFunnelProps
           </p>
         </div>
       </div>
-    </div>
+    </MotionCard>
   )
 }

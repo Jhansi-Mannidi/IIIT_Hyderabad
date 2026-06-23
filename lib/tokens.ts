@@ -65,7 +65,7 @@ export const VIZ_ARRAY = [
   '#B2566B',
 ] as const
 
-export const VIZ = {
+export const VIZ = Object.assign([...VIZ_ARRAY], {
   navy:   '#1F3864',
   teal:   '#2E8B8B',
   orange: '#C55A11',
@@ -74,7 +74,16 @@ export const VIZ = {
   gold:   '#C99A2E',
   green:  '#4A9B7F',
   coral:  '#B2566B',
-} as const
+}) as readonly string[] & {
+  readonly navy: '#1F3864'
+  readonly teal: '#2E8B8B'
+  readonly orange: '#C55A11'
+  readonly blue: '#5B8DEF'
+  readonly purple: '#8E6FB8'
+  readonly gold: '#C99A2E'
+  readonly green: '#4A9B7F'
+  readonly coral: '#B2566B'
+}
 
 /** Sequential: navy-50 → navy-700 */
 export const SEQ_STOPS = [NAVY[50], NAVY[100], NAVY[300], NAVY[500], NAVY[700]] as const

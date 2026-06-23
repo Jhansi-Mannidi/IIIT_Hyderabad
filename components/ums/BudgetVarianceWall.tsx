@@ -2,6 +2,7 @@
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { BudgetMonthData } from '@/lib/useInstitutionalFinanceData'
+import { MotionCard } from './MotionCard'
 
 interface BudgetVarianceWallProps {
   data: BudgetMonthData[]
@@ -15,7 +16,7 @@ export function BudgetVarianceWall({ data }: BudgetVarianceWallProps) {
   }))
 
   return (
-    <div className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
+    <MotionCard className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       <div className="flex items-center justify-between">
         <h3 className="text-[13px] font-[700] text-[#0F1722]">Budget vs Actual Variance Wall</h3>
         <span className="text-[11px] text-[#9AA6B4]">Amount in ₹ Lakhs</span>
@@ -53,6 +54,6 @@ export function BudgetVarianceWall({ data }: BudgetVarianceWallProps) {
           <p className="font-['Courier'] text-[14px] font-[700] text-[#2E8B8B]">₹4.9L Under</p>
         </div>
       </div>
-    </div>
+    </MotionCard>
   )
 }

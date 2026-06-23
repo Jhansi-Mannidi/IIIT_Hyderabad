@@ -1,6 +1,7 @@
 'use client'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { CategoryMetric } from '@/lib/useAdmissionsDashboardData'
+import { MotionCard } from './MotionCard'
 
 interface CategoryMetricsChartProps {
   data: CategoryMetric[]
@@ -15,7 +16,7 @@ export function CategoryMetricsChart({ data }: CategoryMetricsChartProps) {
   }))
 
   return (
-    <div className="flex flex-col gap-3 px-5 py-4 bg-white rounded-[10px] border border-[#DFE7EF]">
+    <MotionCard className="flex flex-col gap-3 px-5 py-4 bg-white rounded-[10px] border border-[#DFE7EF]">
       <div>
         <h3 className="text-[14px] font-[700] text-[#0F1722]">Category-wise Intake</h3>
         <p className="text-[12px] text-[#5A6B7A] mt-0.5">Applied vs. Enrolled vs. Target by reservation category</p>
@@ -44,6 +45,6 @@ export function CategoryMetricsChart({ data }: CategoryMetricsChartProps) {
           </BarChart>
         </ResponsiveContainer>
       </div>
-    </div>
+    </MotionCard>
   )
 }

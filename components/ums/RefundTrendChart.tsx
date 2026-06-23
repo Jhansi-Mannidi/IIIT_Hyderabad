@@ -2,6 +2,7 @@
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { RefundTrend } from '@/lib/useFinanceDashboardData'
+import { MotionCard } from './MotionCard'
 
 interface RefundTrendChartProps {
   data: RefundTrend[]
@@ -9,7 +10,7 @@ interface RefundTrendChartProps {
 
 export function RefundTrendChart({ data }: RefundTrendChartProps) {
   return (
-    <div className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
+    <MotionCard className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       <div className="flex items-center justify-between">
         <h3 className="text-[13px] font-[700] text-[#0F1722]">Refund Processing Trend</h3>
         <span className="text-[11px] text-[#9AA6B4]">Count & Amount in ₹</span>
@@ -60,6 +61,6 @@ export function RefundTrendChart({ data }: RefundTrendChartProps) {
           />
         </LineChart>
       </ResponsiveContainer>
-    </div>
+    </MotionCard>
   )
 }

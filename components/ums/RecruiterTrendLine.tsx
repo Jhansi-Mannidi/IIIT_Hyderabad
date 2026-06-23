@@ -11,6 +11,7 @@ import {
   ReferenceLine,
 } from 'recharts'
 import { RecruiterPoint } from '@/lib/usePlacementsData'
+import { MotionCard } from './MotionCard'
 
 interface Props {
   data: RecruiterPoint[]
@@ -41,7 +42,7 @@ export function RecruiterTrendLine({ data, onPointClick }: Props) {
   const sign = yoy >= 0 ? '+' : ''
 
   return (
-    <div className="bg-white rounded-[12px] border border-[#E5ECEF] p-4">
+    <MotionCard className="bg-white rounded-[12px] border border-[#E5ECEF] p-4">
       <div className="flex items-start justify-between mb-4">
         <div>
           <h3 className="text-[13px] font-[700] text-[#0F1722]">Recruiter Engagement Trend</h3>
@@ -89,6 +90,6 @@ export function RecruiterTrendLine({ data, onPointClick }: Props) {
       <p className="text-[10px] text-[#9AA6B4] italic mt-1">
         Click a data point to view recruiter list (company name, roles, offers).
       </p>
-    </div>
+    </MotionCard>
   )
 }

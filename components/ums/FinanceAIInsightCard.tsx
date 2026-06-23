@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { ChevronDown, AlertTriangle, AlertCircle, Info, X } from 'lucide-react'
 import { FinanceAIInsight } from '@/lib/useFinanceDashboardData'
+import { MotionCard } from './MotionCard'
 
 interface FinanceAIInsightCardProps {
   insight: FinanceAIInsight
@@ -23,7 +24,7 @@ export function FinanceAIInsightCard({ insight, onDismiss, onAction }: FinanceAI
   const Icon = config.icon
 
   return (
-    <div className="flex flex-col gap-3 p-4 rounded-[10px] border-l-4" style={{ borderColor: config.color, backgroundColor: config.bg }}>
+    <MotionCard className="ai-severity-card flex flex-col gap-3 p-4 rounded-[10px] border-l-4" style={{ borderColor: config.color, backgroundColor: config.bg }}>
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-3 flex-1">
@@ -89,6 +90,6 @@ export function FinanceAIInsightCard({ insight, onDismiss, onAction }: FinanceAI
           {insight.domain}
         </span>
       </button>
-    </div>
+    </MotionCard>
   )
 }

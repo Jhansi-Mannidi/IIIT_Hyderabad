@@ -1,6 +1,7 @@
 'use client'
 
 import { DepartmentCompliance } from '@/lib/useAttendanceData'
+import { MotionCard } from './MotionCard'
 
 interface DepartmentComplianceChartProps {
   data: DepartmentCompliance[]
@@ -10,7 +11,7 @@ export function DepartmentComplianceChart({ data }: DepartmentComplianceChartPro
   const sortedData = [...data].sort((a, b) => b.compliance - a.compliance)
 
   return (
-    <div className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
+    <MotionCard className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       <h3 className="text-[13px] font-[700] text-[#0F1722]">Department Compliance Ranking</h3>
       
       <div className="space-y-3">
@@ -57,6 +58,6 @@ export function DepartmentComplianceChart({ data }: DepartmentComplianceChartPro
           )
         })}
       </div>
-    </div>
+    </MotionCard>
   )
 }

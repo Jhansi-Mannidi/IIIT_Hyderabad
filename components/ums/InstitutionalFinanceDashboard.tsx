@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { RefreshCw } from 'lucide-react'
 import { useInstitutionalFinanceData } from '@/lib/useInstitutionalFinanceData'
 import { InstitutionalFinanceKPITile } from './InstitutionalFinanceKPITile'
@@ -12,10 +12,19 @@ import { VoucherFlowChart } from './VoucherFlowChart'
 import { FixedAssetsTable } from './FixedAssetsTable'
 import { BankReconTable } from './BankReconTable'
 import { InstitutionalFinanceAICard } from './InstitutionalFinanceAICard'
+import { ActiveFilterSummary } from './ActiveFilterSummary'
+import { useInteractions } from './InteractionProvider'
+import { applyDashboardFilters } from '@/lib/dashboardFiltering'
 
 export function InstitutionalFinanceDashboard() {
-  const data = useInstitutionalFinanceData()
+  const rawData = useInstitutionalFinanceData()
   const [dismissedInsights, setDismissedInsights] = useState<Set<string>>(new Set())
+  const [filters, setFilters] = useState<Record<string, unknown>>({})
+  const { searchQuery, setDashboardFilters, refreshDashboard, runAction } = useInteractions()
+  const data = useMemo(
+    () => applyDashboardFilters(rawData, filters, searchQuery),
+    [rawData, filters, searchQuery],
+  )
 
   const visibleInsights = data.aiInsights.filter(i => !dismissedInsights.has(i.id))
 
@@ -28,14 +37,23 @@ export function InstitutionalFinanceDashboard() {
             <h1 className="text-[20px] font-[700] text-[#0F1722]">Institutional Finance & Budget</h1>
             <p className="text-[13px] text-[#9AA6B4] mt-1">Budget control, cost-center spend, projects, vouchers, assets & bank reconciliation</p>
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 rounded-[8px] bg-white border border-[#D1D8DF] hover:bg-[#F6F8FB]">
+          <button
+            onClick={() => refreshDashboard('Institutional Finance')}
+            className="flex items-center gap-2 px-4 py-2 rounded-[8px] bg-white border border-[#D1D8DF] hover:bg-[#F6F8FB]"
+          >
             <RefreshCw size={14} className="text-[#5A6B7A]" />
             <span className="text-[12px] font-[600] text-[#0F1722]">Refresh</span>
           </button>
         </div>
 
         {/* Filters */}
-        <InstitutionalFinanceFilterBar />
+        <InstitutionalFinanceFilterBar
+          onFiltersChange={(nextFilters) => {
+            setFilters(nextFilters)
+            setDashboardFilters('Institutional Finance', nextFilters)
+          }}
+        />
+        <ActiveFilterSummary dashboard="Institutional Finance" filters={filters} searchQuery={searchQuery} />
 
         {/* KPI Strip */}
         <section aria-label="Finance KPIs">
@@ -79,7 +97,7 @@ export function InstitutionalFinanceDashboard() {
                   key={insight.id}
                   insight={insight}
                   onDismiss={() => setDismissedInsights(prev => new Set(prev).add(insight.id))}
-                  onAction={() => console.log(`Action: ${insight.action}`)}
+                  onAction={() => runAction('Institutional finance action started', insight.action)}
                 />
               ))}
             </div>

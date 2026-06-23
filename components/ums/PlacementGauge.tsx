@@ -1,6 +1,7 @@
 'use client'
 
 import { PlacementYear } from '@/lib/usePlacementsData'
+import { MotionCard } from './MotionCard'
 
 interface Props {
   current: PlacementYear
@@ -39,7 +40,7 @@ export function PlacementGauge({ current, target }: Props) {
   const ny2 = CY + (R + STROKE / 2 + 4) * Math.sin(targetAngle)
 
   return (
-    <div className="bg-white rounded-[12px] border border-[#E5ECEF] p-4 flex flex-col items-center gap-2">
+    <MotionCard className="bg-white rounded-[12px] border border-[#E5ECEF] p-4 flex flex-col items-center gap-2">
       <h3 className="text-[13px] font-[700] text-[#0F1722] self-start">Placement Rate Gauge</h3>
 
       <div className="relative" style={{ width: 180, height: 104 }}>
@@ -100,6 +101,6 @@ export function PlacementGauge({ current, target }: Props) {
       <p className="text-[10px] text-[#9AA6B4] italic self-start">
         Registration vs placed ratio is a [Derived] metric — placements_reg / placements_data aggregate grain.
       </p>
-    </div>
+    </MotionCard>
   )
 }

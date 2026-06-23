@@ -2,6 +2,7 @@
 
 import { AlertTriangle, TrendingDown } from 'lucide-react'
 import { StudentShortfall } from '@/lib/useAttendanceData'
+import { MotionCard } from './MotionCard'
 
 interface DetentionRiskShortfallListProps {
   data: StudentShortfall[]
@@ -12,7 +13,7 @@ export function DetentionRiskShortfallList({ data, onRowClick }: DetentionRiskSh
   const sortedData = [...data].sort((a, b) => a.attendancePercent - b.attendancePercent)
 
   return (
-    <div className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
+    <MotionCard className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       <h3 className="text-[13px] font-[700] text-[#0F1722]">Detention-Risk Shortfall List (Eligibility At Risk)</h3>
       
       <div className="overflow-x-auto">
@@ -75,6 +76,6 @@ export function DetentionRiskShortfallList({ data, onRowClick }: DetentionRiskSh
           </tbody>
         </table>
       </div>
-    </div>
+    </MotionCard>
   )
 }

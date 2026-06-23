@@ -1,6 +1,7 @@
 'use client'
 
 import { CenterOutput } from '@/lib/useResearchData'
+import { MotionCard } from './MotionCard'
 
 const CENTER_COLORS: Record<string, string> = {
   ECE:        '#2E8B8B',
@@ -20,7 +21,7 @@ export function CenterLeaderboard({ data, onCenterClick }: CenterLeaderboardProp
   const maxPubs = Math.max(...data.map(d => d.pubs))
 
   return (
-    <div className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
+    <MotionCard className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       <h3 className="text-[13px] font-[700] text-[#0F1722]">Center Output Leaderboard</h3>
 
       <div className="space-y-2.5">
@@ -55,6 +56,6 @@ export function CenterLeaderboard({ data, onCenterClick }: CenterLeaderboardProp
           )
         })}
       </div>
-    </div>
+    </MotionCard>
   )
 }
