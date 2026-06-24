@@ -92,14 +92,22 @@ export function ChartCard({
   return (
     <motion.div
       ref={cardRef}
-      className={cn('chart-card rounded-[12px] bg-white flex flex-col', className)}
+      className={cn('chart-card group/dashboard-card relative flex w-full min-w-0 flex-col overflow-hidden rounded-[12px] border border-[#E5ECEF] bg-white', className)}
       layout
-      initial={shouldReduceMotion ? false : { opacity: 0, y: 14, scale: 0.985 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, margin: '-40px' }}
-      whileHover={shouldReduceMotion ? undefined : { y: -4, scale: 1.006 }}
-      transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 24, scale: 0.975, filter: 'blur(8px)' }}
+      whileInView={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+      viewport={{ once: false, amount: 0.2, margin: '-48px' }}
+      whileHover={shouldReduceMotion ? undefined : { y: -6, scale: 1.01 }}
+      transition={{ duration: 0.44, ease: [0.16, 1, 0.3, 1] }}
     >
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-[3px] origin-left bg-gradient-to-r from-[#2E8B8B] via-[#5B8DEF] to-[#C55A11]"
+        initial={shouldReduceMotion ? false : { scaleX: 0, opacity: 0 }}
+        whileInView={{ scaleX: 1, opacity: 1 }}
+        viewport={{ once: false, amount: 0.4 }}
+        transition={{ duration: 0.72, ease: [0.16, 1, 0.3, 1] }}
+      />
       {/* ── Card header ── */}
       <div className="flex items-start justify-between gap-3 px-5 pt-5 pb-0">
         <div className="flex-1 min-w-0">

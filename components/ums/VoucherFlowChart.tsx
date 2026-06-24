@@ -21,8 +21,29 @@ export function VoucherFlowChart({ data }: VoucherFlowChartProps) {
             contentStyle={{
               backgroundColor: '#0F1722',
               border: 'none',
-              borderRadius: '8px',
+              borderRadius: '10px',
+              color: '#F8FAFC',
+              fontSize: '11px',
+              lineHeight: 1.35,
+              padding: '8px 10px',
+              boxShadow: '0 18px 36px rgba(15,23,34,0.22)',
             }}
+            labelStyle={{
+              color: '#F8FAFC',
+              fontSize: '11.5px',
+              fontWeight: 800,
+              marginBottom: 4,
+            }}
+            itemStyle={{
+              color: '#F8FAFC',
+              fontSize: '11px',
+              fontWeight: 650,
+              padding: 0,
+            }}
+            formatter={(value, name) => [
+              Number(value ?? 0).toLocaleString('en-IN'),
+              name === 'glPostings' ? 'GL Postings' : 'Vouchers',
+            ]}
           />
           <Area type="monotone" dataKey="vouchers" fill="#2E8B8B" stroke="#2E8B8B" />
           <Area type="monotone" dataKey="glPostings" fill="#C55A11" stroke="#C55A11" />

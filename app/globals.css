@@ -287,18 +287,22 @@ body {
 
   #main-content .ums-chart-card-body .recharts-responsive-container,
   #main-content .ums-analytics-chart-frame .recharts-responsive-container {
-    min-width: 460px !important;
+    min-width: 100% !important;
     min-height: 220px !important;
   }
 
   #main-content .ums-chart-card-body .recharts-wrapper,
   #main-content .ums-analytics-chart-frame .recharts-wrapper {
-    min-width: 460px !important;
+    min-width: 100% !important;
   }
 
   #main-content .ums-chart-card-body .recharts-surface,
   #main-content .ums-analytics-chart-frame .recharts-surface {
-    overflow: visible;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
   }
 
   #main-content .overflow-x-auto {
@@ -1007,22 +1011,1411 @@ section.bg-white {
   color: #A8B6C8 !important;
 }
 
+/* ── Responsive audit final layer.
+   This is intentionally last: it resolves competing legacy desktop utilities
+   and guarantees mobile/tablet/desktop behavior across the whole app. */
+.ums-app-shell {
+  --rw-page-pad: clamp(0.75rem, 2vw, 1.25rem);
+  --rw-card-radius: clamp(1rem, 2vw, 1.25rem);
+  --rw-touch: 2.5rem;
+}
+
+#main-content * {
+  min-width: 0;
+}
+
+#main-content :is(img, svg, canvas, video) {
+  max-width: 100%;
+}
+
+#main-content :is(button, a, input, select, textarea) {
+  touch-action: manipulation;
+}
+
+#main-content :is(button, [role="button"], select, input) {
+  min-height: var(--rw-touch);
+}
+
+@media (max-width: 767px) {
+  html,
+  body {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .ums-app-shell {
+    height: 100dvh !important;
+    overflow: hidden !important;
+  }
+
+  .ums-app-shell > header {
+    height: 3.5rem !important;
+    min-height: 3.5rem !important;
+    gap: 0.375rem !important;
+    padding-inline: max(0.5rem, env(safe-area-inset-left)) max(0.5rem, env(safe-area-inset-right)) !important;
+  }
+
+  .ums-app-shell > header [role="search"],
+  .ums-app-shell > header .hidden.lg\:flex {
+    display: none !important;
+  }
+
+  .ums-mobile-scroll-stage {
+    height: calc(100dvh - 3.5rem) !important;
+    overflow: hidden !important;
+  }
+
+  aside[aria-label="Domain navigation"] {
+    top: 3.5rem !important;
+    width: min(86vw, 19rem) !important;
+    max-width: min(86vw, 19rem) !important;
+    height: calc(100dvh - 3.5rem) !important;
+    max-height: calc(100dvh - 3.5rem) !important;
+    border-top-right-radius: 1.375rem !important;
+    overflow: hidden !important;
+  }
+
+  aside[aria-label="Domain navigation"] nav {
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #main-content {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: calc(100dvh - 3.5rem) !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    scroll-padding: 1rem;
+  }
+
+  #main-content > div,
+  #main-content > div > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: var(--rw-page-pad) !important;
+    margin: 0 auto !important;
+    overflow-x: hidden !important;
+  }
+
+  #main-content :is(section, article) {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  #main-content :is(section[class*="grid"], div[class*="grid"]) {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 0.875rem !important;
+  }
+
+  #main-content .ums-mobile-two-col {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  #main-content :is(
+    section[aria-label*="KPI" i],
+    section[aria-label*="metric" i],
+    section[aria-label*="metrics" i],
+    section[aria-label*="performance indicators" i]
+  ) > div[class*="grid"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  #main-content :is(.chart-card, .ums-motion-card, section.bg-white) {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: auto !important;
+    border-radius: var(--rw-card-radius) !important;
+    overflow: visible !important;
+  }
+
+  #main-content :is(.chart-card, .ums-motion-card):hover {
+    transform: none !important;
+  }
+
+  #main-content :is(h1) {
+    font-size: clamp(1.1rem, 5.2vw, 1.45rem) !important;
+    line-height: 1.25 !important;
+  }
+
+  #main-content :is(h2, h3) {
+    font-size: clamp(0.92rem, 4vw, 1.1rem) !important;
+    line-height: 1.3 !important;
+  }
+
+  #main-content :is(p, span, div, button, label, td, th) {
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+  }
+
+  #main-content :is(.ums-chart-card-body, .ums-analytics-chart-frame):has(.recharts-responsive-container) {
+    width: 100% !important;
+    height: clamp(240px, 66vw, 330px) !important;
+    min-height: 240px !important;
+    overflow: visible !important;
+    contain: none !important;
+  }
+
+  #main-content :is(.recharts-responsive-container, .recharts-wrapper, .recharts-surface) {
+    width: 100% !important;
+    min-width: 260px !important;
+    max-width: none !important;
+    min-height: 220px !important;
+    overflow: visible !important;
+  }
+
+  #main-content .ums-mobile-native-analytics {
+    display: grid !important;
+    gap: 0.75rem !important;
+  }
+
+  #main-content :is(.overflow-x-auto, [class*="overflow-x-auto"]) {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    padding-bottom: 0.25rem;
+  }
+
+  #main-content table {
+    min-width: 560px !important;
+    width: max-content !important;
+  }
+
+  #main-content :is(th, td) {
+    white-space: nowrap;
+    padding: 0.625rem 0.75rem !important;
+  }
+
+  #main-content :is(input, select, textarea) {
+    width: 100%;
+    max-width: 100%;
+    font-size: 16px !important;
+  }
+
+  #main-content :is([role="dialog"], [aria-modal="true"]) {
+    max-width: calc(100vw - 1rem) !important;
+    max-height: calc(100dvh - 1rem) !important;
+    overflow: auto !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  #main-content > div,
+  #main-content > div > div {
+    padding: 1rem !important;
+  }
+
+  #main-content :is(section[class*="grid"], div[class*="grid"]) {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  #main-content :is(section[aria-label*="KPI" i], section[aria-label*="metric" i]) > div[class*="grid"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  #main-content :is(.chart-card, .ums-motion-card) {
+    border-radius: 1.125rem !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  #main-content {
+    overflow: hidden !important;
+  }
+
+  #main-content > div,
+  #main-content > div > div {
+    max-width: 1920px;
+  }
+}
+
+/* ── Final mobile KPI polish: prevent cramped two-column cards and vertical text. */
+@media (max-width: 640px) {
+  #main-content :is(
+    section[aria-label*="KPI" i],
+    section[aria-label*="metric" i],
+    section[aria-label*="metrics" i],
+    section[aria-label*="performance indicators" i]
+  ) > div[class*="grid"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 0.875rem !important;
+  }
+
+  #main-content :is(
+    section[aria-label*="KPI" i],
+    section[aria-label*="metric" i],
+    section[aria-label*="metrics" i],
+    section[aria-label*="performance indicators" i]
+  ) :is(.chart-card, .ums-motion-card) {
+    min-height: 150px !important;
+    max-height: none !important;
+    padding: 1rem !important;
+  }
+
+  #main-content :is(
+    section[aria-label*="KPI" i],
+    section[aria-label*="metric" i],
+    section[aria-label*="metrics" i],
+    section[aria-label*="performance indicators" i]
+  ) :is(p, span, div, h3) {
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+  }
+
+  #main-content :is(
+    section[aria-label*="KPI" i],
+    section[aria-label*="metric" i],
+    section[aria-label*="metrics" i],
+    section[aria-label*="performance indicators" i]
+  ) :is(span[title], p[title], [data-metric]) {
+    white-space: normal !important;
+  }
+
+  #main-content :is(
+    section[aria-label*="KPI" i],
+    section[aria-label*="metric" i],
+    section[aria-label*="metrics" i],
+    section[aria-label*="performance indicators" i]
+  ) [data-metric] {
+    display: block !important;
+    font-size: clamp(1.65rem, 8vw, 2rem) !important;
+    line-height: 1.05 !important;
+    letter-spacing: -0.045em !important;
+  }
+
+  #main-content :is(
+    section[aria-label*="KPI" i],
+    section[aria-label*="metric" i],
+    section[aria-label*="metrics" i],
+    section[aria-label*="performance indicators" i]
+  ) :is(.rounded-full, [class*="rounded-full"]) {
+    max-width: none !important;
+    white-space: nowrap !important;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 900px) {
+  #main-content :is(
+    section[aria-label*="KPI" i],
+    section[aria-label*="metric" i],
+    section[aria-label*="metrics" i],
+    section[aria-label*="performance indicators" i]
+  ) > div[class*="grid"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* ── Final mobile analytics visibility hardening.
+   Recharts can measure 0/-1 width while animated cards settle on phones.
+   These rules give every chart frame a concrete box and keep native fallbacks visible. */
+@media (max-width: 768px) {
+  #main-content .ums-analytics-chart-frame,
+  #main-content .ums-chart-card-body:has(.recharts-responsive-container) {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 240px !important;
+    height: clamp(240px, 62vw, 320px) !important;
+    overflow: visible !important;
+    contain: none !important;
+  }
+
+  #main-content .ums-analytics-chart-frame > .recharts-responsive-container,
+  #main-content .ums-chart-card-body .recharts-responsive-container {
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 260px !important;
+    min-height: 220px !important;
+    max-width: none !important;
+    overflow: visible !important;
+  }
+
+  #main-content .recharts-wrapper {
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 260px !important;
+    min-height: 220px !important;
+    max-width: none !important;
+    overflow: visible !important;
+  }
+
+  #main-content .recharts-surface {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 260px !important;
+    min-height: 220px !important;
+    max-width: none !important;
+    overflow: visible !important;
+  }
+
+  #main-content .ums-mobile-native-analytics {
+    display: grid !important;
+  }
+}
+
+@media (min-width: 769px) {
+  #main-content .ums-mobile-native-analytics {
+    display: none !important;
+  }
+}
+
+/* ── Unified multi-analytics structure: consistent desktop and mobile layouts. */
+#main-content {
+  --analytics-gap: 1rem;
+  --analytics-kpi-min: 150px;
+  --analytics-chart-min: 330px;
+}
+
+#main-content section[aria-label] {
+  container-type: inline-size;
+}
+
+#main-content :is(
+  section[aria-label*="KPI" i],
+  section[aria-label*="metric" i],
+  section[aria-label*="metrics" i],
+  section[aria-label*="performance indicators" i]
+) > div[class*="grid"] {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--analytics-kpi-min)), 1fr)) !important;
+  gap: 0.875rem !important;
+  align-items: stretch !important;
+}
+
+#main-content :is(
+  section[aria-label*="chart" i],
+  section[aria-label*="charts" i],
+  section[aria-label*="analytics" i],
+  section[aria-label*="analysis" i],
+  section[aria-label*="trend" i],
+  section[aria-label*="trends" i],
+  section[aria-label*="finance" i],
+  section[aria-label*="enrollment" i],
+  section[aria-label*="operations" i],
+  section[aria-label*="workforce" i],
+  section[aria-label*="occupancy" i],
+  section[aria-label*="attendance" i],
+  section[aria-label*="publication" i],
+  section[aria-label*="placement" i],
+  section[aria-label*="scholarship" i],
+  section[aria-label*="feedback" i]
+):is([class*="grid"]) {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--analytics-chart-min)), 1fr)) !important;
+  gap: var(--analytics-gap) !important;
+  align-items: stretch !important;
+}
+
+#main-content :is(
+  section[aria-label*="chart" i],
+  section[aria-label*="charts" i],
+  section[aria-label*="analytics" i],
+  section[aria-label*="analysis" i],
+  section[aria-label*="trend" i],
+  section[aria-label*="trends" i]
+) > :is(.chart-card, .ums-motion-card) {
+  height: 100%;
+  min-width: 0;
+}
+
+#main-content .chart-card {
+  min-height: 330px;
+}
+
+#main-content .chart-card .ums-chart-card-body {
+  display: flex;
+  min-height: 230px;
+  flex-direction: column;
+}
+
+#main-content .chart-card .ums-chart-card-body > :has(.recharts-responsive-container) {
+  flex: 1 1 auto;
+  min-height: 230px;
+}
+
+#main-content :is(.recharts-responsive-container, .recharts-wrapper) {
+  min-width: 0 !important;
+}
+
+@media (min-width: 1200px) {
+  #main-content {
+    --analytics-gap: 1.125rem;
+    --analytics-kpi-min: 168px;
+    --analytics-chart-min: 360px;
+  }
+
+  #main-content section[class*="grid"]:has(> .chart-card > .ums-chart-card-body) {
+    grid-auto-flow: dense;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1199px) {
+  #main-content {
+    --analytics-kpi-min: 148px;
+    --analytics-chart-min: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  #main-content {
+    --analytics-gap: 0.875rem;
+    --analytics-kpi-min: 0;
+    --analytics-chart-min: 100%;
+  }
+
+  #main-content :is(
+    section[aria-label*="KPI" i],
+    section[aria-label*="metric" i],
+    section[aria-label*="metrics" i],
+    section[aria-label*="performance indicators" i]
+  ) > div[class*="grid"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.75rem !important;
+  }
+
+  #main-content :is(
+    section[aria-label*="chart" i],
+    section[aria-label*="charts" i],
+    section[aria-label*="analytics" i],
+    section[aria-label*="analysis" i],
+    section[aria-label*="trend" i],
+    section[aria-label*="trends" i],
+    section[aria-label*="finance" i],
+    section[aria-label*="enrollment" i],
+    section[aria-label*="operations" i],
+    section[aria-label*="workforce" i],
+    section[aria-label*="occupancy" i],
+    section[aria-label*="attendance" i],
+    section[aria-label*="publication" i],
+    section[aria-label*="placement" i],
+    section[aria-label*="scholarship" i],
+    section[aria-label*="feedback" i]
+  ):is([class*="grid"]) {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 0.875rem !important;
+  }
+
+  #main-content .chart-card {
+    min-height: 300px;
+  }
+
+  #main-content .chart-card .ums-chart-card-body {
+    min-height: 235px;
+  }
+
+  #main-content .chart-card .ums-chart-card-body > :has(.recharts-responsive-container) {
+    min-height: 235px;
+  }
+
+  #main-content :is(.chart-card, .ums-motion-card) {
+    width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  #main-content :is(
+    section[aria-label*="KPI" i],
+    section[aria-label*="metric" i],
+    section[aria-label*="metrics" i],
+    section[aria-label*="performance indicators" i]
+  ) > div[class*="grid"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.625rem !important;
+  }
+
+  #main-content :is(
+    section[aria-label*="KPI" i],
+    section[aria-label*="metric" i],
+    section[aria-label*="metrics" i],
+    section[aria-label*="performance indicators" i]
+  ) > div[class*="grid"] > * {
+    min-height: 132px !important;
+  }
+}
+
+/* ── Final responsive application layer: desktop + mobile parity. */
+@media (max-width: 768px) {
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .ums-app-shell {
+    height: 100dvh;
+    max-width: 100vw;
+    overflow: hidden;
+  }
+
+  .ums-app-shell > header {
+    height: 3.5rem;
+    min-height: 3.5rem;
+    gap: 0.375rem !important;
+    padding-inline: max(0.5rem, env(safe-area-inset-left)) max(0.5rem, env(safe-area-inset-right)) !important;
+  }
+
+  .ums-app-shell > header > :is(button, div) {
+    flex-shrink: 0;
+  }
+
+  .ums-app-shell > header [role="search"] {
+    display: none !important;
+  }
+
+  .ums-app-shell > header :is(button) {
+    min-width: 2.25rem;
+  }
+
+  .ums-mobile-scroll-stage {
+    height: calc(100dvh - 3.5rem);
+    width: 100%;
+    max-width: 100vw;
+    overflow: hidden !important;
+  }
+
+  aside[aria-label="Domain navigation"] {
+    width: min(86vw, 18rem) !important;
+    max-width: min(86vw, 18rem);
+    border-top-right-radius: 1.25rem;
+    box-shadow: 18px 0 48px rgba(5, 11, 20, 0.30) !important;
+  }
+
+  aside[aria-label="Domain navigation"] nav {
+    padding-bottom: 1rem;
+  }
+
+  #main-content {
+    width: 100%;
+    max-width: 100vw;
+    min-width: 0;
+    height: calc(100dvh - 3.5rem);
+    overflow: auto !important;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    scroll-padding: 1rem;
+  }
+
+  #main-content > div,
+  #main-content > div > div {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0 !important;
+    margin-inline: auto !important;
+    padding-inline: 0.75rem !important;
+    padding-block: 0.875rem 1.25rem !important;
+    overflow-x: clip;
+  }
+
+  #main-content :is(section, article, .chart-card, .ums-motion-card) {
+    max-width: 100%;
+    min-width: 0 !important;
+  }
+
+  #main-content :is(.grid, section[class*="grid"], div[class*="grid"]) {
+    grid-template-columns: minmax(0, 1fr) !important;
+    align-items: stretch !important;
+  }
+
+  #main-content .ums-mobile-two-col {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  #main-content :is(
+    [class*="grid-cols-2"],
+    [class*="grid-cols-3"],
+    [class*="grid-cols-4"],
+    [class*="grid-cols-5"],
+    [class*="grid-cols-6"],
+    [class*="lg:grid-cols"],
+    [class*="xl:grid-cols"]
+  ) {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  #main-content .ums-mobile-two-col {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  #main-content :is(.chart-card, .ums-motion-card, .rounded-\[12px\], .rounded-\[16px\], .rounded-\[18px\], .rounded-\[22px\]) {
+    border-radius: 1rem !important;
+  }
+
+  #main-content :is(.chart-card, .ums-motion-card) {
+    overflow: visible !important;
+  }
+
+  #main-content :is(h1) {
+    font-size: clamp(1.05rem, 5vw, 1.35rem) !important;
+    line-height: 1.25 !important;
+    letter-spacing: -0.035em !important;
+  }
+
+  #main-content :is(h2, h3) {
+    font-size: clamp(0.88rem, 3.8vw, 1.05rem) !important;
+    line-height: 1.3 !important;
+  }
+
+  #main-content :is(p, span, button, td, th, label, select, input) {
+    text-wrap: pretty;
+  }
+
+  #main-content :is(.ums-chart-card-body, .ums-analytics-chart-frame, [class*="overflow-x-auto"]) {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
+
+  #main-content :is(.recharts-responsive-container, .recharts-wrapper) {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    min-height: 220px !important;
+  }
+
+  #main-content :is(.ums-mobile-wide-chart) :is(.recharts-responsive-container, .recharts-wrapper),
+  #main-content :is(table) {
+    min-width: 520px !important;
+    max-width: none !important;
+  }
+
+  #main-content :is(table) {
+    width: max-content !important;
+  }
+
+  #main-content :is(.recharts-surface) {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: 100% !important;
+    overflow: visible !important;
+  }
+
+  #main-content .recharts-legend-wrapper {
+    max-width: 100% !important;
+    overflow: hidden;
+  }
+
+  #main-content :is(.recharts-legend-item-text, .recharts-text, .recharts-label) {
+    font-size: 10px !important;
+  }
+
+  #main-content :is(.recharts-tooltip-wrapper) {
+    max-width: calc(100vw - 2rem) !important;
+    pointer-events: none;
+  }
+
+  #main-content :is(.flex-row, [class*="sm:flex-row"], [class*="lg:flex-row"]) {
+    min-width: 0;
+  }
+
+  #main-content :is(.items-center.justify-between) {
+    gap: 0.75rem;
+  }
+
+  #main-content :is(button, select, input) {
+    min-height: 2.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .ums-app-shell > header {
+    gap: 0.25rem !important;
+  }
+
+  .ums-app-shell > header button {
+    width: 2.15rem;
+    min-width: 2.15rem;
+  }
+
+  .ums-app-shell > header [aria-label="User menu"] {
+    padding-inline: 0.35rem !important;
+  }
+
+  #main-content > div,
+  #main-content > div > div {
+    padding-inline: 0.625rem !important;
+  }
+
+  #main-content :is(.ums-motion-card):not(.chart-card) {
+    padding: 0.875rem !important;
+  }
+
+  #main-content .chart-card > div:first-child {
+    padding: 0.875rem 0.875rem 0 !important;
+  }
+
+  #main-content .ums-chart-card-body {
+    padding-inline: 0.875rem !important;
+  }
+}
+
+/* ── VoltusWave design-system normalization layer ─────────────────────────── */
+.ums-app-shell {
+  --ds-radius-card: 18px;
+  --ds-radius-panel: 14px;
+  --ds-radius-control: 10px;
+  --ds-gap-section: 1rem;
+  --ds-focus: rgba(46, 139, 139, 0.24);
+  --ds-card-shadow: 0 18px 42px rgba(31, 56, 100, 0.09);
+  --ds-card-shadow-hover: 0 22px 54px rgba(31, 56, 100, 0.13);
+}
+
+.ums-app-shell[data-theme="dark"] {
+  --ds-focus: rgba(127, 219, 219, 0.22);
+  --ds-card-shadow: 0 22px 54px rgba(0, 0, 0, 0.34);
+  --ds-card-shadow-hover: 0 26px 64px rgba(0, 0, 0, 0.42);
+}
+
+#main-content {
+  color: var(--vw-text-strong);
+}
+
+#main-content :is(h1, h2, h3, h4) {
+  color: var(--vw-text-strong);
+  letter-spacing: -0.025em;
+}
+
+#main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .rounded-\[12px\].border,
+  .rounded-\[10px\].border,
+  section.bg-white
+) {
+  border-radius: var(--ds-radius-card) !important;
+  border-color: var(--vw-line-soft) !important;
+  box-shadow: var(--ds-card-shadow) !important;
+}
+
+#main-content :is(.chart-card, .ums-motion-card, .rounded-\[12px\].border, .rounded-\[10px\].border):hover {
+  border-color: rgba(46, 139, 139, 0.22) !important;
+  box-shadow: var(--ds-card-shadow-hover) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(.chart-card, .ums-motion-card, .rounded-\[12px\].border, .rounded-\[10px\].border):hover {
+  border-color: rgba(127, 219, 219, 0.26) !important;
+}
+
+#main-content :is(input, select, textarea) {
+  min-height: 36px;
+  border-radius: var(--ds-radius-control) !important;
+  font-weight: 650;
+}
+
+#main-content :is(input, select, textarea, button):focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 3px var(--ds-focus) !important;
+}
+
+#main-content :is(button, [role="button"]) {
+  border-radius: var(--ds-radius-control);
+}
+
+#main-content :is(table) {
+  overflow: hidden;
+  border-radius: var(--ds-radius-panel);
+}
+
+#main-content :is(thead th) {
+  color: var(--vw-text-muted) !important;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+#main-content :is(tbody td) {
+  color: var(--vw-text-strong);
+}
+
+#main-content :is(.recharts-wrapper) {
+  font-family: var(--font-sans);
+}
+
+#main-content :is(.recharts-text, .recharts-label, .recharts-legend-item-text) {
+  font-size: 11px;
+  font-weight: 650;
+}
+
+#main-content :is(.recharts-cartesian-grid line) {
+  stroke-dasharray: 3 6;
+}
+
+#main-content section[aria-label] {
+  scroll-margin-top: 4.5rem;
+}
+
+@media (max-width: 640px) {
+  .ums-app-shell {
+    --ds-radius-card: 16px;
+    --ds-gap-section: 0.875rem;
+  }
+
+  #main-content :is(.chart-card, .ums-motion-card, .rounded-\[12px\].border, .rounded-\[10px\].border) {
+    border-radius: var(--ds-radius-card) !important;
+  }
+
+  #main-content :is(h1) {
+    font-size: 1.1rem !important;
+    line-height: 1.35 !important;
+  }
+
+  #main-content :is(h2, h3) {
+    line-height: 1.35 !important;
+  }
+
+  #main-content :is(.grid) {
+    gap: var(--ds-gap-section);
+  }
+}
+
+/* ── App-wide theme surface normalization ───────────────────────────────────
+   Many dashboard modules use fixed Tailwind hex utilities. Keep the design
+   system consistent by remapping those utilities inside the themed app shell. */
+.ums-app-shell[data-theme="light"] {
+  --ums-theme-canvas: #F3F6FA;
+  --ums-theme-surface: #FFFFFF;
+  --ums-theme-surface-soft: #F8FAFD;
+  --ums-theme-surface-muted: #EEF2F8;
+  --ums-theme-border: rgba(31, 56, 100, 0.12);
+  --ums-theme-border-strong: rgba(31, 56, 100, 0.18);
+  --ums-theme-text: #0F1722;
+  --ums-theme-text-soft: #5A6675;
+  --ums-theme-text-muted: #7A8798;
+  --ums-theme-hover: #EEF2F8;
+}
+
+.ums-app-shell[data-theme="dark"] {
+  --ums-theme-canvas: #07101D;
+  --ums-theme-surface: #101B2E;
+  --ums-theme-surface-soft: #0B1626;
+  --ums-theme-surface-muted: #142136;
+  --ums-theme-border: rgba(143, 180, 248, 0.18);
+  --ums-theme-border-strong: rgba(127, 219, 219, 0.26);
+  --ums-theme-text: #F8FAFC;
+  --ums-theme-text-soft: #C5D0DE;
+  --ums-theme-text-muted: #93A4BA;
+  --ums-theme-hover: rgba(127, 219, 219, 0.10);
+}
+
+.ums-app-shell[data-theme="light"] #main-content :is(
+  .bg-white,
+  .bg-\[\#FFFFFF\],
+  .bg-\[\#F8FAFD\],
+  .bg-\[\#F8FAFB\],
+  .bg-\[\#F6F8FB\],
+  .bg-\[\#F5F8FB\],
+  .bg-\[\#EEF2F8\]
+) {
+  background-color: var(--ums-theme-surface) !important;
+}
+
+.ums-app-shell[data-theme="light"] #main-content :is(.border, [class*="border-"]) {
+  border-color: var(--ums-theme-border) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(
+  .bg-white,
+  .bg-\[\#FFFFFF\],
+  .bg-\[\#F8FAFD\],
+  .bg-\[\#F8FAFB\],
+  .bg-\[\#F6F8FB\],
+  .bg-\[\#F5F8FB\],
+  .bg-\[\#F5F7FB\],
+  .bg-\[\#F9FAFB\],
+  .bg-\[\#F0F2F7\],
+  .bg-\[\#F0F4F7\],
+  .bg-\[\#EEF2F8\],
+  .bg-\[\#EEF2F7\],
+  .bg-\[\#E8F5F5\],
+  .bg-\[\#FBEEE4\],
+  .bg-\[\#FFF4ED\],
+  .bg-\[\#FDECEC\]
+) {
+  background-color: var(--ums-theme-surface-soft) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  section.bg-white,
+  .rounded-\[22px\],
+  .rounded-\[18px\],
+  .rounded-\[16px\],
+  .rounded-\[14px\],
+  .rounded-\[12px\],
+  .rounded-\[10px\],
+  .rounded-lg
+):is(.border, [class*="border"], .bg-white, [class*="bg-\["]) {
+  background:
+    linear-gradient(145deg, rgba(18, 31, 51, 0.98), rgba(8, 17, 31, 0.98)) !important;
+  border-color: var(--ums-theme-border) !important;
+  color: var(--ums-theme-text) !important;
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.055) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(
+  .rounded-full,
+  .rounded-\[4px\],
+  .rounded-\[6px\],
+  .rounded-\[8px\],
+  .rounded-\[9px\],
+  .rounded-\[10px\]
+):is(.bg-white, .bg-\[\#FFFFFF\], .bg-\[\#EEF2F8\], .bg-\[\#E8F5F5\], .bg-\[\#FBEEE4\], .bg-\[\#FFF4ED\]) {
+  background-color: var(--ums-theme-surface-muted) !important;
+  border-color: var(--ums-theme-border) !important;
+  color: var(--ums-theme-text) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(
+  .text-\[\#0F1722\],
+  .text-\[\#14223D\],
+  .text-\[\#1F3864\],
+  .text-\[\#2B3645\]
+) {
+  color: var(--ums-theme-text) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(
+  .text-\[\#5A6675\],
+  .text-\[\#5A6B7A\],
+  .text-\[\#617588\],
+  .text-\[\#6B7C99\],
+  .text-\[\#9AA6B4\],
+  .text-slate-500,
+  .text-slate-600,
+  .text-gray-500,
+  .text-gray-600
+) {
+  color: var(--ums-theme-text-soft) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(.border, [class*="border-"]) {
+  border-color: var(--ums-theme-border) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(button, [role="button"], a):hover {
+  background-color: var(--ums-theme-hover) !important;
+  border-color: var(--ums-theme-border-strong) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(input, select, textarea) {
+  background-color: rgba(8, 17, 31, 0.92) !important;
+  border-color: var(--ums-theme-border) !important;
+  color: var(--ums-theme-text) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(input, select, textarea)::placeholder {
+  color: var(--ums-theme-text-muted) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(table, thead, tbody, tr, td, th) {
+  border-color: var(--ums-theme-border) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content tbody tr:hover {
+  background-color: rgba(127, 219, 219, 0.08) !important;
+}
+
+@keyframes ums-panel-sheen {
+  0% {
+    transform: translateX(-120%) skewX(-18deg);
+    opacity: 0;
+  }
+  22% {
+    opacity: 0.68;
+  }
+  56%,
+  100% {
+    transform: translateX(180%) skewX(-18deg);
+    opacity: 0;
+  }
+}
+
+@keyframes ums-panel-breathe {
+  0%,
+  100% {
+    box-shadow:
+      var(--ds-card-shadow),
+      inset 0 1px 0 rgba(255, 255, 255, 0.70);
+  }
+  50% {
+    box-shadow:
+      0 22px 52px rgba(31, 56, 100, 0.13),
+      inset 0 1px 0 rgba(255, 255, 255, 0.86);
+  }
+}
+
+.ums-app-shell[data-theme="dark"] {
+  --ums-panel-highlight: rgba(127, 219, 219, 0.18);
+  --ums-panel-sheen: rgba(255, 255, 255, 0.12);
+}
+
+.ums-app-shell[data-theme="light"] {
+  --ums-panel-highlight: rgba(46, 139, 139, 0.16);
+  --ums-panel-sheen: rgba(255, 255, 255, 0.88);
+}
+
+#main-content :is(.chart-card, .ums-motion-card, .rounded-\[12px\].border, .rounded-\[10px\].border) {
+  position: relative;
+  isolation: isolate;
+  transform-style: preserve-3d;
+  transition:
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    background-color 220ms ease;
+}
+
+#main-content :is(.chart-card, .ums-motion-card, .rounded-\[12px\].border, .rounded-\[10px\].border)::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 12% 0%, var(--ums-panel-highlight), transparent 16rem),
+    linear-gradient(110deg, transparent 0%, transparent 38%, var(--ums-panel-sheen) 48%, transparent 58%, transparent 100%);
+  opacity: 0;
+  mix-blend-mode: screen;
+  transform: translateX(-120%) skewX(-18deg);
+}
+
+#main-content :is(.chart-card, .ums-motion-card, .rounded-\[12px\].border, .rounded-\[10px\].border):hover::after {
+  animation: ums-panel-sheen 1.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#main-content .chart-card {
+  animation: ums-panel-breathe 7s ease-in-out infinite;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content .chart-card {
+  animation: none;
+}
+
+#main-content :is(.chart-card, .ums-motion-card) > * {
+  position: relative;
+  z-index: 2;
+}
+
+#main-content :is(.recharts-wrapper, .recharts-surface) {
+  transition:
+    filter 220ms ease,
+    transform 220ms ease;
+}
+
+#main-content .chart-card:hover :is(.recharts-wrapper, .recharts-surface) {
+  filter: saturate(1.05) contrast(1.02);
+}
+
+/* ── App-wide analytics motion: charts should enter with the page. */
+@keyframes ums-analytics-rise {
+  from {
+    opacity: 0.18;
+    transform: scaleY(0.04);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes ums-analytics-grow-x {
+  from {
+    opacity: 0.22;
+    transform: scaleX(0.04);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes ums-analytics-line {
+  from {
+    opacity: 0.3;
+    stroke-dasharray: 1200;
+    stroke-dashoffset: 1200;
+  }
+  to {
+    opacity: 1;
+    stroke-dasharray: 1200;
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes ums-analytics-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ums-analytics-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+#main-content :is(.recharts-bar-rectangle path, .recharts-bar-rectangle .recharts-rectangle) {
+  transform-box: fill-box;
+  transform-origin: bottom;
+  animation: ums-analytics-rise 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+#main-content :is(.recharts-line-curve, .recharts-area-curve) {
+  animation: ums-analytics-line 1200ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+#main-content :is(.recharts-area-area) {
+  animation: ums-analytics-fade-up 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+#main-content :is(.recharts-sector) {
+  animation: ums-analytics-fade-in 850ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+#main-content :is(.recharts-scatter-symbol) {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ums-analytics-fade-up 850ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+#main-content :is(
+  .h-full.rounded-full,
+  .h-full.rounded-\[7px\],
+  .absolute.inset-y-0.left-0,
+  [role="progressbar"] > div
+) {
+  transform-origin: left center;
+  animation: ums-analytics-grow-x 850ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+#main-content :is(.rounded-t-\[10px\], .rounded-t-\[6px\]) {
+  transform-origin: bottom center;
+  animation: ums-analytics-rise 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #main-content :is(
+    .recharts-bar-rectangle path,
+    .recharts-bar-rectangle .recharts-rectangle,
+    .recharts-line-curve,
+    .recharts-area-curve,
+    .recharts-area-area,
+    .recharts-sector,
+    .recharts-scatter-symbol,
+    .h-full.rounded-full,
+    .h-full.rounded-\[7px\],
+    .absolute.inset-y-0.left-0,
+    [role="progressbar"] > div,
+    .rounded-t-\[10px\],
+    .rounded-t-\[6px\]
+  ) {
+    animation: none !important;
+  }
+}
+
+/* Keep Recharts cards from collapsing while filters, route transitions, and animations settle. */
+#main-content :is(.chart-card, .ums-motion-card):has(.recharts-responsive-container) {
+  min-width: 0;
+}
+
+#main-content :is(.chart-card, .ums-motion-card) :is(.recharts-responsive-container, .recharts-wrapper) {
+  min-width: 0;
+}
+
+#main-content .ums-chart-card-body:has(.recharts-responsive-container) {
+  min-height: 220px;
+}
+
+#main-content .ums-chart-card-body > :is([class*="h-72"], [class*="h-80"]) {
+  max-height: 280px;
+}
+
+#main-content .ums-chart-card-body > :is([class*="h-64"], [class*="h-72"], [class*="h-80"]):has(.recharts-responsive-container) {
+  display: flex;
+  min-height: 240px;
+  align-items: center;
+}
+
+#main-content .ums-chart-card-body > :is([class*="h-64"], [class*="h-72"], [class*="h-80"]) > .recharts-responsive-container {
+  flex: 1 1 auto;
+}
+
+/* ── Mobile chart stability: keep standalone analytics visible on phones. */
+@media (max-width: 640px) {
+  #main-content :is(.ums-motion-card, .chart-card, .ums-analytics-chart-frame) {
+    min-width: 0;
+  }
+
+  #main-content :is(.ums-motion-card, .chart-card, .ums-analytics-chart-frame):has(.recharts-responsive-container),
+  #main-content :is(div, section, article):has(> .recharts-responsive-container) {
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  #main-content :is(.ums-motion-card, .chart-card, .ums-analytics-chart-frame) :is(.recharts-responsive-container, .recharts-wrapper),
+  #main-content :is(div, section, article):has(> .recharts-responsive-container) > :is(.recharts-responsive-container, .recharts-wrapper) {
+    min-width: 100% !important;
+    max-width: 100% !important;
+    min-height: 220px !important;
+  }
+
+  #main-content :is(.ums-motion-card, .chart-card, .ums-analytics-chart-frame) .recharts-surface,
+  #main-content :is(div, section, article):has(> .recharts-responsive-container) .recharts-surface {
+    min-width: 0 !important;
+    min-height: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  #main-content :is(.recharts-legend-icon, .recharts-dot, .recharts-active-dot, .recharts-tooltip-cursor) {
+    transform: none !important;
+    transform-origin: center !important;
+    animation: none !important;
+  }
+
+  #main-content :is(.recharts-legend-icon) {
+    width: 8px !important;
+    height: 8px !important;
+  }
+
+  #main-content :is(.recharts-dot, .recharts-active-dot) {
+    r: 3;
+  }
+
+  #main-content :is(.ums-motion-card, .chart-card, .ums-analytics-chart-frame) :is(.w-full.h-64, .w-full.h-72, .w-full.h-80) {
+    min-height: 280px !important;
+  }
+
+  #main-content .ums-mobile-wide-chart {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #main-content .ums-mobile-wide-chart :is(.recharts-responsive-container, .recharts-wrapper) {
+    min-width: 460px !important;
+    max-width: none !important;
+  }
+}
+
+.ums-app-shell[data-theme="light"] #main-content .recharts-tooltip-wrapper {
+  filter: drop-shadow(0 18px 34px rgba(31, 56, 100, 0.16));
+}
+
+.ums-app-shell[data-theme="light"] #main-content .recharts-tooltip-wrapper :is(
+  .recharts-default-tooltip
+),
+.ums-app-shell[data-theme="light"] #main-content .recharts-tooltip-wrapper > div {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 251, 255, 0.98)) !important;
+  border: 1px solid rgba(31, 56, 100, 0.14) !important;
+  color: #0F1722 !important;
+  border-radius: 10px !important;
+  padding: 8px 10px !important;
+  box-shadow:
+    0 18px 36px rgba(31, 56, 100, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88) !important;
+}
+
+.ums-app-shell[data-theme="light"] #main-content .recharts-tooltip-wrapper > div[style] {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 251, 255, 0.98)) !important;
+  color: #0F1722 !important;
+}
+
+.ums-app-shell[data-theme="light"] #main-content .recharts-tooltip-cursor {
+  stroke: rgba(31, 56, 100, 0.18) !important;
+  fill: rgba(31, 56, 100, 0.045) !important;
+}
+
+.ums-app-shell[data-theme="light"] #main-content .recharts-tooltip-wrapper :is(
+  p,
+  span,
+  li,
+  .recharts-tooltip-label,
+  .recharts-tooltip-item,
+  .recharts-tooltip-item-name,
+  .recharts-tooltip-item-value
+) {
+  color: #0F1722 !important;
+  font-size: 11px !important;
+  line-height: 1.35 !important;
+  font-weight: 650 !important;
+}
+
+.ums-app-shell[data-theme="light"] #main-content .recharts-tooltip-wrapper :is(
+  .recharts-tooltip-label
+) {
+  margin-bottom: 4px !important;
+  font-size: 11.5px !important;
+  font-weight: 800 !important;
+}
+
+.ums-app-shell[data-theme="light"] #main-content .recharts-tooltip-wrapper :is(
+  .recharts-tooltip-item-list
+) {
+  display: grid !important;
+  gap: 3px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 .ums-app-shell[data-theme="dark"] #main-content .recharts-tooltip-wrapper {
   filter: drop-shadow(0 18px 34px rgba(0, 0, 0, 0.36));
 }
 
 .ums-app-shell[data-theme="dark"] #main-content .recharts-tooltip-wrapper :is(
-  .recharts-default-tooltip,
-  [class*="tooltip"],
-  div
-) {
+  .recharts-default-tooltip
+),
+.ums-app-shell[data-theme="dark"] #main-content .recharts-tooltip-wrapper > div {
   background:
     linear-gradient(145deg, rgba(16, 27, 46, 0.98), rgba(7, 16, 29, 0.98)) !important;
   border: 1px solid rgba(143, 180, 248, 0.22) !important;
   color: #F8FAFC !important;
+  border-radius: 10px !important;
+  padding: 8px 10px !important;
   box-shadow:
     0 18px 36px rgba(0, 0, 0, 0.34),
     inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content .recharts-tooltip-wrapper > div[style] {
+  background:
+    linear-gradient(145deg, rgba(16, 27, 46, 0.98), rgba(7, 16, 29, 0.98)) !important;
+  color: #F8FAFC !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content .recharts-tooltip-cursor {
+  stroke: rgba(143, 180, 248, 0.22) !important;
+  fill: rgba(143, 180, 248, 0.06) !important;
 }
 
 .ums-app-shell[data-theme="dark"] #main-content .recharts-tooltip-wrapper :is(
@@ -1035,6 +2428,39 @@ section.bg-white {
   .recharts-tooltip-item-value
 ) {
   color: #F8FAFC !important;
+  font-size: 11px !important;
+  line-height: 1.35 !important;
+  font-weight: 650 !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content .recharts-tooltip-wrapper :is(
+  .recharts-tooltip-label
+) {
+  margin-bottom: 4px !important;
+  font-size: 11.5px !important;
+  font-weight: 800 !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content .recharts-tooltip-wrapper :is(
+  .recharts-tooltip-item-list
+) {
+  display: grid !important;
+  gap: 3px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+@media (max-width: 640px) {
+  #main-content .recharts-tooltip-wrapper {
+    max-width: min(260px, calc(100vw - 2rem)) !important;
+    z-index: 60 !important;
+  }
+
+  #main-content .recharts-tooltip-wrapper > div,
+  #main-content .recharts-default-tooltip {
+    max-width: min(260px, calc(100vw - 2rem)) !important;
+    white-space: normal !important;
+  }
 }
 
 .ums-app-shell[data-theme="dark"] #main-content :is(
@@ -1334,7 +2760,656 @@ section.bg-white {
   background: transparent !important;
 }
 
+/* ── Mobile application polish: unified professional layout and themes. */
+@media (max-width: 640px) {
+  html,
+  body {
+    min-width: 320px;
+    overflow: hidden;
+  }
+
+  .ums-app-shell {
+    background:
+      radial-gradient(circle at 18% -6%, rgba(46, 139, 139, 0.10), transparent 18rem),
+      linear-gradient(180deg, #F7FAFD 0%, #EEF3F8 100%) !important;
+  }
+
+  .ums-app-shell[data-theme="dark"] {
+    background:
+      radial-gradient(circle at 18% -6%, rgba(46, 139, 139, 0.16), transparent 18rem),
+      linear-gradient(180deg, #07101D 0%, #050B14 100%) !important;
+  }
+
+  .ums-app-shell > header {
+    height: 60px !important;
+    gap: 8px !important;
+    padding-inline: 10px !important;
+  }
+
+  .ums-app-shell > header :is(button, [role="search"]) {
+    flex-shrink: 0;
+  }
+
+  .ums-app-shell > header button {
+    min-height: 38px;
+    min-width: 38px;
+    border-radius: 12px !important;
+  }
+
+  .ums-app-shell > header [aria-label="User menu"] {
+    width: auto;
+    min-width: 44px;
+    padding-inline: 8px !important;
+  }
+
+  .ums-app-shell > header [aria-label="User menu"] span:not(:first-child) {
+    display: none !important;
+  }
+
+  .ums-app-shell[data-theme="light"] > header {
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 251, 255, 0.96)) !important;
+    border-bottom: 1px solid rgba(31, 56, 100, 0.12) !important;
+    box-shadow: 0 14px 34px rgba(31, 56, 100, 0.12) !important;
+  }
+
+  .ums-app-shell[data-theme="dark"] > header {
+    background:
+      linear-gradient(180deg, rgba(15, 27, 47, 0.98), rgba(8, 17, 31, 0.96)) !important;
+    border-bottom: 1px solid rgba(143, 180, 248, 0.16) !important;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28) !important;
+  }
+
+  .ums-mobile-scroll-stage {
+    height: calc(100dvh - 60px) !important;
+  }
+
+  #main-content {
+    height: calc(100dvh - 60px) !important;
+    background:
+      radial-gradient(circle at 12% 0%, rgba(46, 139, 139, 0.08), transparent 16rem),
+      #EEF3F8 !important;
+    padding: 0 2px 8px !important;
+    scroll-padding: 14px !important;
+  }
+
+  .ums-app-shell[data-theme="dark"] #main-content {
+    background:
+      radial-gradient(circle at 12% 0%, rgba(46, 139, 139, 0.12), transparent 16rem),
+      #050B14 !important;
+  }
+
+  #main-content > div {
+    box-sizing: border-box;
+    padding: 14px 14px 22px !important;
+    gap: 14px !important;
+  }
+
+  #main-content :is(section, article, .chart-card, .ums-motion-card) {
+    max-width: 100%;
+  }
+
+  #main-content :is(.chart-card, .ums-motion-card, section.bg-white, [class*="bg-white"][class*="rounded"]) {
+    border-radius: 18px !important;
+    border-color: rgba(31, 56, 100, 0.12) !important;
+    box-shadow: 0 18px 44px rgba(31, 56, 100, 0.10) !important;
+  }
+
+  .ums-app-shell[data-theme="dark"] #main-content :is(.chart-card, .ums-motion-card, section.bg-white, [class*="bg-white"][class*="rounded"]) {
+    border-color: rgba(143, 180, 248, 0.16) !important;
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.30) !important;
+  }
+
+  #main-content :is(h1) {
+    font-size: clamp(20px, 6vw, 24px) !important;
+    line-height: 1.1 !important;
+    letter-spacing: -0.04em !important;
+  }
+
+  #main-content :is(h2, h3) {
+    line-height: 1.2 !important;
+  }
+
+  #main-content :is(p, span, button, td, th) {
+    text-rendering: geometricPrecision;
+  }
+
+  #main-content :is(.grid) {
+    gap: 14px !important;
+  }
+
+  #main-content :is(.grid-cols-2, .grid-cols-3, .grid-cols-4, .grid-cols-5) {
+    grid-template-columns: 1fr !important;
+  }
+
+  #main-content :is(.sm\:grid-cols-2, .sm\:grid-cols-3, .md\:grid-cols-5, .lg\:grid-cols-2, .xl\:grid-cols-3, .xl\:grid-cols-4) {
+    grid-template-columns: 1fr !important;
+  }
+
+  #main-content .ums-mobile-two-col {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  #main-content :is(.chart-card, .ums-motion-card) {
+    overflow: visible;
+    contain: layout paint;
+  }
+
+  #main-content .chart-card > div:first-child {
+    padding: 16px 16px 0 !important;
+  }
+
+  #main-content .ums-chart-card-body {
+    padding: 14px 14px 10px !important;
+  }
+
+  #main-content .chart-card > div:last-child {
+    padding-inline: 14px !important;
+    gap: 8px !important;
+  }
+
+  #main-content .chart-card > div:last-child :is(span) {
+    font-size: 10px !important;
+    white-space: normal;
+  }
+
+  #main-content :is(.chart-card, .ums-motion-card, section[aria-label]) {
+    margin-inline: 1px;
+  }
+
+  #main-content :is(.ums-chart-card-body, .ums-analytics-chart-frame) {
+    border-radius: 14px;
+  }
+
+  #main-content :is(.ums-chart-card-body, .ums-analytics-chart-frame):has(.recharts-responsive-container) {
+    min-height: 240px;
+  }
+
+  #main-content :is(.recharts-responsive-container, .recharts-wrapper) {
+    max-width: none !important;
+  }
+
+  #main-content .recharts-text {
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+  }
+
+  #main-content .recharts-legend-wrapper {
+    max-width: calc(100vw - 4rem) !important;
+    overflow: hidden !important;
+  }
+
+  #main-content .recharts-legend-item-text {
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+  }
+
+  #main-content :is(table) {
+    font-size: 12px;
+  }
+
+  #main-content :is(th, td) {
+    padding: 10px 12px !important;
+    white-space: nowrap;
+  }
+
+  #main-content :is(.overflow-x-auto, .ums-chart-card-body, .ums-analytics-chart-frame)::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  #main-content :is(.overflow-x-auto, .ums-chart-card-body, .ums-analytics-chart-frame)::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(31, 56, 100, 0.34), rgba(46, 139, 139, 0.44));
+  }
+
+  .ums-app-shell[data-theme="dark"] #main-content :is(.overflow-x-auto, .ums-chart-card-body, .ums-analytics-chart-frame)::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, rgba(143, 180, 248, 0.28), rgba(46, 139, 139, 0.46));
+  }
+
+  aside[aria-label="Domain navigation"] {
+    top: 60px !important;
+    width: min(82vw, 304px) !important;
+    max-width: 304px;
+    border-top-right-radius: 22px;
+    box-shadow: 18px 0 50px rgba(8, 17, 31, 0.26) !important;
+  }
+
+  aside[aria-label="Domain navigation"] nav button {
+    min-height: 46px;
+  }
+}
+
+/* ── Professional color refinement: rich institutional palette. */
+.ums-app-shell {
+  --pro-navy: #183A63;
+  --pro-teal: #15847E;
+  --pro-amber: #B66A1F;
+  --pro-blue: #2563A7;
+  --pro-purple: #7C4D9E;
+  --pro-gold: #B9911E;
+  --pro-green: #23835F;
+  --pro-rose: #B33A4A;
+  --pro-danger: #B33A4A;
+  --pro-muted: #62728A;
+  --pro-line: rgba(24, 58, 99, 0.16);
+}
+
+.ums-app-shell[data-theme="dark"] {
+  --pro-line: rgba(121, 153, 194, 0.24);
+}
+
+.ums-app-shell[data-theme="light"],
+.ums-app-shell[data-theme="light"] #main-content,
+.ums-app-shell[data-theme="light"] #main-content > div {
+  background:
+    radial-gradient(circle at 16% -12%, rgba(21, 132, 126, 0.14), transparent 30rem),
+    radial-gradient(circle at 92% 8%, rgba(37, 99, 167, 0.11), transparent 24rem),
+    linear-gradient(180deg, #F4F8FC 0%, #EAF1F8 100%) !important;
+}
+
+.ums-app-shell[data-theme="dark"],
+.ums-app-shell[data-theme="dark"] #main-content,
+.ums-app-shell[data-theme="dark"] #main-content > div {
+  background:
+    radial-gradient(circle at 16% -12%, rgba(21, 132, 126, 0.20), transparent 30rem),
+    radial-gradient(circle at 92% 8%, rgba(37, 99, 167, 0.22), transparent 24rem),
+    linear-gradient(180deg, #071629 0%, #030A14 100%) !important;
+}
+
+#main-content :is(.chart-card, .ums-motion-card, section.bg-white, [class*="bg-white"][class*="rounded"]) {
+  border-color: var(--pro-line) !important;
+  box-shadow:
+    0 16px 38px rgba(24, 58, 99, 0.11),
+    inset 0 1px 0 rgba(255, 255, 255, 0.86) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(.chart-card, .ums-motion-card, section.bg-white, [class*="bg-white"][class*="rounded"]) {
+  box-shadow:
+    0 20px 46px rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(139, 172, 213, 0.10) !important;
+}
+
+/* Override common legacy bright chart fills/strokes with a calmer palette. */
+#main-content svg :is([fill="#1F3864"], [fill="#14223D"]) { fill: var(--pro-navy) !important; }
+#main-content svg :is([stroke="#1F3864"], [stroke="#14223D"]) { stroke: var(--pro-navy) !important; }
+#main-content svg [fill="#2E8B8B"] { fill: var(--pro-teal) !important; }
+#main-content svg [stroke="#2E8B8B"] { stroke: var(--pro-teal) !important; }
+#main-content svg [fill="#C55A11"] { fill: var(--pro-amber) !important; }
+#main-content svg [stroke="#C55A11"] { stroke: var(--pro-amber) !important; }
+#main-content svg [fill="#5B8DEF"] { fill: var(--pro-blue) !important; }
+#main-content svg [stroke="#5B8DEF"] { stroke: var(--pro-blue) !important; }
+#main-content svg [fill="#8E6FB8"] { fill: var(--pro-purple) !important; }
+#main-content svg [stroke="#8E6FB8"] { stroke: var(--pro-purple) !important; }
+#main-content svg [fill="#C99A2E"] { fill: var(--pro-gold) !important; }
+#main-content svg [stroke="#C99A2E"] { stroke: var(--pro-gold) !important; }
+#main-content svg [fill="#4A9B7F"] { fill: var(--pro-green) !important; }
+#main-content svg [stroke="#4A9B7F"] { stroke: var(--pro-green) !important; }
+#main-content svg [fill="#B2566B"],
+#main-content svg [fill="#C0392B"],
+#main-content svg [fill="#E74C3C"] { fill: var(--pro-rose) !important; }
+#main-content svg [stroke="#B2566B"],
+#main-content svg [stroke="#C0392B"],
+#main-content svg [stroke="#E74C3C"] { stroke: var(--pro-rose) !important; }
+#main-content svg [fill="#F39C12"] { fill: var(--pro-gold) !important; }
+#main-content svg [stroke="#F39C12"] { stroke: var(--pro-gold) !important; }
+
+/* Muted status/chip backgrounds so they read like enterprise UI, not badges. */
+.ums-app-shell[data-theme="light"] #main-content :is(
+  .bg-\[\#E8F5F5\],
+  .bg-\[\#E7F2F2\],
+  .bg-\[\#DDEFF0\],
+  .bg-\[\#FFF4ED\],
+  .bg-\[\#FFF9E6\],
+  .bg-\[\#FFECC4\],
+  .bg-\[\#FFDDDD\],
+  .bg-\[\#F8E8EC\]
+) {
+  background-color: #F3F6F8 !important;
+}
+
+#main-content :is(
+  .text-\[\#2E8B8B\],
+  .text-\[\#246B6B\],
+  .text-\[\#27AE60\]
+) {
+  color: var(--pro-teal) !important;
+}
+
+#main-content :is(
+  .text-\[\#C55A11\],
+  .text-\[\#9E4810\],
+  .text-\[\#F39C12\]
+) {
+  color: var(--pro-amber) !important;
+}
+
+#main-content :is(
+  .text-\[\#B2566B\],
+  .text-\[\#C0392B\],
+  .text-\[\#E74C3C\]
+) {
+  color: var(--pro-rose) !important;
+}
+
+#main-content :is(
+  .bg-\[\#2E8B8B\],
+  .bg-\[\#27AE60\]
+) {
+  background-color: var(--pro-teal) !important;
+}
+
+#main-content :is(
+  .bg-\[\#C55A11\],
+  .bg-\[\#F39C12\]
+) {
+  background-color: var(--pro-amber) !important;
+}
+
+#main-content :is(
+  .bg-\[\#B2566B\],
+  .bg-\[\#C0392B\],
+  .bg-\[\#E74C3C\]
+) {
+  background-color: var(--pro-rose) !important;
+}
+
+#main-content .recharts-cartesian-grid line {
+  stroke: rgba(36, 59, 90, 0.10) !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content .recharts-cartesian-grid line {
+  stroke: rgba(158, 175, 198, 0.14) !important;
+}
+
 .ums-app-shell[data-theme="dark"] #main-content :is(.recharts-text, .recharts-label, .recharts-legend-item-text) {
   fill: #A8B6C8 !important;
   color: #A8B6C8 !important;
+}
+
+/* ── Absolute final mobile lock: keep this as the last responsive override. */
+@media (max-width: 767px) {
+  #main-content {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+
+  #main-content > div,
+  #main-content > div > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-inline: 0.75rem !important;
+    overflow-x: hidden !important;
+  }
+
+  #main-content :is(section[class*="grid"], div[class*="grid"]) {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  #main-content .ums-mobile-two-col {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  #main-content .ums-exec-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.75rem !important;
+  }
+
+  #main-content .ums-exec-kpi-grid .chart-card {
+    min-height: 132px !important;
+    padding: 0.85rem !important;
+  }
+
+  #main-content .ums-exec-kpi-grid .chart-card [data-metric] {
+    font-size: clamp(1.35rem, 8vw, 1.8rem) !important;
+    white-space: normal !important;
+  }
+
+  #main-content :is(.chart-card, .ums-motion-card, section.bg-white) {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    border-radius: 1rem !important;
+    overflow: visible !important;
+  }
+
+  #main-content :is(
+    section[aria-label*="KPI" i],
+    section[aria-label*="metric" i],
+    section[aria-label*="metrics" i],
+    section[aria-label*="performance indicators" i]
+  ) > div[class*="grid"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  #main-content :is(
+    section[aria-label*="KPI" i],
+    section[aria-label*="metric" i],
+    section[aria-label*="metrics" i],
+    section[aria-label*="performance indicators" i]
+  ) :is(p, span, div, h3) {
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+  }
+
+  #main-content :is(.ums-analytics-chart-frame, .ums-chart-card-body):has(.recharts-responsive-container) {
+    height: clamp(240px, 66vw, 330px) !important;
+    min-height: 240px !important;
+    overflow: visible !important;
+    contain: none !important;
+  }
+
+  #main-content :is(.recharts-responsive-container, .recharts-wrapper, .recharts-surface) {
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 260px !important;
+    min-height: 220px !important;
+    max-width: none !important;
+    overflow: visible !important;
+  }
+
+  #main-content .ums-mobile-native-analytics {
+    display: grid !important;
+  }
+
+  #main-content :is(table) {
+    min-width: 560px !important;
+    width: max-content !important;
+  }
+}
+
+#main-content .attendance-dashboard {
+  background: #F6F8FB !important;
+}
+
+#main-content .attendance-dashboard :is(
+  .ums-motion-card,
+  section.bg-white,
+  [class*="bg-white"][class*="rounded"]
+) {
+  background: #FFFFFF !important;
+  border-color: #E5ECEF !important;
+  box-shadow: none !important;
+}
+
+#main-content .attendance-dashboard :is(
+  .ums-motion-card,
+  .rounded-\[12px\].border,
+  .rounded-\[10px\].border,
+  .rounded-\[14px\].border
+)::after {
+  content: none !important;
+  animation: none !important;
+}
+
+#main-content .executive-cockpit-dashboard :is(
+  .chart-card,
+  .executive-plain-card,
+  .ums-motion-card
+) {
+  background: #FFFFFF !important;
+  border-color: #E5ECEF !important;
+  box-shadow: none !important;
+}
+
+#main-content .executive-cockpit-dashboard :is(
+  .chart-card,
+  .executive-plain-card,
+  .ums-motion-card
+)::after {
+  content: none !important;
+  animation: none !important;
+}
+
+#main-content .executive-cockpit-dashboard :is(
+  .chart-card,
+  .executive-plain-card
+) > [aria-hidden] {
+  display: none !important;
+}
+
+#main-content .executive-cockpit-dashboard .executive-plain-card > div:first-child {
+  background: #FFFFFF !important;
+}
+
+/* App-wide dashboard card structure */
+#main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  section.bg-white,
+  article.bg-white,
+  [class*="bg-white"][class*="rounded"][class*="border"]
+) {
+  background: #FFFFFF !important;
+  border: 1px solid #E5ECEF !important;
+  border-radius: 14px !important;
+  box-shadow: 0 10px 28px rgba(31, 56, 100, 0.08) !important;
+  overflow: hidden;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  section.bg-white,
+  article.bg-white,
+  [class*="bg-white"][class*="rounded"][class*="border"]
+) {
+  background: #0B1728 !important;
+  border-color: #263448 !important;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28) !important;
+}
+
+#main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  section.bg-white,
+  article.bg-white,
+  [class*="bg-white"][class*="rounded"][class*="border"]
+)::after {
+  content: none !important;
+  animation: none !important;
+}
+
+#main-content :is(.chart-card, .executive-plain-card) > [aria-hidden] {
+  display: none !important;
+}
+
+#main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  section.bg-white,
+  article.bg-white
+) :is(.bg-\[\#F5F7FB\], .bg-\[\#F6F8FB\], .bg-\[\#F8FAFD\], .bg-\[\#F5F8FB\]) {
+  background-color: #FFFFFF !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  section.bg-white,
+  article.bg-white
+) :is(.bg-\[\#F5F7FB\], .bg-\[\#F6F8FB\], .bg-\[\#F8FAFD\], .bg-\[\#F5F8FB\]) {
+  background-color: #0B1728 !important;
+}
+
+@media (max-width: 767px) {
+  #main-content :is(
+    .chart-card,
+    .ums-motion-card,
+    .executive-plain-card,
+    section.bg-white,
+    article.bg-white,
+    [class*="bg-white"][class*="rounded"][class*="border"]
+  ) {
+    border-radius: 14px !important;
+    box-shadow: 0 8px 22px rgba(31, 56, 100, 0.08) !important;
+  }
+
+  .ums-app-shell[data-theme="dark"] #main-content :is(
+    .chart-card,
+    .ums-motion-card,
+    .executive-plain-card,
+    section.bg-white,
+    article.bg-white,
+    [class*="bg-white"][class*="rounded"][class*="border"]
+  ) {
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.26) !important;
+  }
+}
+
+/* Remove card background shades/overlays completely. */
+#main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  .rounded-\[12px\].border,
+  .rounded-\[14px\].border,
+  .rounded-\[16px\].border,
+  .rounded-\[18px\].border,
+  .rounded-\[20px\].border,
+  .rounded-\[22px\].border,
+  .rounded-\[24px\].border
+) {
+  background-image: none !important;
+}
+
+#main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  .rounded-\[12px\].border,
+  .rounded-\[14px\].border,
+  .rounded-\[16px\].border,
+  .rounded-\[18px\].border,
+  .rounded-\[20px\].border,
+  .rounded-\[22px\].border,
+  .rounded-\[24px\].border
+)::before,
+#main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  .rounded-\[12px\].border,
+  .rounded-\[14px\].border,
+  .rounded-\[16px\].border,
+  .rounded-\[18px\].border,
+  .rounded-\[20px\].border,
+  .rounded-\[22px\].border,
+  .rounded-\[24px\].border
+)::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  animation: none !important;
+}
+
+#main-content :is(.chart-card, .ums-motion-card, .executive-plain-card) > .pointer-events-none.absolute.inset-0 {
+  display: none !important;
 }

@@ -23,6 +23,7 @@ import {
 import { Award, ClipboardCheck, MessageSquareText, RefreshCw, ShieldCheck, Sparkles, Star } from 'lucide-react'
 import { ChartCard } from './ChartCard'
 import { useInteractions } from './InteractionProvider'
+import { applyDashboardFilters } from '@/lib/dashboardFiltering'
 
 const feedbackKpis = [
   { label: 'Overall Satisfaction', value: '4.42/5', delta: '+0.18', icon: Star, tone: '#2E8B8B' },
@@ -72,8 +73,17 @@ const initiatives = [
 
 export function FeedbackIQACDashboard() {
   const shouldReduceMotion = useReducedMotion()
-  const { refreshDashboard, runAction } = useInteractions()
+  const { aiInsightsOpen, globalFilters, refreshDashboard, runAction, searchQuery } = useInteractions()
   const lastUpdated = useMemo(() => new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }), [])
+  const filteredData = useMemo(
+    () =>
+      applyDashboardFilters(
+        { feedbackKpis, sentimentTrend, criteriaScore, actionBacklog, voiceMix, initiatives },
+        globalFilters,
+        searchQuery,
+      ),
+    [globalFilters, searchQuery],
+  )
 
   return (
     <div className="flex-1 overflow-y-auto bg-[#F6F8FB]">
@@ -118,7 +128,7 @@ export function FeedbackIQACDashboard() {
           className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3"
           variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0 } }}
         >
-          {feedbackKpis.map(({ label, value, delta, icon: Icon, tone }) => (
+          {filteredData.feedbackKpis.map(({ label, value, delta, icon: Icon, tone }) => (
             <motion.div
               key={label}
               className="rounded-[16px] border border-[#E5ECEF] bg-white p-4"
@@ -142,7 +152,7 @@ export function FeedbackIQACDashboard() {
           <ChartCard title="Stakeholder Sentiment Trend" subtitle="Average rating by stakeholder group" className="xl:col-span-2">
             <div className="h-72">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={sentimentTrend}>
+                <AreaChart data={filteredData.sentimentTrend}>
                   <CartesianGrid stroke="#E5ECEF" vertical={false} />
                   <XAxis dataKey="month" fontSize={11} />
                   <YAxis domain={[3.5, 5]} fontSize={11} />
@@ -158,8 +168,8 @@ export function FeedbackIQACDashboard() {
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie data={voiceMix} dataKey="value" nameKey="name" innerRadius="52%" outerRadius="90%" paddingAngle={3} stroke="#FFFFFF" strokeWidth={2}>
-                    {voiceMix.map((entry) => <Cell key={entry.name} fill={entry.color} />)}
+                  <Pie data={filteredData.voiceMix} dataKey="value" nameKey="name" innerRadius="52%" outerRadius="90%" paddingAngle={3} stroke="#FFFFFF" strokeWidth={2}>
+                    {filteredData.voiceMix.map((entry) => <Cell key={entry.name} fill={entry.color} />)}
                   </Pie>
                   <Tooltip />
                 </PieChart>
@@ -172,7 +182,7 @@ export function FeedbackIQACDashboard() {
           <ChartCard title="NAAC Criteria Readiness" subtitle="Evidence maturity across core criteria">
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <RadarChart data={criteriaScore}>
+                <RadarChart data={filteredData.criteriaScore}>
                   <PolarGrid />
                   <PolarAngleAxis dataKey="criterion" fontSize={11} />
                   <Radar dataKey="score" stroke="#2E8B8B" fill="#2E8B8B" fillOpacity={0.24} />
@@ -184,7 +194,7 @@ export function FeedbackIQACDashboard() {
           <ChartCard title="Action Closure Backlog" subtitle="Open vs closed quality actions">
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={actionBacklog} layout="vertical" margin={{ left: 18 }}>
+                <BarChart data={filteredData.actionBacklog} layout="vertical" margin={{ left: 18 }}>
                   <CartesianGrid stroke="#E5ECEF" horizontal={false} />
                   <XAxis type="number" fontSize={11} />
                   <YAxis type="category" dataKey="area" fontSize={11} width={110} />
@@ -197,28 +207,30 @@ export function FeedbackIQACDashboard() {
           </ChartCard>
         </section>
 
-        <section aria-label="Feedback insights" className="rounded-[18px] border border-[#E5ECEF] bg-white p-5">
-          <div className="flex items-center gap-2">
-            <Sparkles size={16} className="text-[#C55A11]" />
-            <h2 className="text-[15px] font-[850] text-[#0F1722]">Professional Improvement Actions</h2>
-          </div>
-          <div className="mt-4 grid grid-cols-1 lg:grid-cols-3 gap-3">
-            {initiatives.map((item) => (
-              <motion.button
-                key={item.title}
-                type="button"
-                onClick={() => runAction(item.title, item.description)}
-                className="rounded-[14px] border border-[#E5ECEF] bg-[#F8FAFD] p-4 text-left"
-                whileHover={shouldReduceMotion ? undefined : { y: -3 }}
-                whileTap={shouldReduceMotion ? undefined : { scale: 0.99 }}
-              >
-                <span className="rounded-full bg-white px-2 py-1 text-[10px] font-[800] uppercase tracking-[0.06em] text-[#2E8B8B]">{item.status}</span>
-                <h3 className="mt-3 text-[13px] font-[850] text-[#0F1722]">{item.title}</h3>
-                <p className="mt-1 text-[12px] leading-5 text-[#6B7C99]">{item.description}</p>
-              </motion.button>
-            ))}
-          </div>
-        </section>
+        {aiInsightsOpen && (
+          <section aria-label="Feedback insights" className="rounded-[18px] border border-[#E5ECEF] bg-white p-5">
+            <div className="flex items-center gap-2">
+              <Sparkles size={16} className="text-[#C55A11]" />
+              <h2 className="text-[15px] font-[850] text-[#0F1722]">Professional Improvement Actions</h2>
+            </div>
+            <div className="mt-4 grid grid-cols-1 lg:grid-cols-3 gap-3">
+              {filteredData.initiatives.map((item) => (
+                <motion.button
+                  key={item.title}
+                  type="button"
+                  onClick={() => runAction(item.title, item.description)}
+                  className="rounded-[14px] border border-[#E5ECEF] bg-[#F8FAFD] p-4 text-left"
+                  whileHover={shouldReduceMotion ? undefined : { y: -3 }}
+                  whileTap={shouldReduceMotion ? undefined : { scale: 0.99 }}
+                >
+                  <span className="rounded-full bg-white px-2 py-1 text-[10px] font-[800] uppercase tracking-[0.06em] text-[#2E8B8B]">{item.status}</span>
+                  <h3 className="mt-3 text-[13px] font-[850] text-[#0F1722]">{item.title}</h3>
+                  <p className="mt-1 text-[12px] leading-5 text-[#6B7C99]">{item.description}</p>
+                </motion.button>
+              ))}
+            </div>
+          </section>
+        )}
 
         <p className="pb-4 text-center text-[11px] text-[#9AA6B4]">Last updated: {lastUpdated}</p>
       </motion.div>

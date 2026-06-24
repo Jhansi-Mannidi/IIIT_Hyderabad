@@ -4,32 +4,32 @@
  */
 
 export const BRAND = {
-  navy:   '#1F3864',
-  orange: '#C55A11',
-  teal:   '#2E8B8B',
+  navy:   '#183A63',
+  orange: '#B66A1F',
+  teal:   '#15847E',
 } as const
 
 export const NAVY = {
-  900: '#14223D',
-  700: '#1F3864',
-  500: '#34507F',
-  300: '#6B83AD',
-  100: '#D8E0EE',
-  50:  '#EEF2F8',
+  900: '#0B1B33',
+  700: '#183A63',
+  500: '#2D5E91',
+  300: '#6E91B8',
+  100: '#D7E3F0',
+  50:  '#F0F5FA',
 } as const
 
 export const TEAL = {
-  700: '#246B6B',
-  500: '#2E8B8B',
-  300: '#7FBDBD',
-  50:  '#E7F2F2',
+  700: '#0D5E5A',
+  500: '#15847E',
+  300: '#64BDB6',
+  50:  '#E6F6F4',
 } as const
 
 export const ORANGE = {
-  700: '#9E4810',
-  500: '#C55A11',
-  300: '#E59B6A',
-  50:  '#FBEEE4',
+  700: '#884411',
+  500: '#B66A1F',
+  300: '#E0A257',
+  50:  '#FFF0DF',
 } as const
 
 export const INK = {
@@ -47,42 +47,42 @@ export const SURFACE = {
 } as const
 
 export const SEMANTIC = {
-  success: '#2E8B8B',
-  warning: '#C55A11',
-  danger:  '#C0392B',
-  info:    '#2F6FB0',
+  success: '#15847E',
+  warning: '#B66A1F',
+  danger:  '#B33A4A',
+  info:    '#2563A7',
 } as const
 
 /** Categorical dataviz palette — 8 hues, CVD-safe ordering */
 export const VIZ_ARRAY = [
-  '#1F3864',
-  '#2E8B8B',
-  '#C55A11',
-  '#5B8DEF',
-  '#8E6FB8',
-  '#C99A2E',
-  '#4A9B7F',
-  '#B2566B',
+  '#183A63',
+  '#15847E',
+  '#B66A1F',
+  '#2563A7',
+  '#7C4D9E',
+  '#B9911E',
+  '#23835F',
+  '#B33A4A',
 ] as const
 
 export const VIZ = Object.assign([...VIZ_ARRAY], {
-  navy:   '#1F3864',
-  teal:   '#2E8B8B',
-  orange: '#C55A11',
-  blue:   '#5B8DEF',
-  purple: '#8E6FB8',
-  gold:   '#C99A2E',
-  green:  '#4A9B7F',
-  coral:  '#B2566B',
+  navy:   '#183A63',
+  teal:   '#15847E',
+  orange: '#B66A1F',
+  blue:   '#2563A7',
+  purple: '#7C4D9E',
+  gold:   '#B9911E',
+  green:  '#23835F',
+  coral:  '#B33A4A',
 }) as readonly string[] & {
-  readonly navy: '#1F3864'
-  readonly teal: '#2E8B8B'
-  readonly orange: '#C55A11'
-  readonly blue: '#5B8DEF'
-  readonly purple: '#8E6FB8'
-  readonly gold: '#C99A2E'
-  readonly green: '#4A9B7F'
-  readonly coral: '#B2566B'
+  readonly navy: '#183A63'
+  readonly teal: '#15847E'
+  readonly orange: '#B66A1F'
+  readonly blue: '#2563A7'
+  readonly purple: '#7C4D9E'
+  readonly gold: '#B9911E'
+  readonly green: '#23835F'
+  readonly coral: '#B33A4A'
 }
 
 /** Sequential: navy-50 → navy-700 */

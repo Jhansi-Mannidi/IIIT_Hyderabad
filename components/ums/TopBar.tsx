@@ -43,15 +43,15 @@ const DASHBOARD_SEARCH_ITEMS = [
 
 export function TopBar({ onMenuClick }: TopBarProps) {
   const router = useRouter()
-  const [period, setPeriod] = useState('AY 2024-25')
-  const [scope, setScope] = useState('All Programs')
   const [showPeriod, setShowPeriod] = useState(false)
   const [showScope, setShowScope] = useState(false)
   const [showUser, setShowUser] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [notifCount] = useState(4)
   const { theme, toggleTheme } = useTheme()
-  const { aiInsightsOpen, searchQuery, setSearchQuery, toggleAiInsights, runAction } = useInteractions()
+  const { aiInsightsOpen, globalFilters, setGlobalFilters, searchQuery, setSearchQuery, toggleAiInsights, runAction } = useInteractions()
+  const period = String(globalFilters.period ?? 'AY 2024-25')
+  const scope = String(globalFilters.scope ?? 'All Programs')
   const isDark = theme === 'dark'
   const filteredSearchItems = useMemo(() => {
     const query = searchQuery.trim().toLowerCase()
@@ -70,34 +70,42 @@ export function TopBar({ onMenuClick }: TopBarProps) {
 
   return (
     <header
-      className="sticky top-0 z-40 h-14 bg-[#1F3864] flex items-center px-4 gap-3 shadow-[0_1px_0_rgba(255,255,255,0.08),0_14px_32px_rgba(8,17,31,0.18)] backdrop-blur supports-[backdrop-filter]:bg-[#1F3864]/95"
+      className={cn(
+        'sticky top-0 z-40 flex h-14 items-center gap-3 px-4 backdrop-blur transition-colors duration-300',
+        isDark
+          ? 'bg-[#1F3864]/95 shadow-[0_1px_0_rgba(255,255,255,0.08),0_14px_32px_rgba(8,17,31,0.18)]'
+          : 'border-b border-[#D8E0EE] bg-gradient-to-r from-white via-[#FBFCFF] to-white shadow-[0_10px_28px_rgba(31,56,100,0.12)]',
+      )}
     >
       <button
         type="button"
         onClick={onMenuClick}
         aria-label="Open navigation menu"
-        className="flex h-8 w-8 items-center justify-center rounded-[8px] text-[#D8E0EE] transition-colors hover:bg-[#34507F] sm:hidden"
+        className={cn(
+          'flex h-8 w-8 items-center justify-center rounded-[8px] transition-colors sm:hidden',
+          isDark ? 'text-[#D8E0EE] hover:bg-[#34507F]' : 'text-[#1F3864] hover:bg-[#EEF2F8]',
+        )}
       >
         <Menu size={17} />
       </button>
 
       {/* Brand */}
       <div className="flex items-center gap-2 flex-shrink-0">
-        <div className="w-7 h-7 rounded-[6px] bg-[#C55A11] flex items-center justify-center">
-          <Zap size={14} className="text-white" fill="white" />
+        <div className="flex h-8 w-8 items-center justify-center rounded-[9px] bg-[#C55A11] shadow-[0_8px_18px_rgba(197,90,17,0.24)]">
+          <Zap size={15} className="text-white" fill="white" />
         </div>
         <div className="hidden sm:flex flex-col leading-none">
-          <span className="text-[12px] font-[800] tracking-[0.08em] text-white uppercase">
+          <span className={cn('text-[13px] font-[900] tracking-[0.08em] uppercase', isDark ? 'text-white' : 'text-[#1F3864]')}>
             VoltusWave
           </span>
-          <span className="text-[9px] font-[500] text-[#6B83AD] uppercase tracking-[0.06em]">
+          <span className="mt-0.5 text-[9.5px] font-[700] text-[#6B83AD] uppercase tracking-[0.08em]">
             UMS
           </span>
         </div>
       </div>
 
       {/* Divider */}
-      <div className="w-px h-5 bg-[#34507F] mx-1 flex-shrink-0" />
+      <div className={cn('mx-1 h-5 w-px flex-shrink-0', isDark ? 'bg-[#34507F]' : 'bg-[#D8E0EE]')} />
 
       <div className="flex-1" />
 
@@ -108,7 +116,12 @@ export function TopBar({ onMenuClick }: TopBarProps) {
           <button
             type="button"
             onClick={() => { setShowScope((v) => !v); setShowPeriod(false); setShowUser(false) }}
-            className="flex items-center gap-1.5 h-7 px-2.5 rounded-[6px] bg-[#34507F] hover:bg-[#6B83AD] text-[12px] font-[500] text-white transition-colors"
+            className={cn(
+              'flex h-8 items-center gap-1.5 rounded-[8px] px-3 text-[12px] font-[750] transition-colors',
+              isDark
+                ? 'bg-[#34507F] text-white hover:bg-[#6B83AD]'
+                : 'border border-[#D8E0EE] bg-[#F8FAFD] text-[#1F3864] hover:bg-[#EEF2F8]',
+            )}
             aria-expanded={showScope}
           >
             {scope}
@@ -133,7 +146,10 @@ export function TopBar({ onMenuClick }: TopBarProps) {
                       ? 'bg-[#EEF2F8] text-[#1F3864] font-[600]'
                       : 'text-[#2B3645] hover:bg-[#F6F8FB]',
                   )}
-                  onClick={() => { setScope(s); setShowScope(false); runAction('Scope applied', `Dashboard scope changed to ${s}.`) }}
+                  onClick={() => {
+                    setGlobalFilters({ ...globalFilters, scope: s })
+                    setShowScope(false)
+                  }}
                   whileHover={{ x: 2 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -150,7 +166,12 @@ export function TopBar({ onMenuClick }: TopBarProps) {
           <button
             type="button"
             onClick={() => { setShowPeriod((v) => !v); setShowScope(false); setShowUser(false) }}
-            className="flex items-center gap-1.5 h-7 px-2.5 rounded-[6px] bg-[#34507F] hover:bg-[#6B83AD] text-[12px] font-[500] text-white transition-colors"
+            className={cn(
+              'flex h-8 items-center gap-1.5 rounded-[8px] px-3 text-[12px] font-[750] transition-colors',
+              isDark
+                ? 'bg-[#34507F] text-white hover:bg-[#6B83AD]'
+                : 'border border-[#D8E0EE] bg-[#F8FAFD] text-[#1F3864] hover:bg-[#EEF2F8]',
+            )}
             aria-expanded={showPeriod}
           >
             <Calendar size={12} />
@@ -176,7 +197,10 @@ export function TopBar({ onMenuClick }: TopBarProps) {
                       ? 'bg-[#EEF2F8] text-[#1F3864] font-[600]'
                       : 'text-[#2B3645] hover:bg-[#F6F8FB]',
                   )}
-                  onClick={() => { setPeriod(p); setShowPeriod(false); runAction('Period applied', `Dashboard period changed to ${p}.`) }}
+                  onClick={() => {
+                    setGlobalFilters({ ...globalFilters, period: p })
+                    setShowPeriod(false)
+                  }}
                   whileHover={{ x: 2 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -190,17 +214,38 @@ export function TopBar({ onMenuClick }: TopBarProps) {
       </div>
 
       {/* Search */}
-      <button
-        type="button"
-        aria-label="Search (⌘K)"
-        onClick={() => setSearchOpen(true)}
-        className="hidden sm:flex h-8 w-[210px] items-center gap-2 rounded-[8px] bg-[#34507F] px-3 text-[12px] text-[#D8E0EE] transition-colors hover:bg-[#6B83AD] md:w-[260px] xl:w-[320px]"
+      <div
+        role="search"
+        aria-label="Dashboard search"
+        className={cn(
+          'hidden h-9 w-[220px] items-center gap-2 rounded-[10px] px-3 text-[12px] transition-colors focus-within:border-[#2E8B8B]/50 focus-within:ring-2 focus-within:ring-[#2E8B8B]/18 sm:flex md:w-[280px] xl:w-[340px]',
+          isDark
+            ? 'bg-[#34507F] text-[#D8E0EE] hover:bg-[#6B83AD]'
+            : 'border border-[#D8E0EE] bg-[#F8FAFD] text-[#5A6675] hover:bg-[#EEF2F8] hover:text-[#1F3864]',
+        )}
       >
         <Search size={12} />
-        <span className="hidden flex-1 text-left md:inline">Search dashboards, KPIs...</span>
-        <kbd className="hidden md:inline text-[10px] px-1 py-0.5 rounded bg-[#1F3864] text-[#6B83AD]">
-          ⌘K
-        </kbd>
+        <input
+          value={searchQuery}
+          onChange={(event) => setSearchQuery(event.target.value)}
+          placeholder="Search dashboards, KPIs..."
+          className={cn(
+            'min-w-0 flex-1 appearance-none border-0 bg-transparent text-[12px] font-[650] outline-none ring-0 placeholder:text-[#9AA6B4] focus:border-0 focus:outline-none focus:ring-0 focus-visible:outline-0 focus-visible:outline-none focus-visible:ring-0',
+            isDark ? 'text-white' : 'text-[#0F1722]',
+          )}
+          style={{ outline: 'none', boxShadow: 'none' }}
+        />
+      </div>
+      <button
+        type="button"
+        onClick={() => setSearchOpen(true)}
+        aria-label="Open dashboard search"
+        className={cn(
+          'flex h-9 w-9 items-center justify-center rounded-[9px] transition-colors sm:hidden',
+          isDark ? 'text-[#D8E0EE] hover:bg-[#34507F]' : 'border border-[#D8E0EE] bg-[#F8FAFD] text-[#1F3864] hover:bg-[#EEF2F8]',
+        )}
+      >
+        <Search size={15} />
       </button>
       <AnimatePresence>
         {searchOpen && (
@@ -245,7 +290,8 @@ export function TopBar({ onMenuClick }: TopBarProps) {
                     value={searchQuery}
                     onChange={(event) => setSearchQuery(event.target.value)}
                     placeholder="Search dashboards, KPIs, insights, filters..."
-                    className="h-full flex-1 border-0 bg-transparent text-[15px] font-[650] text-[#0F1722] outline-none placeholder:text-[#9AA6B4] dark:text-white"
+                    className="h-full flex-1 border-0 bg-transparent text-[15px] font-[650] text-[#0F1722] outline-none ring-0 placeholder:text-[#9AA6B4] focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 dark:text-white"
+                    style={{ outline: 'none', boxShadow: 'none' }}
                   />
                   <kbd className="hidden rounded-[8px] bg-[#EEF2F8] px-2 py-1 text-[10px] font-[800] text-[#6B83AD] sm:inline-flex dark:bg-[#0B1728]">
                     ⌘K
@@ -305,14 +351,16 @@ export function TopBar({ onMenuClick }: TopBarProps) {
         aria-label={aiInsightsOpen ? 'Disable AI insights' : 'Enable AI insights'}
         title={aiInsightsOpen ? 'Disable AI insights' : 'Enable AI insights'}
         className={cn(
-          'hidden md:flex items-center gap-1.5 h-8 px-2.5 rounded-[7px] text-[12px] font-[700] transition-all',
+          'flex h-9 w-9 items-center justify-center gap-1.5 rounded-[9px] px-0 text-[12px] font-[800] transition-all md:w-auto md:px-3',
           aiInsightsOpen
             ? 'bg-[#2E8B8B] text-white shadow-[0_8px_20px_rgba(46,139,139,0.24)]'
-            : 'bg-[#34507F] text-[#D8E0EE] hover:bg-[#6B83AD] hover:text-white',
+            : isDark
+            ? 'bg-[#34507F] text-[#D8E0EE] hover:bg-[#6B83AD] hover:text-white'
+            : 'border border-[#D8E0EE] bg-[#F8FAFD] text-[#1F3864] hover:bg-[#EEF2F8]',
         )}
       >
         <Sparkles size={13} />
-        AI Insights
+        <span className="hidden md:inline">AI Insights</span>
       </button>
 
       {/* Theme toggle */}
@@ -321,7 +369,10 @@ export function TopBar({ onMenuClick }: TopBarProps) {
         onClick={toggleTheme}
         aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
         title={isDark ? 'Light mode' : 'Dark mode'}
-        className="flex items-center justify-center w-8 h-8 rounded-[6px] text-[#D8E0EE] hover:bg-[#34507F] transition-colors"
+        className={cn(
+          'flex h-9 w-9 items-center justify-center rounded-[9px] transition-colors',
+          isDark ? 'text-[#D8E0EE] hover:bg-[#34507F]' : 'border border-[#D8E0EE] bg-[#F8FAFD] text-[#1F3864] hover:bg-[#EEF2F8]',
+        )}
       >
         {isDark ? <Sun size={16} /> : <Moon size={16} />}
       </button>
@@ -332,7 +383,10 @@ export function TopBar({ onMenuClick }: TopBarProps) {
           type="button"
           aria-label={`${notifCount} notifications`}
           onClick={() => runAction('Notifications opened', `${notifCount} priority alerts are ready for review.`)}
-          className="flex items-center justify-center w-8 h-8 rounded-[6px] text-[#D8E0EE] hover:bg-[#34507F] transition-colors"
+          className={cn(
+            'flex h-9 w-9 items-center justify-center rounded-[9px] transition-colors',
+            isDark ? 'text-[#D8E0EE] hover:bg-[#34507F]' : 'border border-[#D8E0EE] bg-[#F8FAFD] text-[#1F3864] hover:bg-[#EEF2F8]',
+          )}
         >
           <Bell size={16} />
         </button>
@@ -349,13 +403,16 @@ export function TopBar({ onMenuClick }: TopBarProps) {
           type="button"
           onClick={() => { setShowUser((v) => !v); setShowPeriod(false); setShowScope(false) }}
           aria-label="User menu"
-          className="flex items-center gap-2 h-8 px-2 rounded-[6px] hover:bg-[#34507F] transition-colors"
+          className={cn(
+            'flex h-9 items-center gap-2 rounded-[9px] px-2 transition-colors',
+            isDark ? 'hover:bg-[#34507F]' : 'border border-[#D8E0EE] bg-[#F8FAFD] hover:bg-[#EEF2F8]',
+          )}
           aria-expanded={showUser}
         >
           <div className="w-6 h-6 rounded-full bg-[#2E8B8B] flex items-center justify-center">
             <span className="text-[10px] font-[700] text-white">DR</span>
           </div>
-          <span className="hidden md:block text-[12px] font-[500] text-[#D8E0EE]">Director</span>
+          <span className={cn('hidden text-[12px] font-[650] md:block', isDark ? 'text-[#D8E0EE]' : 'text-[#1F3864]')}>Director</span>
           <ChevronDown size={12} className="text-[#6B83AD]" />
         </button>
         <AnimatePresence>

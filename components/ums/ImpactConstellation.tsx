@@ -55,17 +55,19 @@ function CustomTooltip({ active, payload }: { active?: boolean; payload?: Toolti
 
 export function ImpactConstellation({ data }: ImpactConstellationProps) {
   const [hoveredCenter, setHoveredCenter] = useState<string | null>(null)
+  const validImpactPoints = data.filter(p => p.impactFactor > 0)
 
   // Split data per center for separate <Scatter> layers (needed for per-center colors)
   const byCenter = CENTERS.map(center => ({
     center,
     color: CENTER_COLORS[center],
-    points: data.filter(p => p.center === center && p.impactFactor > 0),
+    points: validImpactPoints.filter(p => p.center === center),
   })).filter(g => g.points.length > 0)
 
   // Avg IF reference line
-  const avgIF = data.filter(p => p.impactFactor > 0).reduce((s, p) => s + p.impactFactor, 0)
-               / data.filter(p => p.impactFactor > 0).length
+  const avgIF = validImpactPoints.length > 0
+    ? validImpactPoints.reduce((s, p) => s + p.impactFactor, 0) / validImpactPoints.length
+    : 0
 
   return (
     <MotionCard className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">

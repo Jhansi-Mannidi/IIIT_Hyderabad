@@ -35,7 +35,7 @@ export function DeptHealthStrip({ data, onCellClick }: DeptHealthStripProps) {
   }
 
   return (
-    <div className="w-full bg-white rounded-lg border border-[#E0E6F2] overflow-hidden">
+    <div className="executive-plain-card w-full bg-white rounded-lg border border-[#E0E6F2] overflow-hidden">
       <div className="px-6 py-4 border-b border-[#E0E6F2] bg-[#F5F7FB]">
         <h3 className="text-sm font-[700] text-[#1A2D47] flex items-center gap-2">
           <span className="w-1 h-4 bg-gradient-to-b from-[#F97316] to-[#EA580C] rounded-full"></span>
@@ -47,21 +47,28 @@ export function DeptHealthStrip({ data, onCellClick }: DeptHealthStripProps) {
       </div>
 
       <div className="overflow-x-auto">
-        <div className="flex gap-2 p-4 min-w-min">
+        <div
+          className="grid gap-2 p-4"
+          style={{
+            gridTemplateColumns: `repeat(${data.length}, minmax(82px, 1fr))`,
+            minWidth: `${Math.max(data.length * 92, 860)}px`,
+          }}
+        >
           {data.map((cell) => (
-            <div key={cell.dept} className="flex-shrink-0">
+            <div key={cell.dept} className="min-w-0">
               <button
                 onClick={() => handleCellClick(cell)}
-                className="group relative"
+                className="group relative w-full"
               >
                 <div
                   style={{ backgroundColor: getDrivenColor(cell.score) }}
-                  className="px-3 py-2 rounded-lg border border-[#D9E1ED] transition-all cursor-pointer hover:shadow-md hover:scale-105 min-w-[120px]"
+                  className="min-h-[66px] w-full rounded-lg border border-[#D9E1ED] px-2 py-2 transition-all cursor-pointer hover:shadow-md hover:scale-105"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span
                       style={{ color: getTextColor(cell.score) }}
-                      className="text-[10px] font-[700] uppercase tracking-wider"
+                      className="min-w-0 truncate text-[9px] font-[800] uppercase tracking-[0.04em]"
+                      title={cell.dept}
                     >
                       {getStatusIcon(cell.score)} {cell.dept}
                     </span>

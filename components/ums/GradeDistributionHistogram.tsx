@@ -32,6 +32,7 @@ export function GradeDistributionHistogram({
       title="Grade Distribution"
       subtitle="Current cohort across all subjects"
       info="Distribution of letter grades (A–F) for all attempted assessments this semester. Higher bars on left indicate stronger cohort performance."
+      className="lg:h-[430px]"
     >
       <ResponsiveContainer width="100%" height={280}>
         <BarChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>

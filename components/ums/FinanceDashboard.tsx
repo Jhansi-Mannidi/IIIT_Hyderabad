@@ -20,10 +20,11 @@ export function FinanceDashboard() {
   const rawData = useFinanceDashboardData()
   const [dismissedInsights, setDismissedInsights] = useState<Set<string>>(new Set())
   const [filters, setFilters] = useState<Record<string, unknown>>({})
-  const { searchQuery, setDashboardFilters, refreshDashboard, runAction } = useInteractions()
+  const { aiInsightsOpen, globalFilters, searchQuery, setDashboardFilters, refreshDashboard, runAction } = useInteractions()
+  const effectiveFilters = useMemo(() => ({ ...globalFilters, ...filters }), [globalFilters, filters])
   const data = useMemo(
-    () => applyDashboardFilters(rawData, filters, searchQuery),
-    [rawData, filters, searchQuery],
+    () => applyDashboardFilters(rawData, effectiveFilters, searchQuery),
+    [rawData, effectiveFilters, searchQuery],
   )
 
   const visibleInsights = data.aiInsights.filter(i => !dismissedInsights.has(i.id))
@@ -53,7 +54,7 @@ export function FinanceDashboard() {
             setDashboardFilters('Student Finance', nextFilters)
           }}
         />
-        <ActiveFilterSummary dashboard="Student Finance" filters={filters} searchQuery={searchQuery} />
+        <ActiveFilterSummary dashboard="Student Finance" filters={effectiveFilters} searchQuery={searchQuery} />
 
         {/* KPI Strip */}
         <section aria-label="Finance KPIs">
@@ -70,13 +71,13 @@ export function FinanceDashboard() {
         </section>
 
         {/* Signature Elements - Waterfall + Ageing */}
-        <section aria-label="Collections analysis" className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <section aria-label="Collections analysis" className="grid grid-cols-1 items-start gap-4 lg:grid-cols-2">
           <DemandCollectionWaterfall steps={data.waterfallSteps} />
           <AgeingBucketsStrip buckets={data.ageingBuckets} />
         </section>
 
         {/* Supporting Charts Grid */}
-        <section aria-label="Financial metrics" className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <section aria-label="Financial metrics" className="grid grid-cols-1 items-start gap-4 lg:grid-cols-2">
           <FeeComponentsChart data={data.feeComponents} />
           <RefundTrendChart data={data.refundTrends} />
           <PaymentChannelChart data={data.paymentChannels} />
@@ -84,7 +85,7 @@ export function FinanceDashboard() {
         </section>
 
         {/* AI Insights */}
-        {visibleInsights.length > 0 && (
+        {aiInsightsOpen && visibleInsights.length > 0 && (
           <section aria-label="Finance insights" className="space-y-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
             <h3 className="text-[13px] font-[700] text-[#0F1722]">AI-Powered Insights & Actions</h3>
             <div className="space-y-2">

@@ -1,6 +1,5 @@
 'use client'
 import { TrendingUp, TrendingDown } from 'lucide-react'
-import { ResponsiveContainer, LineChart, Line, Tooltip } from 'recharts'
 import { cn } from '@/lib/utils'
 import type { KPIMetric } from '@/lib/useExecutiveCockpitData'
 import { motion, useReducedMotion } from 'framer-motion'
@@ -22,8 +21,6 @@ export function KPITile({ metric, onClick }: KPITileProps) {
   const isPositiveDelta = metric.delta > 0
   const deltaColor = isPositiveDelta ? 'text-[#2E8B8B]' : 'text-[#C55A11]'
   const DeltaIcon = isPositiveDelta ? TrendingUp : TrendingDown
-
-  const sparkData = metric.sparkline.map((v, i) => ({ i, v }))
 
   const breachBorder =
     metric.breach
@@ -56,7 +53,7 @@ export function KPITile({ metric, onClick }: KPITileProps) {
       onKeyDown={onClick ? (e) => e.key === 'Enter' && onClick() : undefined}
       aria-label={`${metric.label}: ${metric.value}, ${isPositiveDelta ? 'up' : 'down'} ${Math.abs(metric.delta).toFixed(1)}% ${metric.deltaLabel}`}
       className={cn(
-        'chart-card relative flex min-h-[148px] flex-col rounded-[12px] bg-white p-4 cursor-pointer select-none overflow-hidden',
+        'chart-card relative flex min-h-[148px] flex-col rounded-[12px] bg-white p-4 cursor-pointer select-none overflow-hidden sm:min-h-[148px]',
         'transition-colors duration-200',
         breachBorder || 'border-[#E4E8EF]',
       )}
@@ -78,7 +75,7 @@ export function KPITile({ metric, onClick }: KPITileProps) {
           )}
           <span
             title={metric.label}
-            className="block max-w-full truncate text-[10.5px] font-[800] uppercase tracking-[0.075em] text-[#5A6675] leading-4"
+            className="block max-w-full whitespace-normal text-[10.5px] font-[800] uppercase leading-4 tracking-[0.075em] text-[#5A6675] sm:truncate"
           >
             {metric.label}
           </span>
@@ -107,7 +104,7 @@ export function KPITile({ metric, onClick }: KPITileProps) {
         </span>
       </div>
 
-      {/* Delta chip + sparkline */}
+      {/* Delta chip */}
       <div className="mt-2 flex min-h-[34px] items-end justify-between gap-2">
         <div className="min-w-0 flex-1">
           <span
@@ -122,25 +119,6 @@ export function KPITile({ metric, onClick }: KPITileProps) {
           <span className="mt-0.5 block truncate text-[10px] font-[600] text-[#9AA6B4]" title={metric.deltaLabel}>
             {metric.deltaLabel}
           </span>
-        </div>
-
-        {/* Inline sparkline */}
-        <div className="h-8 w-16 flex-shrink-0 opacity-90" aria-hidden>
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={sparkData}>
-              <Line
-                type="monotone"
-                dataKey="v"
-                stroke={isPositiveDelta ? '#2E8B8B' : '#C55A11'}
-                strokeWidth={1.5}
-                dot={false}
-                isAnimationActive={false}
-              />
-              <Tooltip
-                content={() => null}
-              />
-            </LineChart>
-          </ResponsiveContainer>
         </div>
       </div>
 

@@ -60,7 +60,7 @@ export function AcademicFilterBar({ onFiltersChange }: AcademicFilterBarProps) {
   ).length
 
   return (
-    <div className="bg-white border border-[#E8EEF5] rounded-[12px] p-4 space-y-3">
+    <div className="relative z-30 bg-white border border-[#E8EEF5] rounded-[12px] p-4 space-y-3">
       {/* Filter Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         {/* Program */}
@@ -157,7 +157,7 @@ function FilterSelect({ label, options, value, onChange }: FilterSelectProps) {
   const [open, setOpen] = useState(false)
 
   return (
-    <div className="relative">
+    <div className="relative z-40">
       <label className="text-xs font-semibold text-[#6B7C99] block mb-1">{label}</label>
       <button
         onClick={() => setOpen(!open)}
@@ -168,7 +168,7 @@ function FilterSelect({ label, options, value, onChange }: FilterSelectProps) {
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#E8EEF5] rounded-[6px] shadow-lg z-10">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#E8EEF5] rounded-[6px] shadow-lg z-[90]">
           {options.map((opt) => (
             <button
               key={opt}

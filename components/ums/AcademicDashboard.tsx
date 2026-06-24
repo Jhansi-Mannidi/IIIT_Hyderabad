@@ -13,7 +13,6 @@ import { AtRiskTriageBoard } from './AtRiskTriageBoard'
 import { TranscriptDrawer } from './TranscriptDrawer'
 import { AcademicAIInsightCard } from './AcademicAIInsightCard'
 import { RefreshCw } from 'lucide-react'
-import { ActiveFilterSummary } from './ActiveFilterSummary'
 import { useInteractions } from './InteractionProvider'
 import { applyDashboardFilters } from '@/lib/dashboardFiltering'
 
@@ -34,14 +33,15 @@ export function AcademicDashboard({ isLoading: initialLoading = false }: Academi
     sgpaMin: 0,
   })
   const [dismissedInsights, setDismissedInsights] = useState<Set<string>>(new Set())
-  const { searchQuery, setDashboardFilters, refreshDashboard } = useInteractions()
+  const { aiInsightsOpen, globalFilters, searchQuery, setDashboardFilters, refreshDashboard } = useInteractions()
+  const effectiveFilters = useMemo(() => ({ ...globalFilters, ...filters }), [globalFilters, filters])
   const data = useMemo(
-    () => applyDashboardFilters(rawData, filters, searchQuery),
-    [rawData, filters, searchQuery],
+    () => applyDashboardFilters(rawData, effectiveFilters, searchQuery),
+    [rawData, effectiveFilters, searchQuery],
   )
 
   // Filter at-risk students based on applied filters
-  const filteredAtRiskStudents = data.atRiskStudents.filter((student) => {
+  const matchingAtRiskStudents = data.atRiskStudents.filter((student) => {
     if (
       filters.program !== 'All Programs' &&
       !student.program.includes(filters.program.split(' ')[filters.program.split(' ').length - 1])
@@ -55,6 +55,7 @@ export function AcademicDashboard({ isLoading: initialLoading = false }: Academi
     if (filters.sgpaMin > 0 && student.sgpa < filters.sgpaMin) return false
     return true
   })
+  const filteredAtRiskStudents = matchingAtRiskStudents.length > 0 ? matchingAtRiskStudents : data.atRiskStudents
 
   if (isLoading) {
     return <SkeletonDashboard />
@@ -99,7 +100,7 @@ export function AcademicDashboard({ isLoading: initialLoading = false }: Academi
         </section>
 
         {/* Filter Bar */}
-        <section aria-label="Filters">
+        <section aria-label="Filters" className="relative z-30">
           <AcademicFilterBar
             onFiltersChange={(nextFilters) => {
               setFilters(nextFilters)
@@ -107,8 +108,6 @@ export function AcademicDashboard({ isLoading: initialLoading = false }: Academi
             }}
           />
         </section>
-
-        <ActiveFilterSummary dashboard="Academic" filters={filters} searchQuery={searchQuery} />
 
         {/* Charts Grid */}
         <section aria-label="Performance charts" className="grid grid-cols-1 lg:grid-cols-2 gap-5">
@@ -127,7 +126,7 @@ export function AcademicDashboard({ isLoading: initialLoading = false }: Academi
         </section>
 
         {/* AI Insights Section */}
-        {visibleInsights.length > 0 && (
+        {aiInsightsOpen && visibleInsights.length > 0 && (
           <section aria-label="Academic insights" className="space-y-3">
             <h2 className="text-lg font-bold text-[#1F3864]">Academic Insights</h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

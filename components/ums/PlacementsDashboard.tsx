@@ -23,10 +23,11 @@ export function PlacementsDashboard() {
 
   const [dismissedInsights, setDismissedInsights] = useState<Set<string>>(new Set())
   const [filters, setFilters] = useState<Record<string, unknown>>({})
-  const { searchQuery, setDashboardFilters, refreshDashboard, runAction } = useInteractions()
+  const { aiInsightsOpen, globalFilters, searchQuery, setDashboardFilters, refreshDashboard, runAction } = useInteractions()
+  const effectiveFilters = useMemo(() => ({ ...globalFilters, ...filters }), [globalFilters, filters])
   const data = useMemo(
-    () => applyDashboardFilters(rawData, filters, searchQuery),
-    [rawData, filters, searchQuery],
+    () => applyDashboardFilters(rawData, effectiveFilters, searchQuery),
+    [rawData, effectiveFilters, searchQuery],
   )
 
   const dismiss = (id: string) =>
@@ -63,7 +64,7 @@ export function PlacementsDashboard() {
             setDashboardFilters('Placements', nextFilters)
           }}
         />
-        <ActiveFilterSummary dashboard="Placements" filters={filters} searchQuery={searchQuery} />
+        <ActiveFilterSummary dashboard="Placements" filters={effectiveFilters} searchQuery={searchQuery} />
 
         {/* 2. KPI strip */}
         <section aria-label="Placement KPIs">
@@ -105,7 +106,7 @@ export function PlacementsDashboard() {
         </section>
 
         {/* 5. Right-rail AI insights */}
-        {visibleInsights.length > 0 && (
+        {aiInsightsOpen && visibleInsights.length > 0 && (
           <section aria-label="Placement AI insights">
             <div className="bg-white rounded-[12px] border border-[#E5ECEF] p-4">
               <h3 className="text-[13px] font-[700] text-[#0F1722] mb-3">

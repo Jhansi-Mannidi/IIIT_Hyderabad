@@ -11,6 +11,7 @@ interface MessEconomicsTrendProps {
 
 export function MessEconomicsTrend({ data }: MessEconomicsTrendProps) {
   const [showBreakdown, setShowBreakdown] = useState(false)
+  const dataCount = Math.max(data.length, 1)
 
   const chartData = data.map(item => ({
     date: item.date,
@@ -22,6 +23,7 @@ export function MessEconomicsTrend({ data }: MessEconomicsTrendProps) {
     { name: 'Veg Meals', value: data.reduce((sum, d) => sum + d.veg, 0) },
     { name: 'Non-Veg Meals', value: data.reduce((sum, d) => sum + d.nonVeg, 0) },
   ]
+  const breakdownTotal = Math.max(breakdownData.reduce((sum, item) => sum + item.value, 0), 1)
 
   const COLORS = ['#2E8B8B', '#C55A11']
 
@@ -63,18 +65,43 @@ export function MessEconomicsTrend({ data }: MessEconomicsTrendProps) {
         </ResponsiveContainer>
         </div>
       ) : (
-        <div className="ums-analytics-chart-frame h-[240px] min-w-0">
+        <>
+        <div className="ums-mobile-native-analytics grid gap-3 md:hidden">
+          {breakdownData.map((item, index) => {
+            const pct = Math.round((item.value / breakdownTotal) * 100)
+
+            return (
+              <div key={item.name} className="rounded-[12px] border border-[#E5ECEF] bg-[#F8FAFD] p-3">
+                <div className="mb-2 flex items-center justify-between gap-3">
+                  <div className="flex min-w-0 items-center gap-2">
+                    <span className="h-2.5 w-2.5 flex-shrink-0 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
+                    <span className="truncate text-[12px] font-[800] text-[#5A6B7A]" title={item.name}>{item.name}</span>
+                  </div>
+                  <span className="text-[12px] font-[850] text-[#0F1722]">{item.value.toLocaleString('en-IN')}</span>
+                </div>
+                <div className="h-2.5 overflow-hidden rounded-full bg-[#E5ECEF]">
+                  <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: COLORS[index % COLORS.length] }} />
+                </div>
+                <div className="mt-1 text-right text-[10px] font-[800] text-[#9AA6B4]">{pct}%</div>
+              </div>
+            )
+          })}
+        </div>
+
+        <div className="ums-analytics-chart-frame hidden h-[230px] min-w-0 md:block md:h-[240px]">
         <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={220} debounce={80}>
           <PieChart>
             <Pie
               data={breakdownData}
               cx="50%"
               cy="50%"
-              innerRadius={72}
-              outerRadius={112}
+              innerRadius="42%"
+              outerRadius="72%"
               paddingAngle={2}
               dataKey="value"
-              label
+              label={false}
+              stroke="#FFFFFF"
+              strokeWidth={2}
             >
               {breakdownData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -84,12 +111,13 @@ export function MessEconomicsTrend({ data }: MessEconomicsTrendProps) {
           </PieChart>
         </ResponsiveContainer>
         </div>
+        </>
       )}
 
-      <div className="flex gap-4 p-3 bg-[#F6F8FB] rounded-[8px]">
+      <div className="grid grid-cols-1 gap-3 rounded-[8px] bg-[#F6F8FB] p-3 sm:grid-cols-3">
         <div>
           <p className="text-[10px] text-[#9AA6B4] mb-1">Avg Cost/Student</p>
-          <p className="font-['Courier'] text-[13px] font-[700]">₹{(data.reduce((sum, d) => sum + d.costPerStudent, 0) / data.length).toFixed(0)}</p>
+          <p className="font-['Courier'] text-[13px] font-[700]">₹{(data.reduce((sum, d) => sum + d.costPerStudent, 0) / dataCount).toFixed(0)}</p>
         </div>
         <div>
           <p className="text-[10px] text-[#9AA6B4] mb-1">Total Students Served</p>

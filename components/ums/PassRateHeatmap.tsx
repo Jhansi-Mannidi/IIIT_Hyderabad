@@ -27,18 +27,19 @@ export function PassRateHeatmap({ data, onCellClick }: PassRateHeatmapProps) {
       title="Subject-wise Pass Rates"
       subtitle="Semester-aggregated performance by course"
       info="Heat intensity indicates pass rate: darker green (90%+) to red (<75%). Click cell to see detailed breakdown."
+      className="lg:h-[430px]"
     >
-      <div className="overflow-x-auto">
-        <table className="w-full text-xs">
+      <div className="max-h-[310px] overflow-auto pr-1">
+        <table className="w-full text-[11px]">
           <thead>
             <tr>
-              <th className="text-left px-2 py-2 text-[#6B7C99] font-semibold border-b border-[#E8EEF5]">
+              <th className="sticky top-0 z-10 bg-white text-left px-2 py-1.5 text-[#6B7C99] font-semibold border-b border-[#E8EEF5]">
                 Subject
               </th>
               {semesters.map((sem) => (
                 <th
                   key={sem}
-                  className="text-center px-2 py-2 text-[#6B7C99] font-semibold border-b border-[#E8EEF5]"
+                  className="sticky top-0 z-10 bg-white text-center px-2 py-1.5 text-[#6B7C99] font-semibold border-b border-[#E8EEF5]"
                 >
                   Sem {sem}
                 </th>
@@ -48,7 +49,7 @@ export function PassRateHeatmap({ data, onCellClick }: PassRateHeatmapProps) {
           <tbody>
             {subjects.map((subject) => (
               <tr key={subject} className="hover:bg-[#F5F8FB]">
-                <td className="px-2 py-2 text-[#1F3864] font-medium border-b border-[#E8EEF5]">
+                <td className="px-2 py-1.5 text-[#1F3864] font-medium border-b border-[#E8EEF5]">
                   {subject}
                 </td>
                 {semesters.map((sem) => {
@@ -56,12 +57,12 @@ export function PassRateHeatmap({ data, onCellClick }: PassRateHeatmapProps) {
                   return (
                     <td
                       key={`${subject}-${sem}`}
-                      className="text-center px-2 py-2 border-b border-[#E8EEF5]"
+                      className="text-center px-2 py-1.5 border-b border-[#E8EEF5]"
                     >
                       {cell ? (
                         <button
                           onClick={() => onCellClick?.(cell)}
-                          className="w-10 h-10 rounded-[6px] font-semibold text-white transition-all hover:scale-105 cursor-pointer"
+                          className="h-7 w-9 rounded-[7px] text-[10px] font-semibold text-white transition-all hover:scale-105 cursor-pointer"
                           style={{ backgroundColor: getColor(cell.passRate) }}
                           title={`${cell.passRate}% pass rate (${cell.totalStudents - cell.failedCount}/${cell.totalStudents})`}
                         >
@@ -80,25 +81,25 @@ export function PassRateHeatmap({ data, onCellClick }: PassRateHeatmapProps) {
       </div>
 
       {/* Legend */}
-      <div className="mt-4 flex items-center gap-4 text-xs text-[#6B7C99]">
+      <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[10.5px] text-[#6B7C99]">
         <div className="flex items-center gap-1">
-          <div className="w-4 h-4 rounded-sm bg-[#2E8B8B]" />
+          <div className="w-3 h-3 rounded-sm bg-[#2E8B8B]" />
           <span>90%+</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-4 h-4 rounded-sm bg-[#4A9B7F]" />
+          <div className="w-3 h-3 rounded-sm bg-[#4A9B7F]" />
           <span>85–90%</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-4 h-4 rounded-sm bg-[#C99A2E]" />
+          <div className="w-3 h-3 rounded-sm bg-[#C99A2E]" />
           <span>80–85%</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-4 h-4 rounded-sm bg-[#C55A11]" />
+          <div className="w-3 h-3 rounded-sm bg-[#C55A11]" />
           <span>75–80%</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-4 h-4 rounded-sm bg-[#B2566B]" />
+          <div className="w-3 h-3 rounded-sm bg-[#B2566B]" />
           <span>&lt;75%</span>
         </div>
       </div>

@@ -1,13 +1,19 @@
 'use client'
 
 import { RecruitmentFunnel } from '@/lib/useHRPayrollData'
+import { VIZ } from '@/lib/tokens'
 import { MotionCard } from './MotionCard'
+import { useTheme } from './ThemeProvider'
 
 interface RecruitmentFunnelChartProps {
   data: RecruitmentFunnel[]
 }
 
 export function RecruitmentFunnelChart({ data }: RecruitmentFunnelChartProps) {
+  const { theme } = useTheme()
+  const isDark = theme === 'dark'
+  const barColor = isDark ? '#6E91B8' : VIZ.blue
+
   return (
     <MotionCard className="flex h-full min-h-[310px] flex-col gap-3 rounded-[12px] border border-[#E5ECEF] bg-white p-4">
       <div>
@@ -22,8 +28,8 @@ export function RecruitmentFunnelChart({ data }: RecruitmentFunnelChartProps) {
             <div key={idx} className="flex min-w-0 flex-col items-center gap-2">
               <div className="flex h-44 w-full items-end">
                 <div
-                  className="w-full rounded-t-[10px] bg-gradient-to-r from-[#2E8B8B] to-[#C55A11] shadow-[0_10px_24px_rgba(31,56,100,0.12)] transition-all hover:shadow-md"
-                  style={{ height: `${height}px` }}
+                  className="w-full rounded-t-[10px] shadow-[0_10px_24px_rgba(31,56,100,0.12)] transition-all hover:shadow-md"
+                  style={{ height: `${height}px`, backgroundColor: barColor }}
                   title={`${stage.stage}: ${stage.count} (${stage.percentage.toFixed(1)}%)`}
                 />
               </div>

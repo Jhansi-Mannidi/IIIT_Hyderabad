@@ -4,6 +4,7 @@ import { InteractionProvider } from '@/components/ums/InteractionProvider'
 import { MotionProvider } from '@/components/ums/MotionProvider'
 import { ThemeProvider } from '@/components/ums/ThemeProvider'
 import { AnimatedNumberProvider } from '@/components/ums/AnimatedNumberProvider'
+import 'react-toastify/dist/ReactToastify.css'
 import './globals.css'
 
 const inter = Inter({

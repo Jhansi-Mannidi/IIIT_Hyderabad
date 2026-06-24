@@ -7,7 +7,7 @@ export function MotionProvider({ children }: { children: ReactNode }) {
   return (
     <MotionConfig
       reducedMotion="user"
-      transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
     >
       {children}
     </MotionConfig>

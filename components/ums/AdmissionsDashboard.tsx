@@ -19,10 +19,11 @@ export function AdmissionsDashboard() {
   const rawData = useAdmissionsDashboardData()
   const [filters, setFilters] = useState<AdmissionsFilters>({})
   const [dismissedInsights, setDismissedInsights] = useState<Set<string>>(new Set())
-  const { searchQuery, setDashboardFilters, refreshDashboard } = useInteractions()
+  const { aiInsightsOpen, globalFilters, searchQuery, setDashboardFilters, refreshDashboard } = useInteractions()
+  const effectiveFilters = useMemo(() => ({ ...globalFilters, ...filters }), [globalFilters, filters])
   const data = useMemo(
-    () => applyDashboardFilters(rawData, filters, searchQuery),
-    [rawData, filters, searchQuery],
+    () => applyDashboardFilters(rawData, effectiveFilters, searchQuery),
+    [rawData, effectiveFilters, searchQuery],
   )
 
   // Filter insights based on dismissed state
@@ -59,7 +60,7 @@ export function AdmissionsDashboard() {
             setDashboardFilters('Admissions', nextFilters)
           }}
         />
-        <ActiveFilterSummary dashboard="Admissions" filters={filters} searchQuery={searchQuery} />
+        <ActiveFilterSummary dashboard="Admissions" filters={effectiveFilters} searchQuery={searchQuery} />
 
         {/* KPI Strip */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
@@ -71,7 +72,7 @@ export function AdmissionsDashboard() {
         {/* Signature Elements: Funnel + Sankey */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <ConversionFunnel data={data.funnel} />
-          <PreferenceFlowSankey nodes={data.sankey.nodes} links={data.sankey.links} />
+          <PreferenceFlowSankey flows={data.preferenceFlows} />
         </div>
 
         {/* Supporting Charts Grid (2x2) */}
@@ -83,7 +84,7 @@ export function AdmissionsDashboard() {
         </div>
 
         {/* AI Insights Section */}
-        {visibleInsights.length > 0 && (
+        {aiInsightsOpen && visibleInsights.length > 0 && (
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <h3 className="text-[14px] font-[700] text-[#0F1722]">AI Insights & Recommendations</h3>

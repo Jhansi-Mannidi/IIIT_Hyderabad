@@ -19,10 +19,11 @@ export function HostelMessDashboard() {
   const rawData = useHostelMessData()
   const [dismissedInsights, setDismissedInsights] = useState<Set<string>>(new Set())
   const [filters, setFilters] = useState<Record<string, unknown>>({})
-  const { searchQuery, setDashboardFilters, refreshDashboard, runAction } = useInteractions()
+  const { aiInsightsOpen, globalFilters, searchQuery, setDashboardFilters, refreshDashboard, runAction } = useInteractions()
+  const effectiveFilters = useMemo(() => ({ ...globalFilters, ...filters }), [globalFilters, filters])
   const data = useMemo(
-    () => applyDashboardFilters(rawData, filters, searchQuery),
-    [rawData, filters, searchQuery],
+    () => applyDashboardFilters(rawData, effectiveFilters, searchQuery),
+    [rawData, effectiveFilters, searchQuery],
   )
 
   const visibleInsights = data.aiInsights.filter(i => !dismissedInsights.has(i.id))
@@ -52,7 +53,7 @@ export function HostelMessDashboard() {
             setDashboardFilters('Hostel & Mess', nextFilters)
           }}
         />
-        <ActiveFilterSummary dashboard="Hostel & Mess" filters={filters} searchQuery={searchQuery} />
+        <ActiveFilterSummary dashboard="Hostel & Mess" filters={effectiveFilters} searchQuery={searchQuery} />
 
         {/* KPI Strip */}
         <section aria-label="Hostel KPIs">
@@ -85,7 +86,7 @@ export function HostelMessDashboard() {
         </section>
 
         {/* AI Insights */}
-        {visibleInsights.length > 0 && (
+        {aiInsightsOpen && visibleInsights.length > 0 && (
           <section aria-label="Hostel insights" className="space-y-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
             <h3 className="text-[13px] font-[700] text-[#0F1722]">AI-Powered Hostel Insights</h3>
             <div className="space-y-2">

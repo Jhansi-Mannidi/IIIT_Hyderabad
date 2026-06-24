@@ -1,13 +1,20 @@
 'use client'
 
 import { AppraisalProgress } from '@/lib/useHRPayrollData'
+import { VIZ } from '@/lib/tokens'
 import { MotionCard } from './MotionCard'
+import { useTheme } from './ThemeProvider'
 
 interface AppraisalProgressChartProps {
   data: AppraisalProgress[]
 }
 
 export function AppraisalProgressChart({ data }: AppraisalProgressChartProps) {
+  const { theme } = useTheme()
+  const isDark = theme === 'dark'
+  const barColor = isDark ? '#64BDB6' : VIZ.teal
+  const trackColor = isDark ? '#162033' : '#EEF2F8'
+
   return (
     <MotionCard className="flex h-full min-h-[310px] flex-col gap-4 rounded-[12px] border border-[#E5ECEF] bg-white p-4">
       <div>
@@ -23,10 +30,13 @@ export function AppraisalProgressChart({ data }: AppraisalProgressChartProps) {
               <p className="text-[9px] font-[650] text-[#9AA6B4]">{cycle.completed} / {cycle.total}</p>
             </div>
             <div className="min-w-0">
-              <div className="h-5 w-full overflow-hidden rounded-[7px] border border-[#E5ECEF] bg-[#F0F4F7]">
+              <div
+                className="h-5 w-full overflow-hidden rounded-[7px] border"
+                style={{ backgroundColor: trackColor, borderColor: isDark ? '#263448' : '#E5ECEF' }}
+              >
                 <div
-                  className="h-full rounded-[7px] bg-[#2E8B8B] transition-all"
-                  style={{ width: `${cycle.percentComplete}%` }}
+                  className="h-full rounded-[7px] transition-all"
+                  style={{ width: `${cycle.percentComplete}%`, backgroundColor: barColor }}
                 />
               </div>
             </div>

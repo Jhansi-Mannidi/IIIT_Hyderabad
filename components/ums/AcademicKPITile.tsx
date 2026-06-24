@@ -1,7 +1,6 @@
 'use client'
 
-import { TrendingUp, TrendingDown, Zap } from 'lucide-react'
-import { LineChart, Line, ResponsiveContainer } from 'recharts'
+import { TrendingUp, TrendingDown } from 'lucide-react'
 import { motion, useReducedMotion } from 'framer-motion'
 
 interface AcademicKPITileProps {
@@ -17,12 +16,10 @@ export function AcademicKPITile({
   label,
   value,
   delta,
-  sparkline,
   unit,
   derived,
 }: AcademicKPITileProps) {
   const isPositive = delta >= 0
-  const sparkData = sparkline.map((v, i) => ({ x: i, y: v }))
   const shouldReduceMotion = useReducedMotion()
 
   return (
@@ -54,24 +51,9 @@ export function AcademicKPITile({
         {unit && <span className="text-xs text-[#6B7C99]">{unit}</span>}
       </div>
 
-      {/* Sparkline + Delta Chip */}
+      {/* Delta Chip */}
       <div className="flex items-end justify-between gap-2">
-        <div className="flex-1 h-10">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={sparkData}>
-              <Line
-                type="monotone"
-                dataKey="y"
-                stroke={isPositive ? '#2E8B8B' : '#C55A11'}
-                strokeWidth={2}
-                dot={false}
-                isAnimationActive={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Delta Chip */}
+        <div className="flex-1" />
         <div
           className={`px-2 py-1 rounded-[6px] flex items-center gap-1 text-xs font-semibold min-w-fit ${
             isPositive

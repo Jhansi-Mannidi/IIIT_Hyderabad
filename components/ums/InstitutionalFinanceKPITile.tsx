@@ -1,7 +1,6 @@
 'use client'
 
 import { TrendingUp, TrendingDown } from 'lucide-react'
-import { LineChart, Line, ResponsiveContainer } from 'recharts'
 import { motion, useReducedMotion } from 'framer-motion'
 
 interface InstitutionalFinanceKPITileProps {
@@ -27,9 +26,6 @@ export function InstitutionalFinanceKPITile({
 }: InstitutionalFinanceKPITileProps) {
   const isPositive = delta >= 0
   const shouldReduceMotion = useReducedMotion()
-  const sparkData = Array.from({ length: 6 }, (_, i) => ({
-    value: Math.max(value * 0.8 + Math.random() * value * 0.4, 0),
-  }))
 
   const formatValue = () => {
     if (percentage) return `${value.toFixed(1)}%`
@@ -72,20 +68,6 @@ export function InstitutionalFinanceKPITile({
             </p>
           </div>
         )}
-      </div>
-
-      <div className="h-8 -mx-1">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={sparkData}>
-            <Line
-              type="monotone"
-              dataKey="value"
-              stroke={isPositive ? '#2E8B8B' : '#E74C3C'}
-              strokeWidth={2}
-              dot={false}
-            />
-          </LineChart>
-        </ResponsiveContainer>
       </div>
 
       <div className="flex items-center gap-1.5">

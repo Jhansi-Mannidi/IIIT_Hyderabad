@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { ChevronDown, ChevronRight, AlertTriangle, TrendingDown, Users } from 'lucide-react'
 import { StudentPerformance } from '@/lib/useAcademicDashboardData'
+import { cn } from '@/lib/utils'
 import { useTheme } from './ThemeProvider'
 
 interface AtRiskTriageBoardProps {
@@ -84,32 +85,66 @@ export function AtRiskTriageBoard({
   const filtered = sorted.filter(
     (s) => filterStatus === 'all' || s.riskStatus === filterStatus
   )
+  const displayStudents = filtered.length > 0 ? filtered : sorted
+  const avgRisk =
+    displayStudents.length > 0
+      ? displayStudents.reduce((sum, s) => sum + s.riskScore, 0) / displayStudents.length
+      : 0
 
   return (
     <div className="bg-white border border-[#E8EEF5] rounded-[12px] overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#1F3864] to-[#2E8B8B] px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+      <div
+        className={cn(
+          'border-b px-4 py-4 sm:px-6',
+          isDark
+            ? 'border-[#1F3864]/70 bg-gradient-to-r from-[#0F2038] to-[#1E6F72]'
+            : 'border-[#E8EEF5] bg-gradient-to-r from-white via-[#F8FAFD] to-[#E8F5F5]',
+        )}
+      >
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
+            <h3
+              className={cn(
+                'flex items-center gap-2 text-base font-bold sm:text-lg',
+                isDark ? 'text-white' : 'text-[#0F1722]',
+              )}
+            >
               <AlertTriangle size={20} className="text-[#FFB347]" />
               At-Risk Triage Board
             </h3>
-            <p className="text-sm text-[#B8D0E8] mt-1">
+            <p
+              className={cn(
+                'mt-1 text-xs leading-5 sm:text-sm',
+                isDark ? 'text-[#B8D0E8]' : 'text-[#5A6675]',
+              )}
+            >
               Risk Score = 40% marks + 40% failed subjects + 20% attendance
             </p>
           </div>
-          <div className="text-right">
-            <div className="text-3xl font-bold text-white">{filtered.length}</div>
-            <div className="text-xs text-[#B8D0E8]">students flagged</div>
+          <div
+            className={cn(
+              'w-fit rounded-[12px] px-3 py-2 text-left sm:text-right',
+              isDark ? 'bg-white/12 sm:bg-transparent sm:p-0' : 'border border-[#CFE7E7] bg-white/80 shadow-sm',
+            )}
+          >
+            <div
+              className={cn(
+                'text-2xl font-bold leading-none sm:text-3xl',
+                isDark ? 'text-white' : 'text-[#1F3864]',
+              )}
+            >
+              {displayStudents.length}
+            </div>
+            <div className={cn('text-xs', isDark ? 'text-[#B8D0E8]' : 'text-[#5A6675]')}>students flagged</div>
           </div>
         </div>
       </div>
 
       {/* Filter + Sort Controls */}
-      <div className="px-6 py-4 bg-[#F5F8FB] border-b border-[#E8EEF5] flex items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold text-[#6B7C99]">Filter:</span>
+      <div className="flex flex-col gap-3 border-b border-[#E8EEF5] bg-[#F5F8FB] px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <div className="flex min-w-0 flex-wrap items-center gap-2">
+          <span className="w-full text-xs font-semibold text-[#6B7C99] sm:w-auto">Filter:</span>
           {(['all', 'critical', 'warning', 'at-risk'] as const).map((status) => (
             <button
               key={status}
@@ -127,12 +162,12 @@ export function AtRiskTriageBoard({
           ))}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-0 items-center gap-2">
           <span className="text-xs font-semibold text-[#6B7C99]">Sort:</span>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="px-3 py-1.5 rounded-[6px] text-xs font-semibold border border-[#E8EEF5] bg-white text-[#1F3864] focus:outline-none focus:border-[#2E8B8B]"
+            className="min-w-0 flex-1 rounded-[8px] border border-[#E8EEF5] bg-white px-3 py-2 text-xs font-semibold text-[#1F3864] focus:border-[#2E8B8B] focus:outline-none sm:flex-none"
           >
             <option value="risk">By Risk Score</option>
             <option value="sgpa">By SGPA</option>
@@ -143,8 +178,7 @@ export function AtRiskTriageBoard({
 
       {/* Student Rows */}
       <div className="divide-y divide-[#E8EEF5]">
-        {filtered.length > 0 ? (
-          filtered.map((student) => {
+        {displayStudents.map((student) => {
             const riskBadge = getRiskBadgeColor(student.riskStatus)
             const riskColor = getRiskColor(student.riskStatus)
 
@@ -152,12 +186,12 @@ export function AtRiskTriageBoard({
               <button
                 key={student.studentId}
                 onClick={() => onStudentClick?.(student)}
-                className={`w-full px-6 py-4 text-left transition-all ${riskColor}`}
+                className={`w-full px-4 py-4 text-left transition-all sm:px-6 ${riskColor}`}
               >
-                <div className="grid grid-cols-12 gap-4 items-center">
+                <div className="grid grid-cols-[auto_minmax(0,1fr)] gap-3 sm:grid-cols-[52px_minmax(120px,1.3fr)_repeat(4,minmax(76px,1fr))_24px] sm:items-center sm:gap-4">
                   {/* Risk Badge */}
                   <div
-                    className="col-span-1 px-2 py-1 rounded-[6px] text-center"
+                    className="rounded-[10px] px-2 py-1 text-center sm:rounded-[6px]"
                     style={{ backgroundColor: riskBadge.bg }}
                   >
                     <div style={{ color: riskBadge.text }} className="text-sm font-bold">
@@ -172,20 +206,21 @@ export function AtRiskTriageBoard({
                   </div>
 
                   {/* Student Info */}
-                  <div className="col-span-3">
-                    <div className="font-semibold text-[#1F3864]">{student.studentName}</div>
+                  <div className="min-w-0">
+                    <div className="text-[15px] font-bold leading-5 text-[#1F3864] sm:text-sm sm:font-semibold">{student.studentName}</div>
                     <div className="text-xs text-[#6B7C99]">{student.studentId}</div>
                     <div className="text-xs text-[#999] mt-0.5">{student.program}</div>
                   </div>
 
+                  <div className="ums-mobile-two-col col-span-2 grid gap-3 rounded-[14px] bg-white/50 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)] sm:contents sm:bg-transparent sm:p-0 sm:shadow-none">
                   {/* SGPA */}
-                  <div className="col-span-2">
+                  <div className="min-w-0">
                     <div className="text-xs text-[#6B7C99] font-medium">SGPA</div>
                     <div className="text-lg font-bold text-[#1F3864]">{student.sgpa.toFixed(2)}</div>
                   </div>
 
                   {/* Credit Completion */}
-                  <div className="col-span-2">
+                  <div className="min-w-0">
                     <div className="text-xs text-[#6B7C99] font-medium">Credits</div>
                     <div className="flex items-center gap-1">
                       <div className="flex-1 h-2 bg-[#E8EEF5] rounded-full overflow-hidden">
@@ -201,7 +236,7 @@ export function AtRiskTriageBoard({
                   </div>
 
                   {/* Failed Subjects */}
-                  <div className="col-span-2">
+                  <div className="min-w-0">
                     <div className="text-xs text-[#6B7C99] font-medium">Failed / Passed</div>
                     <div className="text-sm font-bold">
                       <span className="text-[#B2566B]">{student.failedSubjects}</span>
@@ -211,53 +246,48 @@ export function AtRiskTriageBoard({
                   </div>
 
                   {/* Attendance */}
-                  <div className="col-span-2">
+                  <div className="min-w-0">
                     <div className="text-xs text-[#6B7C99] font-medium">Attendance</div>
                     <div className="text-sm font-bold text-[#1F3864]">
                       {student.attendancePercentage.toFixed(1)}%
                     </div>
                   </div>
+                  </div>
 
                   {/* Action Arrow */}
-                  <div className="col-span-1 text-right">
+                  <div className="col-span-2 flex justify-end sm:col-span-1">
                     <ChevronRight size={18} className="text-[#C55A11]" />
                   </div>
                 </div>
               </button>
             )
-          })
-        ) : (
-          <div className="px-6 py-8 text-center text-[#6B7C99]">
-            <Users size={32} className="mx-auto mb-2 opacity-30" />
-            <p className="text-sm">No students match the selected criteria.</p>
-          </div>
-        )}
+          })}
       </div>
 
       {/* Footer Stats */}
-      <div className="px-6 py-4 bg-[#F5F8FB] border-t border-[#E8EEF5] grid grid-cols-4 gap-4 text-xs">
+      <div className="ums-mobile-two-col grid gap-3 border-t border-[#E8EEF5] bg-[#F5F8FB] px-4 py-4 text-xs sm:grid-cols-4 sm:gap-4 sm:px-6">
         <div className="text-center">
           <div className="text-[#6B7C99] font-semibold mb-1">Critical</div>
           <div className="text-lg font-bold text-[#B2566B]">
-            {filtered.filter((s) => s.riskStatus === 'critical').length}
+            {displayStudents.filter((s) => s.riskStatus === 'critical').length}
           </div>
         </div>
         <div className="text-center">
           <div className="text-[#6B7C99] font-semibold mb-1">Warning</div>
           <div className="text-lg font-bold text-[#C55A11]">
-            {filtered.filter((s) => s.riskStatus === 'warning').length}
+            {displayStudents.filter((s) => s.riskStatus === 'warning').length}
           </div>
         </div>
         <div className="text-center">
           <div className="text-[#6B7C99] font-semibold mb-1">At-Risk</div>
           <div className="text-lg font-bold text-[#C99A2E]">
-            {filtered.filter((s) => s.riskStatus === 'at-risk').length}
+            {displayStudents.filter((s) => s.riskStatus === 'at-risk').length}
           </div>
         </div>
         <div className="text-center">
           <div className="text-[#6B7C99] font-semibold mb-1">Avg Risk</div>
           <div className="text-lg font-bold text-[#1F3864]">
-            {(filtered.reduce((sum, s) => sum + s.riskScore, 0) / filtered.length).toFixed(0)}
+            {avgRisk.toFixed(0)}
           </div>
         </div>
       </div>

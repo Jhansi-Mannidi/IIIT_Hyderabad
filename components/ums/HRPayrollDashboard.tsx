@@ -20,10 +20,11 @@ export function HRPayrollDashboard() {
   const rawData = useHRPayrollData()
   const [dismissedInsights, setDismissedInsights] = useState<Set<string>>(new Set())
   const [filters, setFilters] = useState<Record<string, unknown>>({})
-  const { searchQuery, setDashboardFilters, refreshDashboard, runAction } = useInteractions()
+  const { aiInsightsOpen, globalFilters, searchQuery, setDashboardFilters, refreshDashboard, runAction } = useInteractions()
+  const effectiveFilters = useMemo(() => ({ ...globalFilters, ...filters }), [globalFilters, filters])
   const data = useMemo(
-    () => applyDashboardFilters(rawData, filters, searchQuery),
-    [rawData, filters, searchQuery],
+    () => applyDashboardFilters(rawData, effectiveFilters, searchQuery),
+    [rawData, effectiveFilters, searchQuery],
   )
 
   const visibleInsights = data.aiInsights.filter(i => !dismissedInsights.has(i.id))
@@ -53,7 +54,7 @@ export function HRPayrollDashboard() {
             setDashboardFilters('HR & Workforce', nextFilters)
           }}
         />
-        <ActiveFilterSummary dashboard="HR & Workforce" filters={filters} searchQuery={searchQuery} />
+        <ActiveFilterSummary dashboard="HR & Workforce" filters={effectiveFilters} searchQuery={searchQuery} />
 
         {/* KPI Strip */}
         <section aria-label="HR KPIs">
@@ -93,7 +94,7 @@ export function HRPayrollDashboard() {
         </section>
 
         {/* AI Insights */}
-        {visibleInsights.length > 0 && (
+        {aiInsightsOpen && visibleInsights.length > 0 && (
           <section aria-label="HR insights" className="space-y-4 rounded-[16px] border border-[#E5ECEF] bg-white p-5">
             <div className="flex items-center justify-between gap-3">
               <div>

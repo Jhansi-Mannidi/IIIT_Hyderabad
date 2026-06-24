@@ -17,8 +17,9 @@ export function MoversTable({ data }: MoversTableProps) {
 
   const sorted = useMemo(() => {
     const filtered = filterStatus === 'all' ? data : data.filter(m => m.direction === filterStatus)
+    const displayData = filtered.length > 0 ? filtered : data
     
-    return [...filtered].sort((a, b) => {
+    return [...displayData].sort((a, b) => {
       let aVal: any = a[sortBy]
       let bVal: any = b[sortBy]
       
@@ -42,7 +43,7 @@ export function MoversTable({ data }: MoversTableProps) {
   }
 
   return (
-    <div className="w-full bg-white rounded-lg border border-[#E0E6F2] overflow-hidden">
+    <div className="executive-plain-card w-full bg-white rounded-lg border border-[#E0E6F2] overflow-hidden">
       <div className="px-6 py-4 border-b border-[#E0E6F2] bg-[#F5F7FB]">
         <div className="flex items-center justify-between">
           <div>
@@ -83,12 +84,31 @@ export function MoversTable({ data }: MoversTableProps) {
         </div>
       </div>
 
-      {sorted.length === 0 ? (
-        <div className="px-6 py-12 text-center">
-          <p className="text-[12px] text-[#9AA6B4]">No data matching current filters</p>
-        </div>
-      ) : (
-        <div className="overflow-x-auto">
+      <div className="grid gap-3 p-3 md:hidden">
+        {sorted.map((mover) => (
+          <div key={`${mover.entity}-${mover.metric}-card`} className="rounded-[14px] border border-[#E0E6F2] bg-[#F8FAFD] p-3">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-[12px] font-[850] text-[#1A2D47]">{mover.entity}</p>
+                <p className="mt-0.5 text-[11px] font-[700] text-[#617588]">{mover.metric}</p>
+              </div>
+              <span
+                className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-[10px] font-[850] ${
+                  mover.direction === 'up' ? 'bg-[#2E8B8B]/15 text-[#2E8B8B]' : 'bg-[#C0392B]/15 text-[#C0392B]'
+                }`}
+              >
+                {mover.direction === 'up' ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
+                {mover.direction === 'up' ? '+' : '−'}{Math.abs(mover.change).toFixed(1)}%
+              </span>
+            </div>
+            <button className="mt-3 w-full rounded-[10px] border border-[#D8E0EE] bg-white px-3 py-2 text-[11px] font-[800] text-[#2E8B8B]">
+              Drill into metric
+            </button>
+          </div>
+        ))}
+      </div>
+
+      <div className="hidden overflow-x-auto md:block">
           <table className="w-full">
             <thead>
               <tr className="border-b border-[#E0E6F2] bg-[#F9FAFB]">
@@ -163,8 +183,7 @@ export function MoversTable({ data }: MoversTableProps) {
               ))}
             </tbody>
           </table>
-        </div>
-      )}
+      </div>
     </div>
   )
 }

@@ -24,19 +24,17 @@ interface NavItem {
   id: string
   label: string
   icon: React.ComponentType<{ size?: number; className?: string }>
-  badge?: string
-  badgeType?: 'warning' | 'danger' | 'info'
 }
 
 const NAV_ITEMS: NavItem[] = [
   { id: 'd0', label: 'Executive Cockpit', icon: LayoutDashboard },
-  { id: 'd1', label: 'Academic Performance', icon: BookOpen, badge: '!', badgeType: 'warning' },
+  { id: 'd1', label: 'Academic Performance', icon: BookOpen },
   { id: 'd2', label: 'Admissions Funnel', icon: Users },
-  { id: 'd3', label: 'Student Finance', icon: CreditCard, badge: '!', badgeType: 'danger' },
+  { id: 'd3', label: 'Student Finance', icon: CreditCard },
   { id: 'd4', label: 'Institutional Finance', icon: Building2 },
-  { id: 'd5', label: 'HR & Workforce', icon: UserCheck, badge: '!', badgeType: 'warning' },
+  { id: 'd5', label: 'HR & Workforce', icon: UserCheck },
   { id: 'd6', label: 'Hostel & Mess', icon: Home },
-  { id: 'd7', label: 'Attendance & Biometric', icon: ClipboardCheck, badge: '!', badgeType: 'warning' },
+  { id: 'd7', label: 'Attendance & Biometric', icon: ClipboardCheck },
   { id: 'd8', label: 'Research & Publications', icon: FlaskConical },
   { id: 'd9', label: 'Placements', icon: Briefcase },
   { id: 'd10', label: 'Feedback & IQAC', icon: Star },
@@ -44,12 +42,6 @@ const NAV_ITEMS: NavItem[] = [
 ]
 
 const PRIMARY_NAV_ITEMS = NAV_ITEMS.filter((item) => !['d10', 'd11'].includes(item.id))
-
-const BADGE_COLOR = {
-  warning: 'bg-[#C55A11] text-white',
-  danger:  'bg-[#C0392B] text-white',
-  info:    'bg-[#2F6FB0] text-white',
-}
 
 interface SideNavProps {
   activeId?: string
@@ -62,6 +54,7 @@ export function SideNav({ activeId = 'd0', onNavigate, mobileOpen = false }: Sid
   const shouldReduceMotion = useReducedMotion()
   const { theme } = useTheme()
   const isDark = theme === 'dark'
+  const activeNavItem = NAV_ITEMS.find((item) => item.id === activeId) ?? NAV_ITEMS[0]
 
   const renderNavItem = (item: NavItem) => {
     const Icon = item.icon
@@ -117,32 +110,10 @@ export function SideNav({ activeId = 'd0', onNavigate, mobileOpen = false }: Sid
 
         {!collapsed && (
           <span className="flex min-w-0 flex-1 items-center gap-2">
-            <span className="min-w-0 flex-1 truncate text-[13px] font-[700] leading-5">
+            <span className="min-w-0 flex-1 whitespace-normal break-words text-[13px] font-[700] leading-5">
               {item.label}
             </span>
-            {item.badge && (
-              <span
-                className={cn(
-                  'ml-auto inline-flex h-5 min-w-5 flex-shrink-0 items-center justify-center rounded-full px-1 text-[9px] font-[800] shadow-[0_6px_14px_rgba(197,90,17,0.22)]',
-                  BADGE_COLOR[item.badgeType ?? 'info'],
-                )}
-                aria-label={`${item.badgeType} alert`}
-              >
-                !
-              </span>
-            )}
           </span>
-        )}
-        {item.badge && collapsed && (
-          <span
-            className={cn(
-              'absolute rounded-full ring-2',
-              collapsed ? 'right-1.5 top-1.5 h-2.5 w-2.5' : 'right-1 top-1 h-2 w-2',
-              isDark ? 'ring-[#07101D]' : 'ring-white',
-              item.badgeType === 'danger' ? 'bg-[#C0392B]' : 'bg-[#C55A11]',
-            )}
-            aria-label={`${item.badgeType} alert`}
-          />
         )}
       </motion.button>
     )
@@ -155,7 +126,7 @@ export function SideNav({ activeId = 'd0', onNavigate, mobileOpen = false }: Sid
         isDark
           ? 'bg-[#07101D]/95 border-r border-[#1F3864]/70 shadow-[12px_0_32px_rgba(8,17,31,0.34)]'
           : 'bg-white/86 border-r border-[#D8E0EE] shadow-[12px_0_34px_rgba(31,56,100,0.10)]',
-        collapsed ? 'w-20' : 'w-72 sm:w-64',
+        collapsed ? 'w-20' : 'w-72 sm:w-72',
         mobileOpen ? 'translate-x-0' : '-translate-x-full sm:translate-x-0',
       )}
       data-theme={theme}
@@ -173,19 +144,11 @@ export function SideNav({ activeId = 'd0', onNavigate, mobileOpen = false }: Sid
           <div className="min-w-0 flex-1">
             <p
               className={cn(
-                'text-[10px] font-[800] uppercase tracking-[0.12em]',
-                isDark ? 'text-[#6B83AD]' : 'text-[#6B83AD]',
-              )}
-            >
-              Navigation
-            </p>
-            <p
-              className={cn(
-                'truncate text-[11px] font-[600]',
+                'truncate text-[12px] font-[800]',
                 isDark ? 'text-[#D8E0EE]' : 'text-[#1F3864]',
               )}
             >
-              Dashboard Modules
+              {activeNavItem.label}
             </p>
           </div>
         )}

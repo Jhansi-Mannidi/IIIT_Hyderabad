@@ -24,7 +24,46 @@ export function AttritionWatchlistTable({ data, onEmployeeClick }: AttritionWatc
     <MotionCard className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       <h3 className="text-[13px] font-[700] text-[#0F1722]">Attrition Watchlist (Risk-Ranked)</h3>
       
-      <div className="overflow-x-auto">
+      <div className="grid gap-3 md:hidden">
+        {data.map((employee) => (
+          <button
+            key={employee.id}
+            type="button"
+            onClick={() => onEmployeeClick?.(employee)}
+            className="rounded-[14px] border border-[#E5ECEF] bg-[#F8FAFD] p-3 text-left"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex min-w-0 gap-2">
+                <span style={{ color: getRiskColor(employee.riskLevel) }}>{getRiskIcon(employee.riskLevel)}</span>
+                <div className="min-w-0">
+                  <p className="text-[12px] font-[850] text-[#0F1722]">{employee.name}</p>
+                  <p className="mt-0.5 text-[11px] font-[700] text-[#5A6B7A]">{employee.designation}</p>
+                  <p className="text-[10px] text-[#9AA6B4]">{employee.department}</p>
+                </div>
+              </div>
+              <span className="rounded-full px-2 py-1 text-[10px] font-[850]" style={{ backgroundColor: `${getRiskColor(employee.riskLevel)}20`, color: getRiskColor(employee.riskLevel) }}>
+                {employee.riskScore.toFixed(1)}
+              </span>
+            </div>
+            <div className="mt-3 grid grid-cols-3 gap-2 border-t border-[#E5ECEF] pt-3 text-center">
+              <div>
+                <p className="text-[10px] font-[700] text-[#9AA6B4]">Tenure</p>
+                <p className="text-[12px] font-[850] text-[#0F1722]">{employee.tenure}y</p>
+              </div>
+              <div>
+                <p className="text-[10px] font-[700] text-[#9AA6B4]">Leave</p>
+                <p className="text-[12px] font-[850] text-[#0F1722]">{employee.leaveUtilization}%</p>
+              </div>
+              <div>
+                <p className="text-[10px] font-[700] text-[#9AA6B4]">Appraisal</p>
+                <p className="text-[12px] font-[850] text-[#0F1722]">{employee.appraisalScore.toFixed(1)}/5</p>
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      <div className="hidden overflow-x-auto md:block">
         <table className="w-full text-[11px]">
           <thead>
             <tr className="border-b border-[#E5ECEF]">

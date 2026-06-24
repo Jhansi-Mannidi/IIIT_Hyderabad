@@ -11,7 +11,7 @@ interface AgeingBucketsStripProps {
 
 export function AgeingBucketsStrip({ buckets, onBucketClick }: AgeingBucketsStripProps) {
   return (
-    <MotionCard className="flex flex-col gap-4 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
+    <MotionCard className="flex flex-col gap-4 self-start p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       <div className="flex items-center justify-between">
         <h3 className="text-[13px] font-[700] text-[#0F1722] flex items-center gap-2">
           Outstanding Dues — Ageing Analysis
@@ -20,7 +20,7 @@ export function AgeingBucketsStrip({ buckets, onBucketClick }: AgeingBucketsStri
         <span className="text-[11px] text-[#9AA6B4]">Click bucket to view details</span>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {buckets.map((bucket) => (
           <button
             key={bucket.range}
@@ -80,7 +80,7 @@ export function AgeingBucketsStrip({ buckets, onBucketClick }: AgeingBucketsStri
       </div>
 
       {/* Summary Stats */}
-      <div className="flex flex-wrap gap-4 p-3 bg-[#F6F8FB] rounded-[8px] border border-[#E5ECEF]">
+      <div className="grid grid-cols-1 gap-3 rounded-[8px] border border-[#E5ECEF] bg-[#F6F8FB] p-3 sm:grid-cols-3">
         <div>
           <p className="text-[10px] text-[#9AA6B4] mb-1">Total Outstanding</p>
           <p className="font-['Courier'] text-[14px] font-[700] text-[#1F3864]">

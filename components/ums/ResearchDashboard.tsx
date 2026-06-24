@@ -20,10 +20,11 @@ export function ResearchDashboard() {
   const rawData = useResearchData()
   const [dismissed, setDismissed] = useState<Set<string>>(new Set())
   const [filters, setFilters] = useState<Record<string, unknown>>({})
-  const { searchQuery, setDashboardFilters, refreshDashboard, runAction } = useInteractions()
+  const { aiInsightsOpen, globalFilters, searchQuery, setDashboardFilters, refreshDashboard, runAction } = useInteractions()
+  const effectiveFilters = useMemo(() => ({ ...globalFilters, ...filters }), [globalFilters, filters])
   const data = useMemo(
-    () => applyDashboardFilters(rawData, filters, searchQuery),
-    [rawData, filters, searchQuery],
+    () => applyDashboardFilters(rawData, effectiveFilters, searchQuery),
+    [rawData, effectiveFilters, searchQuery],
   )
 
   const visibleInsights = data.aiInsights.filter(i => !dismissed.has(i.id))
@@ -56,7 +57,7 @@ export function ResearchDashboard() {
             setDashboardFilters('Research', nextFilters)
           }}
         />
-        <ActiveFilterSummary dashboard="Research" filters={filters} searchQuery={searchQuery} />
+        <ActiveFilterSummary dashboard="Research" filters={effectiveFilters} searchQuery={searchQuery} />
 
         {/* ── KPI Tiles ───────────────────────────────────────────────── */}
         <section aria-label="Research KPIs">
@@ -87,7 +88,7 @@ export function ResearchDashboard() {
         </section>
 
         {/* ── AI Insights ─────────────────────────────────────────────── */}
-        {visibleInsights.length > 0 && (
+        {aiInsightsOpen && visibleInsights.length > 0 && (
           <section aria-label="Research insights" className="p-4 bg-white rounded-[12px] border border-[#E5ECEF] space-y-3">
             <h3 className="text-[13px] font-[700] text-[#0F1722]">AI-Powered Research Insights</h3>
             <div className="space-y-2">

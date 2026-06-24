@@ -148,12 +148,108 @@ function ExecutiveAnalyticsStrip({
   )
 }
 
+type MobileMetricConfig = {
+  key: string
+  label: string
+  color: string
+  format: (value: number) => string
+}
+
+function MobileMetricBars({
+  data,
+  labelKey,
+  metrics,
+  limit = 6,
+}: {
+  data: Array<Record<string, any>>
+  labelKey: string
+  metrics: MobileMetricConfig[]
+  limit?: number
+}) {
+  const rows = data.slice(-limit)
+  const maxByMetric = metrics.reduce<Record<string, number>>((acc, metric) => {
+    acc[metric.key] = Math.max(...rows.map((row) => Number(row[metric.key] ?? 0)), 1)
+    return acc
+  }, {})
+
+  return (
+    <div className="ums-mobile-native-analytics grid gap-3 md:hidden">
+      {rows.map((row) => (
+        <div key={String(row[labelKey])} className="rounded-[14px] border border-[#E5ECEF] bg-[#F8FAFD] p-3">
+          <div className="mb-2 text-[12px] font-[850] text-[#0F1722]">{String(row[labelKey])}</div>
+          <div className="space-y-2">
+            {metrics.map((metric) => {
+              const value = Number(row[metric.key] ?? 0)
+              const width = Math.max(4, Math.round((value / maxByMetric[metric.key]) * 100))
+
+              return (
+                <div key={metric.key}>
+                  <div className="mb-1 flex items-center justify-between gap-3">
+                    <span className="text-[10.5px] font-[800] uppercase tracking-[0.06em] text-[#6B7C99]">{metric.label}</span>
+                    <span className="text-[11px] font-[850] tabular-nums text-[#0F1722]">{metric.format(value)}</span>
+                  </div>
+                  <div className="h-2.5 overflow-hidden rounded-full bg-[#E5ECEF]">
+                    <div className="h-full rounded-full" style={{ width: `${width}%`, backgroundColor: metric.color }} />
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function MobileDistributionBars({
+  data,
+  labelKey,
+  valueKey,
+  color,
+  format,
+  secondary,
+  limit,
+}: {
+  data: Array<Record<string, any>>
+  labelKey: string
+  valueKey: string
+  color: string
+  format: (value: number) => string
+  secondary?: (row: Record<string, any>) => string
+  limit?: number
+}) {
+  const rows = typeof limit === 'number' ? data.slice(0, limit) : data
+  const maxValue = Math.max(...rows.map((row) => Number(row[valueKey] ?? 0)), 1)
+
+  return (
+    <div className="ums-mobile-native-analytics grid gap-3 md:hidden">
+      {rows.map((row) => {
+        const value = Number(row[valueKey] ?? 0)
+        const width = Math.max(4, Math.round((value / maxValue) * 100))
+
+        return (
+          <div key={String(row[labelKey])} className="rounded-[14px] border border-[#E5ECEF] bg-[#F8FAFD] p-3">
+            <div className="mb-2 flex items-start justify-between gap-3">
+              <span className="min-w-0 text-[12px] font-[850] leading-4 text-[#0F1722]">{String(row[labelKey])}</span>
+              <span className="shrink-0 text-[11px] font-[850] tabular-nums text-[#0F1722]">{format(value)}</span>
+            </div>
+            <div className="h-3 overflow-hidden rounded-full bg-[#E5ECEF]">
+              <div className="h-full rounded-full" style={{ width: `${width}%`, backgroundColor: color }} />
+            </div>
+            {secondary && <div className="mt-1 text-[10px] font-[700] text-[#9AA6B4]">{secondary(row)}</div>}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function ExecutiveCockpit() {
   const { data, loading } = useExecutiveCockpitData()
   const [dismissedInsights, setDismissedInsights] = useState<string[]>([])
-  const { aiInsightsOpen, refreshDashboard, searchQuery, setAiInsightsOpen } = useInteractions()
+  const { aiInsightsOpen, globalFilters, refreshDashboard, searchQuery, setAiInsightsOpen } = useInteractions()
   const shouldReduceMotion = useReducedMotion()
 
   const visibleInsights = useMemo(
@@ -161,8 +257,8 @@ export function ExecutiveCockpit() {
     [data, dismissedInsights],
   )
   const filteredData = useMemo(
-    () => (data ? applyDashboardFilters(data, {}, searchQuery) : null),
-    [data, searchQuery],
+    () => (data ? applyDashboardFilters(data, globalFilters, searchQuery) : null),
+    [data, globalFilters, searchQuery],
   )
 
   if (loading) return <SkeletonDashboard />
@@ -187,10 +283,11 @@ export function ExecutiveCockpit() {
 
   const latestTrend = trendSeries[trendSeries.length - 1]
   const firstTrend = trendSeries[0]
+  const trendCount = Math.max(trendSeries.length, 1)
   const revenueYtd = trendSeries.reduce((sum, point) => sum + point.revenue, 0)
   const expenditureYtd = trendSeries.reduce((sum, point) => sum + point.expenditure, 0)
-  const avgAttendance = trendSeries.reduce((sum, point) => sum + point.attendance, 0) / trendSeries.length
-  const avgPassRate = trendSeries.reduce((sum, point) => sum + point.passRate, 0) / trendSeries.length
+  const avgAttendance = trendSeries.reduce((sum, point) => sum + point.attendance, 0) / trendCount
+  const avgPassRate = trendSeries.reduce((sum, point) => sum + point.passRate, 0) / trendCount
   const attendanceRiskMonths = trendSeries.filter((point) => point.attendance < 85).length
   const totalCapacity = programEnrollment.reduce((sum, program) => sum + program.capacity, 0)
   const totalEnrolled = programEnrollment.reduce((sum, program) => sum + program.students, 0)
@@ -200,14 +297,15 @@ export function ExecutiveCockpit() {
   const scholarshipAmount = scholarshipDist.reduce((sum, item) => sum + item.amount, 0)
   const topScholarshipCategory = scholarshipDist.reduce(
     (top, item) => (item.amount > top.amount ? item : top),
-    scholarshipDist[0],
+    scholarshipDist[0] ?? { category: 'Sample Aid', students: 0, amount: 0, color: '#2E8B8B' },
   )
+  const facultyLoadCount = Math.max(facultyLoad.length, 1)
 
   return (
     <div className="flex flex-1 min-h-0 overflow-hidden">
       {/* ── Main content ── */}
       <motion.div
-        className="flex-1 overflow-y-auto px-5 py-5 space-y-6 min-w-0"
+        className="executive-cockpit-dashboard flex-1 overflow-y-auto px-5 py-5 space-y-6 min-w-0"
         initial={shouldReduceMotion ? false : 'hidden'}
         animate="show"
         variants={{
@@ -248,7 +346,7 @@ export function ExecutiveCockpit() {
             show: { opacity: 1, y: 0 },
           }}
         >
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(156px,1fr))] gap-3">
+          <div className="ums-exec-kpi-grid grid grid-cols-2 gap-3 lg:grid-cols-[repeat(auto-fit,minmax(156px,1fr))]">
             {executiveKpis.map((kpi) => (
               <KPITile key={kpi.id} metric={kpi} />
             ))}
@@ -281,7 +379,7 @@ export function ExecutiveCockpit() {
         </motion.section>
 
         {/* ── Trend + Revenue donut ── */}
-        <section aria-label="Institutional trends" className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <section aria-label="Institutional trends" className="grid grid-cols-1 items-start gap-4 lg:grid-cols-3">
           <ChartCard
             title="Enrollment & Financial Trend"
             subtitle="Monthly AY 2024-25 — Enrollment vs Revenue vs Expenditure"
@@ -289,11 +387,20 @@ export function ExecutiveCockpit() {
             sourceTable="student_master · budget_master"
             updatedAt={lastUpdated}
             badge={<DerivedBadge />}
-            className="lg:col-span-2"
+            className="self-start lg:col-span-2"
           >
-            <div className="h-52">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={trendSeries} margin={{ top: 6, right: 12, bottom: 0, left: 0 }}>
+            <MobileMetricBars
+              data={trendSeries}
+              labelKey="month"
+              metrics={[
+                { key: 'enrollment', label: 'Enrollment', color: VIZ[0], format: (value) => value.toLocaleString('en-IN') },
+                { key: 'revenue', label: 'Revenue', color: VIZ[1], format: formatLakh },
+                { key: 'expenditure', label: 'Spend', color: VIZ[2], format: formatLakh },
+              ]}
+            />
+            <div className="ums-analytics-chart-frame hidden h-[240px] min-w-0 md:block">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={220} debounce={80}>
+                <LineChart data={trendSeries} margin={{ top: 12, right: 12, bottom: 8, left: 0 }}>
                   <CartesianGrid stroke={SURFACE.line} strokeWidth={0.6} vertical={false} />
                   <XAxis dataKey="month" tick={TICK_STYLE} axisLine={false} tickLine={false} />
                   <YAxis
@@ -401,9 +508,17 @@ export function ExecutiveCockpit() {
             updatedAt={lastUpdated}
             badge={<DerivedBadge />}
           >
-            <div className="flex min-h-[360px] flex-col">
-              <div className="min-h-[190px] flex-1">
-                <ResponsiveContainer width="100%" height="100%">
+            <div className="flex flex-col">
+              <MobileDistributionBars
+                data={revenueBreakdown}
+                labelKey="source"
+                valueKey="amount"
+                color={VIZ[1]}
+                format={formatLakh}
+                secondary={(row) => `${Number(row.pct ?? 0).toFixed(0)}% of revenue mix`}
+              />
+              <div className="ums-analytics-chart-frame hidden h-[230px] min-w-0 md:block">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={210} debounce={80}>
                   <PieChart margin={{ top: 8, right: 8, bottom: 8, left: 8 }}>
                     <Pie
                       data={revenueBreakdown}
@@ -475,7 +590,7 @@ export function ExecutiveCockpit() {
         </section>
 
         {/* ── Attendance + Pass Rate area ── */}
-        <section aria-label="Academic health trends" className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <section aria-label="Academic health trends" className="grid grid-cols-1 items-start gap-4 lg:grid-cols-2">
           <ChartCard
             title="Attendance Trend"
             subtitle="Monthly average % across all departments"
@@ -484,9 +599,16 @@ export function ExecutiveCockpit() {
             updatedAt={lastUpdated}
             badge={<DerivedBadge />}
           >
-            <div className="h-44">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={trendSeries} margin={{ top: 6, right: 8, bottom: 0, left: 0 }}>
+            <MobileMetricBars
+              data={trendSeries}
+              labelKey="month"
+              metrics={[
+                { key: 'attendance', label: 'Attendance', color: VIZ[1], format: (value) => `${value.toFixed(1)}%` },
+              ]}
+            />
+            <div className="ums-analytics-chart-frame hidden h-[220px] min-w-0 md:block">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={200} debounce={80}>
+                <AreaChart data={trendSeries} margin={{ top: 12, right: 8, bottom: 8, left: 0 }}>
                   <defs>
                     <linearGradient id="attendGrad" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor={VIZ[1]} stopOpacity={0.22} />
@@ -562,9 +684,16 @@ export function ExecutiveCockpit() {
             updatedAt={lastUpdated}
             badge={<DerivedBadge />}
           >
-            <div className="h-44">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={trendSeries} margin={{ top: 6, right: 8, bottom: 0, left: 0 }}>
+            <MobileMetricBars
+              data={trendSeries}
+              labelKey="month"
+              metrics={[
+                { key: 'passRate', label: 'Pass Rate', color: VIZ[0], format: (value) => `${value.toFixed(1)}%` },
+              ]}
+            />
+            <div className="ums-analytics-chart-frame hidden h-[220px] min-w-0 md:block">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={200} debounce={80}>
+                <AreaChart data={trendSeries} margin={{ top: 12, right: 8, bottom: 8, left: 0 }}>
                   <defs>
                     <linearGradient id="passGrad" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor={VIZ[0]} stopOpacity={0.2} />
@@ -664,8 +793,16 @@ export function ExecutiveCockpit() {
             sourceTable="placement_register"
             updatedAt={lastUpdated}
           >
-            <div className="h-52">
-              <ResponsiveContainer width="100%" height="100%">
+            <MobileDistributionBars
+              data={placementFunnel}
+              labelKey="stage"
+              valueKey="count"
+              color={VIZ[0]}
+              format={(value) => value.toLocaleString('en-IN')}
+              secondary={(row) => `${Number(row.rate ?? 0).toFixed(1)}% of eligible students`}
+            />
+            <div className="hidden h-52 md:block">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={200} debounce={80}>
                 <BarChart
                   data={placementFunnel}
                   layout="vertical"
@@ -738,8 +875,16 @@ export function ExecutiveCockpit() {
             updatedAt={lastUpdated}
             badge={<DerivedBadge />}
           >
-            <div className="h-52">
-              <ResponsiveContainer width="100%" height="100%">
+            <MobileDistributionBars
+              data={enrollmentFill}
+              labelKey="program"
+              valueKey="fill"
+              color={VIZ[0]}
+              format={(value) => `${value.toFixed(1)}%`}
+              secondary={(row) => `${Number(row.students ?? 0).toLocaleString('en-IN')} / ${Number(row.capacity ?? 0).toLocaleString('en-IN')} seats`}
+            />
+            <div className="hidden h-52 md:block">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={200} debounce={80}>
                 <BarChart
                   data={enrollmentFill}
                   layout="vertical"
@@ -829,8 +974,16 @@ export function ExecutiveCockpit() {
             sourceTable="faculty_master"
             updatedAt={lastUpdated}
           >
-            <div className="h-48">
-              <ResponsiveContainer width="100%" height="100%">
+            <MobileMetricBars
+              data={facultyData}
+              labelKey="dept"
+              metrics={[
+                { key: 'Full-time', label: 'Full-Time', color: VIZ[0], format: (value) => value.toLocaleString('en-IN') },
+                { key: 'Contractual', label: 'Contractual', color: VIZ[2], format: (value) => value.toLocaleString('en-IN') },
+              ]}
+            />
+            <div className="hidden h-48 md:block">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={190} debounce={80}>
                 <BarChart
                   data={facultyData}
                   margin={{ top: 4, right: 8, bottom: 0, left: 0 }}
@@ -870,7 +1023,7 @@ export function ExecutiveCockpit() {
                 },
                 {
                   label: 'Avg Load',
-                  value: `${(facultyLoad.reduce((sum, item) => sum + item.avgLoad, 0) / facultyLoad.length).toFixed(1)}h`,
+                  value: `${(facultyLoad.reduce((sum, item) => sum + item.avgLoad, 0) / facultyLoadCount).toFixed(1)}h`,
                   detail: 'weekly teaching',
                   tone: '#2E8B8B',
                 },
@@ -892,8 +1045,16 @@ export function ExecutiveCockpit() {
             updatedAt={lastUpdated}
             badge={<DerivedBadge />}
           >
-            <div className="h-48">
-              <ResponsiveContainer width="100%" height="100%">
+            <MobileMetricBars
+              data={scholarshipDist}
+              labelKey="category"
+              metrics={[
+                { key: 'students', label: 'Students', color: VIZ[0], format: (value) => value.toLocaleString('en-IN') },
+                { key: 'amount', label: 'Aid', color: VIZ[1], format: formatLakh },
+              ]}
+            />
+            <div className="hidden h-48 md:block">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={190} debounce={80}>
                 <BarChart
                   data={scholarshipDist}
                   margin={{ top: 4, right: 8, bottom: 0, left: 0 }}

@@ -1,7 +1,6 @@
 'use client'
 
 import { TrendingUp, TrendingDown } from 'lucide-react'
-import { LineChart, Line, ResponsiveContainer } from 'recharts'
 import { motion, useReducedMotion } from 'framer-motion'
 
 interface FinanceKPITileProps {
@@ -22,13 +21,11 @@ export function FinanceKPITile({
   value,
   target,
   delta,
-  sparkline,
   isDerived = false,
   currency = true,
   percentage = false,
 }: FinanceKPITileProps) {
   const isPositive = delta >= 0
-  const sparkData = sparkline.map((v, i) => ({ value: v, index: i }))
   const shouldReduceMotion = useReducedMotion()
   
   const formatValue = () => {
@@ -74,21 +71,6 @@ export function FinanceKPITile({
             </p>
           </div>
         )}
-      </div>
-
-      {/* Sparkline */}
-      <div className="h-8 -mx-1">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={sparkData}>
-            <Line
-              type="monotone"
-              dataKey="value"
-              stroke={isPositive ? '#2E8B8B' : '#E74C3C'}
-              strokeWidth={2}
-              dot={false}
-            />
-          </LineChart>
-        </ResponsiveContainer>
       </div>
 
       {/* Delta */}

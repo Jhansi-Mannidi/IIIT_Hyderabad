@@ -19,6 +19,7 @@ import {
 import { Banknote, GraduationCap, HandCoins, HeartHandshake, RefreshCw, ShieldAlert, Sparkles, UsersRound } from 'lucide-react'
 import { ChartCard } from './ChartCard'
 import { useInteractions } from './InteractionProvider'
+import { applyDashboardFilters } from '@/lib/dashboardFiltering'
 
 const aidKpis = [
   { label: 'Aid Coverage', value: '41.8%', delta: '+5.6 pts', icon: HeartHandshake, tone: '#2E8B8B' },
@@ -67,8 +68,17 @@ const actions = [
 
 export function ScholarshipsAidDashboard() {
   const shouldReduceMotion = useReducedMotion()
-  const { refreshDashboard, runAction } = useInteractions()
+  const { aiInsightsOpen, globalFilters, refreshDashboard, runAction, searchQuery } = useInteractions()
   const lastUpdated = useMemo(() => new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }), [])
+  const filteredData = useMemo(
+    () =>
+      applyDashboardFilters(
+        { aidKpis, disbursalTrend, categoryMix, programCoverage, riskSegments, actions },
+        globalFilters,
+        searchQuery,
+      ),
+    [globalFilters, searchQuery],
+  )
 
   return (
     <div className="flex-1 overflow-y-auto bg-[#F6F8FB]">
@@ -113,7 +123,7 @@ export function ScholarshipsAidDashboard() {
           className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3"
           variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0 } }}
         >
-          {aidKpis.map(({ label, value, delta, icon: Icon, tone }) => (
+          {filteredData.aidKpis.map(({ label, value, delta, icon: Icon, tone }) => (
             <motion.div
               key={label}
               className="rounded-[16px] border border-[#E5ECEF] bg-white p-4"
@@ -137,7 +147,7 @@ export function ScholarshipsAidDashboard() {
           <ChartCard title="Sanction vs Disbursal Trend" subtitle="Amount in ₹ lakhs" className="xl:col-span-2">
             <div className="h-72">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={disbursalTrend}>
+                <AreaChart data={filteredData.disbursalTrend}>
                   <CartesianGrid stroke="#E5ECEF" vertical={false} />
                   <XAxis dataKey="month" fontSize={11} />
                   <YAxis fontSize={11} />
@@ -152,8 +162,8 @@ export function ScholarshipsAidDashboard() {
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie data={categoryMix} dataKey="value" nameKey="name" innerRadius="52%" outerRadius="90%" paddingAngle={3} stroke="#FFFFFF" strokeWidth={2}>
-                    {categoryMix.map((entry) => <Cell key={entry.name} fill={entry.color} />)}
+                  <Pie data={filteredData.categoryMix} dataKey="value" nameKey="name" innerRadius="52%" outerRadius="90%" paddingAngle={3} stroke="#FFFFFF" strokeWidth={2}>
+                    {filteredData.categoryMix.map((entry) => <Cell key={entry.name} fill={entry.color} />)}
                   </Pie>
                   <Tooltip />
                 </PieChart>
@@ -166,7 +176,7 @@ export function ScholarshipsAidDashboard() {
           <ChartCard title="Program Coverage Pipeline" subtitle="Applications approved by program">
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={programCoverage}>
+                <BarChart data={filteredData.programCoverage}>
                   <CartesianGrid stroke="#E5ECEF" vertical={false} />
                   <XAxis dataKey="program" fontSize={11} />
                   <YAxis fontSize={11} />
@@ -180,7 +190,7 @@ export function ScholarshipsAidDashboard() {
           <ChartCard title="Aid Risk Segments" subtitle="Students needing intervention">
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={riskSegments} layout="vertical" margin={{ left: 20 }}>
+                <BarChart data={filteredData.riskSegments} layout="vertical" margin={{ left: 20 }}>
                   <CartesianGrid stroke="#E5ECEF" horizontal={false} />
                   <XAxis type="number" fontSize={11} />
                   <YAxis type="category" dataKey="segment" fontSize={11} width={130} />
@@ -192,31 +202,33 @@ export function ScholarshipsAidDashboard() {
           </ChartCard>
         </section>
 
-        <section aria-label="Scholarship insights" className="rounded-[18px] border border-[#E5ECEF] bg-white p-5">
-          <div className="flex items-center gap-2">
-            <Sparkles size={16} className="text-[#C55A11]" />
-            <h2 className="text-[15px] font-[850] text-[#0F1722]">Aid Intervention Playbook</h2>
-          </div>
-          <div className="mt-4 grid grid-cols-1 lg:grid-cols-3 gap-3">
-            {actions.map((item) => (
-              <motion.button
-                key={item.title}
-                type="button"
-                onClick={() => runAction(item.title, item.description)}
-                className="rounded-[14px] border border-[#E5ECEF] bg-[#F8FAFD] p-4 text-left"
-                whileHover={shouldReduceMotion ? undefined : { y: -3 }}
-                whileTap={shouldReduceMotion ? undefined : { scale: 0.99 }}
-              >
-                <span className="inline-flex items-center gap-1 rounded-full bg-white px-2 py-1 text-[10px] font-[800] uppercase tracking-[0.06em] text-[#C55A11]">
-                  <HandCoins size={11} />
-                  {item.tag}
-                </span>
-                <h3 className="mt-3 text-[13px] font-[850] text-[#0F1722]">{item.title}</h3>
-                <p className="mt-1 text-[12px] leading-5 text-[#6B7C99]">{item.description}</p>
-              </motion.button>
-            ))}
-          </div>
-        </section>
+        {aiInsightsOpen && (
+          <section aria-label="Scholarship insights" className="rounded-[18px] border border-[#E5ECEF] bg-white p-5">
+            <div className="flex items-center gap-2">
+              <Sparkles size={16} className="text-[#C55A11]" />
+              <h2 className="text-[15px] font-[850] text-[#0F1722]">Aid Intervention Playbook</h2>
+            </div>
+            <div className="mt-4 grid grid-cols-1 lg:grid-cols-3 gap-3">
+              {filteredData.actions.map((item) => (
+                <motion.button
+                  key={item.title}
+                  type="button"
+                  onClick={() => runAction(item.title, item.description)}
+                  className="rounded-[14px] border border-[#E5ECEF] bg-[#F8FAFD] p-4 text-left"
+                  whileHover={shouldReduceMotion ? undefined : { y: -3 }}
+                  whileTap={shouldReduceMotion ? undefined : { scale: 0.99 }}
+                >
+                  <span className="inline-flex items-center gap-1 rounded-full bg-white px-2 py-1 text-[10px] font-[800] uppercase tracking-[0.06em] text-[#C55A11]">
+                    <HandCoins size={11} />
+                    {item.tag}
+                  </span>
+                  <h3 className="mt-3 text-[13px] font-[850] text-[#0F1722]">{item.title}</h3>
+                  <p className="mt-1 text-[12px] leading-5 text-[#6B7C99]">{item.description}</p>
+                </motion.button>
+              ))}
+            </div>
+          </section>
+        )}
 
         <p className="pb-4 text-center text-[11px] text-[#9AA6B4]">Last updated: {lastUpdated}</p>
       </motion.div>

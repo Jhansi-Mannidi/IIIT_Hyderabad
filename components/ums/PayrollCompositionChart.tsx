@@ -2,13 +2,18 @@
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { PayrollComponent } from '@/lib/useHRPayrollData'
+import { VIZ } from '@/lib/tokens'
 import { MotionCard } from './MotionCard'
+import { useTheme } from './ThemeProvider'
 
 interface PayrollCompositionChartProps {
   data: PayrollComponent[]
 }
 
 export function PayrollCompositionChart({ data }: PayrollCompositionChartProps) {
+  const { theme } = useTheme()
+  const isDark = theme === 'dark'
+  const barColor = isDark ? '#6E91B8' : VIZ.blue
   const chartData = data.map(item => ({
     category: item.category,
     earnings: item.basic + item.da + item.hra + item.allowances,
@@ -29,15 +34,16 @@ export function PayrollCompositionChart({ data }: PayrollCompositionChartProps) 
           <YAxis fontSize={11} fill="#5A6B7A" />
           <Tooltip
             contentStyle={{
-              backgroundColor: '#0F1722',
-              border: 'none',
+              backgroundColor: isDark ? '#0B1728' : '#FFFFFF',
+              border: `1px solid ${isDark ? '#263448' : '#E5ECEF'}`,
               borderRadius: '8px',
               padding: '8px 12px',
+              color: isDark ? '#DDE7F7' : '#0F1722',
             }}
           />
           <Legend fontSize={11} wrapperStyle={{ paddingTop: '16px' }} />
-          <Bar dataKey="earnings" fill="#2E8B8B" name="Earnings" radius={[4, 4, 0, 0]} />
-          <Bar dataKey="deductions" fill="#E74C3C" name="Deductions" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="earnings" fill={barColor} name="Earnings" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="deductions" fill={barColor} name="Deductions" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
 
@@ -52,7 +58,7 @@ export function PayrollCompositionChart({ data }: PayrollCompositionChartProps) 
         </div>
         <div>
           <p className="text-[10px] text-[#9AA6B4] mb-1">Total Deductions</p>
-          <p className="font-['Courier'] text-[13px] font-[700] text-[#E74C3C]">₹{(data.reduce((sum, d) => sum + d.pf + d.tax + d.other, 0) / 100).toFixed(1)}L</p>
+          <p className="font-['Courier'] text-[13px] font-[700]" style={{ color: barColor }}>₹{(data.reduce((sum, d) => sum + d.pf + d.tax + d.other, 0) / 100).toFixed(1)}L</p>
         </div>
       </div>
     </MotionCard>

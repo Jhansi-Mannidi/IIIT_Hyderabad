@@ -14,7 +14,47 @@ export function QuartersWaitlistTable({ data, onRowClick }: QuartersWaitlistTabl
     <div className="flex flex-col gap-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
       <h3 className="text-[13px] font-[700] text-[#0F1722]">Staff Quarters Waitlist (Score-Ranked)</h3>
       
-      <div className="overflow-x-auto">
+      <div className="grid gap-3 md:hidden">
+        {sortedData.map((row) => (
+          <button
+            key={row.id}
+            type="button"
+            onClick={() => onRowClick?.(row)}
+            className="rounded-[14px] border border-[#E5ECEF] bg-[#F8FAFD] p-3 text-left"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-[12px] font-[850] text-[#0F1722]">{row.name}</p>
+                <p className="mt-0.5 text-[11px] font-[700] text-[#5A6B7A]">{row.designation}</p>
+                <p className="text-[10px] text-[#9AA6B4]">{row.department}</p>
+              </div>
+              <span className={`rounded-full px-2 py-1 text-[10px] font-[850] ${
+                row.priority === 'high' ? 'bg-[#E74C3C]/15 text-[#E74C3C]' :
+                row.priority === 'medium' ? 'bg-[#F39C12]/15 text-[#F39C12]' :
+                'bg-[#9AA6B4]/15 text-[#5A6B7A]'
+              }`}>
+                {row.priority}
+              </span>
+            </div>
+            <div className="mt-3 grid grid-cols-3 gap-2 border-t border-[#E5ECEF] pt-3 text-center">
+              <div>
+                <p className="text-[10px] font-[700] text-[#9AA6B4]">Requested</p>
+                <p className="text-[11px] font-[850] text-[#0F1722]">{row.requestDate}</p>
+              </div>
+              <div>
+                <p className="text-[10px] font-[700] text-[#9AA6B4]">Score</p>
+                <p className="text-[12px] font-[850] text-[#0F1722]">{row.allocationScore.toFixed(1)}</p>
+              </div>
+              <div>
+                <p className="text-[10px] font-[700] text-[#9AA6B4]">Status</p>
+                <p className="text-[11px] font-[850] text-[#0F1722]">{row.status}</p>
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      <div className="hidden overflow-x-auto md:block">
         <table className="w-full text-[11px]">
           <thead>
             <tr className="border-b border-[#E5ECEF]">

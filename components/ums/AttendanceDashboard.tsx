@@ -18,16 +18,17 @@ export function AttendanceDashboard() {
   const rawData = useAttendanceData()
   const [dismissedInsights, setDismissedInsights] = useState<Set<string>>(new Set())
   const [filters, setFilters] = useState<Record<string, unknown>>({})
-  const { searchQuery, setDashboardFilters, refreshDashboard, runAction } = useInteractions()
+  const { aiInsightsOpen, globalFilters, searchQuery, setDashboardFilters, refreshDashboard, runAction } = useInteractions()
+  const effectiveFilters = useMemo(() => ({ ...globalFilters, ...filters }), [globalFilters, filters])
   const data = useMemo(
-    () => applyDashboardFilters(rawData, filters, searchQuery),
-    [rawData, filters, searchQuery],
+    () => applyDashboardFilters(rawData, effectiveFilters, searchQuery),
+    [rawData, effectiveFilters, searchQuery],
   )
 
   const visibleInsights = data.aiInsights.filter(i => !dismissedInsights.has(i.id))
 
   return (
-    <div className="flex-1 overflow-y-auto bg-[#F6F8FB]">
+    <div className="attendance-dashboard flex-1 overflow-y-auto bg-[#F6F8FB]">
       <div className="w-full max-w-[1920px] mx-auto px-4 py-4 space-y-4">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -51,7 +52,7 @@ export function AttendanceDashboard() {
             setDashboardFilters('Attendance', nextFilters)
           }}
         />
-        <ActiveFilterSummary dashboard="Attendance" filters={filters} searchQuery={searchQuery} />
+        <ActiveFilterSummary dashboard="Attendance" filters={effectiveFilters} searchQuery={searchQuery} plain />
 
         {/* KPI Strip */}
         <section aria-label="Attendance KPIs">
@@ -79,7 +80,7 @@ export function AttendanceDashboard() {
         </section>
 
         {/* AI Insights */}
-        {visibleInsights.length > 0 && (
+        {aiInsightsOpen && visibleInsights.length > 0 && (
           <section aria-label="Attendance insights" className="space-y-3 p-4 bg-white rounded-[12px] border border-[#E5ECEF]">
             <h3 className="text-[13px] font-[700] text-[#0F1722]">AI-Powered Attendance Insights</h3>
             <div className="space-y-2">
