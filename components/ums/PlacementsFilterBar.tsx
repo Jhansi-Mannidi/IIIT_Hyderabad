@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { ChevronDown, X } from 'lucide-react'
+import { AppliedFiltersInline } from './AppliedFiltersInline'
 
 interface PlacementsFilters {
   year: string
@@ -66,7 +67,9 @@ export function PlacementsFilterBar({
                 onChange={e => update(key, e.target.value)}
                 className="w-full px-3 py-2 pr-7 text-[12px] bg-white border border-[#D1D8DF] rounded-[8px] appearance-none text-[#0F1722] font-[500] cursor-pointer"
               >
-                {options.map(o => <option key={o}>{o}</option>)}
+                {options.map((o, index) => (
+                  <option key={o} value={o}>{index === 0 ? `Select ${label}` : o}</option>
+                ))}
               </select>
               <ChevronDown
                 size={13}
@@ -76,6 +79,7 @@ export function PlacementsFilterBar({
           </div>
         ))}
       </div>
+      <AppliedFiltersInline filters={filters} defaults={DEFAULTS} />
     </div>
   )
 }

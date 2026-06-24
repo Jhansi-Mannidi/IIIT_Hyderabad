@@ -12,7 +12,6 @@ import { LeaveBrokerHeatmap } from './LeaveBrokerHeatmap'
 import { AppraisalProgressChart } from './AppraisalProgressChart'
 import { RecruitmentFunnelChart } from './RecruitmentFunnelChart'
 import { HRPayrollAICard } from './HRPayrollAICard'
-import { ActiveFilterSummary } from './ActiveFilterSummary'
 import { useInteractions } from './InteractionProvider'
 import { applyDashboardFilters } from '@/lib/dashboardFiltering'
 
@@ -54,8 +53,6 @@ export function HRPayrollDashboard() {
             setDashboardFilters('HR & Workforce', nextFilters)
           }}
         />
-        <ActiveFilterSummary dashboard="HR & Workforce" filters={effectiveFilters} searchQuery={searchQuery} />
-
         {/* KPI Strip */}
         <section aria-label="HR KPIs">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">

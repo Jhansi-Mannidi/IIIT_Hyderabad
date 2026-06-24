@@ -15,7 +15,7 @@ import { PlacementsDashboard }  from './PlacementsDashboard'
 import { FeedbackIQACDashboard } from './FeedbackIQACDashboard'
 import { ScholarshipsAidDashboard } from './ScholarshipsAidDashboard'
 import { useRouter, usePathname } from 'next/navigation'
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useTheme } from './ThemeProvider'
 
 const DASHBOARD_TITLES: Record<string, { title: string; subtitle: string }> = {
@@ -74,7 +74,6 @@ interface UMSShellProps {
 export function UMSShell({ currentPage, children }: UMSShellProps) {
   const router = useRouter()
   const pathname = usePathname()
-  const shouldReduceMotion = useReducedMotion()
   const { theme } = useTheme()
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   
@@ -185,10 +184,10 @@ export function UMSShell({ currentPage, children }: UMSShellProps) {
             key={pathname ?? activeId}
             className="flex min-w-0 flex-1 min-h-0 overflow-auto sm:overflow-hidden"
             id="main-content"
-            initial={shouldReduceMotion ? false : { opacity: 0, x: 18, filter: 'blur(4px)' }}
-            animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
-            exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: -14, filter: 'blur(3px)' }}
-            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            initial={false}
+            animate={{ opacity: 1, x: 0, filter: 'none' }}
+            exit={{ opacity: 1, x: 0, filter: 'none' }}
+            transition={{ duration: 0 }}
           >
             {dashboardContent}
           </motion.main>

@@ -12,7 +12,6 @@ import { RefundTrendChart } from './RefundTrendChart'
 import { PaymentChannelChart } from './PaymentChannelChart'
 import { EducationLoanChart } from './EducationLoanChart'
 import { FinanceAIInsightCard } from './FinanceAIInsightCard'
-import { ActiveFilterSummary } from './ActiveFilterSummary'
 import { useInteractions } from './InteractionProvider'
 import { applyDashboardFilters } from '@/lib/dashboardFiltering'
 
@@ -54,8 +53,6 @@ export function FinanceDashboard() {
             setDashboardFilters('Student Finance', nextFilters)
           }}
         />
-        <ActiveFilterSummary dashboard="Student Finance" filters={effectiveFilters} searchQuery={searchQuery} />
-
         {/* KPI Strip */}
         <section aria-label="Finance KPIs">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">

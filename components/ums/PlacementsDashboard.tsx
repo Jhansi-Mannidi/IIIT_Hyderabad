@@ -12,7 +12,6 @@ import { SalaryBoxPlot }          from './SalaryBoxPlot'
 import { RecruiterTrendLine }     from './RecruiterTrendLine'
 import { OffersVsStudentsFunnel } from './OffersVsStudentsFunnel'
 import { GrievanceStatusTiles }   from './GrievanceStatusTiles'
-import { ActiveFilterSummary } from './ActiveFilterSummary'
 import { useInteractions } from './InteractionProvider'
 import { applyDashboardFilters } from '@/lib/dashboardFiltering'
 
@@ -64,8 +63,6 @@ export function PlacementsDashboard() {
             setDashboardFilters('Placements', nextFilters)
           }}
         />
-        <ActiveFilterSummary dashboard="Placements" filters={effectiveFilters} searchQuery={searchQuery} />
-
         {/* 2. KPI strip */}
         <section aria-label="Placement KPIs">
           <div className="grid grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">

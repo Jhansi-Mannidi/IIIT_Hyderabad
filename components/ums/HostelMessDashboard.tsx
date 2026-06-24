@@ -11,7 +11,6 @@ import { RoomStatusChart } from './RoomStatusChart'
 import { QuartersWaitlistTable } from './QuartersWaitlistTable'
 import { UtilityCostVariance } from './UtilityCostVariance'
 import { HostelMessAICard } from './HostelMessAICard'
-import { ActiveFilterSummary } from './ActiveFilterSummary'
 import { useInteractions } from './InteractionProvider'
 import { applyDashboardFilters } from '@/lib/dashboardFiltering'
 
@@ -53,8 +52,6 @@ export function HostelMessDashboard() {
             setDashboardFilters('Hostel & Mess', nextFilters)
           }}
         />
-        <ActiveFilterSummary dashboard="Hostel & Mess" filters={effectiveFilters} searchQuery={searchQuery} />
-
         {/* KPI Strip */}
         <section aria-label="Hostel KPIs">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">

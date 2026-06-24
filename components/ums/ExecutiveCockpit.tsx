@@ -265,7 +265,7 @@ export function ExecutiveCockpit() {
   if (!filteredData) return null
 
   const { kpis, trendSeries, domainHealth, placementFunnel, scholarshipDist, revenueBreakdown, programEnrollment, facultyLoad, lastUpdated } = filteredData
-  const executiveKpis = kpis.filter((kpi) => !['pass-rate', 'research-pubs'].includes(kpi.id))
+  const executiveKpis = kpis.filter((kpi) => !['pass-rate', 'research-pubs', 'faculty-student'].includes(kpi.id))
 
   // Enrollment fill% for bar chart
   const enrollmentFill = programEnrollment.map((p) => ({
@@ -305,7 +305,7 @@ export function ExecutiveCockpit() {
     <div className="flex flex-1 min-h-0 overflow-hidden">
       {/* ── Main content ── */}
       <motion.div
-        className="executive-cockpit-dashboard flex-1 overflow-y-auto px-5 py-5 space-y-6 min-w-0"
+        className="executive-cockpit-dashboard flex-1 min-w-0 overflow-y-auto px-4 py-4 space-y-4"
         initial={shouldReduceMotion ? false : 'hidden'}
         animate="show"
         variants={{
@@ -323,15 +323,15 @@ export function ExecutiveCockpit() {
           }}
         >
           <div>
-            <h2 className="text-[16px] font-[700] text-[#0F1722]">Executive Cockpit</h2>
-            <p className="text-[12px] text-[#9AA6B4] mt-0.5">
+            <h1 className="text-[20px] font-[700] text-[#0F1722]">Executive Cockpit</h1>
+            <p className="mt-1 text-[13px] text-[#6B7C99]">
               AY 2024-25 · All Programs · Updated {lastUpdated}
             </p>
           </div>
           <button
             type="button"
             onClick={() => refreshDashboard('Executive Cockpit')}
-            className="flex items-center gap-1.5 text-[12px] text-[#5A6675] hover:text-[#1F3864] transition-colors"
+            className="flex items-center gap-2 rounded-[8px] border border-[#D1D8DF] bg-white px-4 py-2 text-[12px] font-[600] text-[#0F1722] transition-colors hover:bg-[#F8FAFD]"
           >
             <RefreshCw size={13} />
             Refresh

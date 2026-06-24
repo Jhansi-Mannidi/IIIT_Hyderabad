@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { ChevronDown, X } from 'lucide-react'
+import { AppliedFiltersInline } from './AppliedFiltersInline'
 
 interface AcademicFilterBarProps {
   onFiltersChange?: (filters: AcademicFilters) => void
@@ -126,6 +127,17 @@ export function AcademicFilterBar({ onFiltersChange }: AcademicFilterBarProps) {
           />
         </div>
       </div>
+      <AppliedFiltersInline
+        filters={filters as unknown as Record<string, unknown>}
+        defaults={{
+          program: 'All Programs',
+          semester: null,
+          riskStatus: 'All Statuses',
+          category: 'All Categories',
+          attendanceMin: 0,
+          sgpaMin: 0,
+        }}
+      />
 
       {/* Active Filter Count + Reset */}
       {activeFilters > 0 && (
@@ -155,6 +167,7 @@ interface FilterSelectProps {
 
 function FilterSelect({ label, options, value, onChange }: FilterSelectProps) {
   const [open, setOpen] = useState(false)
+  const displayValue = value.startsWith('All ') ? `Select ${label}` : value
 
   return (
     <div className="relative z-40">
@@ -163,7 +176,7 @@ function FilterSelect({ label, options, value, onChange }: FilterSelectProps) {
         onClick={() => setOpen(!open)}
         className="w-full px-2 py-2 border border-[#E8EEF5] rounded-[6px] bg-white text-left text-xs flex items-center justify-between hover:border-[#2E8B8B] transition-colors"
       >
-        <span className="truncate">{value}</span>
+        <span className="truncate">{displayValue}</span>
         <ChevronDown size={14} className="flex-shrink-0 text-[#6B7C99]" />
       </button>
 
@@ -180,7 +193,7 @@ function FilterSelect({ label, options, value, onChange }: FilterSelectProps) {
                 value === opt ? 'bg-[#E8F5F5] text-[#2E8B8B] font-semibold' : 'text-[#1F3864]'
               }`}
             >
-              {opt}
+              {opt.startsWith('All ') ? `Select ${label}` : opt}
             </button>
           ))}
         </div>

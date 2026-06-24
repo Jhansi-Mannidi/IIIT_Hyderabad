@@ -33,7 +33,7 @@ export function PreferenceFlowSankey({ flows }: PreferenceFlowSankeyProps) {
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-[10px] font-[800] uppercase tracking-[0.08em] text-[#6B7C99]">Reported In</p>
-              <p className="mt-1 text-[28px] font-[850] leading-none tracking-[-0.04em] text-[#1F3864] tabular-nums">
+              <p className="admissions-chart-metric-large mt-1 text-[18px] font-[700] leading-none tracking-[-0.02em] text-[#1F3864] tabular-nums">
                 {((totalReportedIn / totalAllotments) * 100).toFixed(1)}%
               </p>
             </div>
@@ -51,11 +51,11 @@ export function PreferenceFlowSankey({ flows }: PreferenceFlowSankeyProps) {
             <div className="grid grid-cols-2 gap-2 text-[11px]">
               <div className="rounded-[10px] bg-white p-2">
                 <p className="font-[700] text-[#6B7C99]">Allotments</p>
-                <p className="mt-0.5 text-[14px] font-[800] text-[#0F1722] tabular-nums">{totalAllotments.toLocaleString('en-IN')}</p>
+                <p className="admissions-chart-metric mt-0.5 text-[13px] font-[650] text-[#0F1722] tabular-nums">{totalAllotments.toLocaleString('en-IN')}</p>
               </div>
               <div className="rounded-[10px] bg-white p-2">
                 <p className="font-[700] text-[#6B7C99]">Diverged</p>
-                <p className="mt-0.5 text-[14px] font-[800] text-[#B2566B] tabular-nums">{totalDiverged.toLocaleString('en-IN')}</p>
+                <p className="admissions-chart-metric mt-0.5 text-[13px] font-[650] text-[#B2566B] tabular-nums">{totalDiverged.toLocaleString('en-IN')}</p>
               </div>
             </div>
           </div>
@@ -86,7 +86,7 @@ export function PreferenceFlowSankey({ flows }: PreferenceFlowSankeyProps) {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-[13px] font-[850] tabular-nums" style={{ color: riskTone }}>
+                    <p className="admissions-chart-metric text-[13px] font-[650] tabular-nums" style={{ color: riskTone }}>
                       {flow.divergence.toFixed(1)}%
                     </p>
                     <p className="text-[9.5px] font-[700] text-[#9AA6B4]">divergence</p>
@@ -150,7 +150,7 @@ export function PreferenceFlowSankey({ flows }: PreferenceFlowSankeyProps) {
             </span>
             <div className="min-w-0">
               <p className="truncate text-[10px] font-[800] uppercase tracking-[0.07em] text-[#6B7C99]">{label}</p>
-              <p className="mt-0.5 truncate text-[14px] font-[850] text-[#0F1722] tabular-nums" style={{ color: tone }}>
+              <p className="admissions-chart-metric mt-0.5 truncate text-[13px] font-[650] text-[#0F1722] tabular-nums" style={{ color: tone }}>
                 {value}
               </p>
               <p className="truncate text-[10.5px] font-[650] text-[#9AA6B4]">{detail}</p>

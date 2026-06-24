@@ -46,7 +46,7 @@ export function PlacementsKPITile({ kpi }: PlacementsKPITileProps) {
               </span>
             )}
           </div>
-          <p className="font-['Courier_New',_monospace] text-[22px] font-[700] text-[#0F1722] leading-none">
+          <p className="font-['Courier_New',_monospace] text-[16px] font-[650] text-[#0F1722] leading-none">
             {formatValue(kpi)}
           </p>
         </div>

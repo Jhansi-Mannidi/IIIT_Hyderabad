@@ -58,7 +58,7 @@ export function InstitutionalFinanceKPITile({
               </span>
             )}
           </div>
-          <p className="font-['Courier'] text-[20px] font-[700] text-[#0F1722]">{formatValue()}</p>
+          <p className="font-['Courier'] text-[16px] font-[650] text-[#0F1722]">{formatValue()}</p>
         </div>
         {target && (
           <div className="text-right">

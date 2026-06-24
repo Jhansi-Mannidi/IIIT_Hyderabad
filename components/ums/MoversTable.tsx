@@ -93,7 +93,7 @@ export function MoversTable({ data }: MoversTableProps) {
                 <p className="mt-0.5 text-[11px] font-[700] text-[#617588]">{mover.metric}</p>
               </div>
               <span
-                className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-[10px] font-[850] ${
+                className={`executive-mover-change inline-flex items-center gap-1 rounded-full px-2 py-1 text-[10px] font-[650] ${
                   mover.direction === 'up' ? 'bg-[#2E8B8B]/15 text-[#2E8B8B]' : 'bg-[#C0392B]/15 text-[#C0392B]'
                 }`}
               >
@@ -161,16 +161,16 @@ export function MoversTable({ data }: MoversTableProps) {
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
                       <span
-                        className={`text-[12px] font-[700] tabular-nums ${
+                        className={`executive-mover-change text-[12px] font-[600] ${
                           mover.direction === 'up' ? 'text-[#22A65F]' : 'text-[#C71C1C]'
                         }`}
                       >
                         {mover.direction === 'up' ? '+' : '−'}{Math.abs(mover.change).toFixed(1)}%
                       </span>
                       {mover.direction === 'up' ? (
-                        <ArrowUp className="w-4 h-4 text-[#22A65F]" />
+                        <ArrowUp className="h-3 w-3 text-[#22A65F]" />
                       ) : (
-                        <ArrowDown className="w-4 h-4 text-[#C71C1C]" />
+                        <ArrowDown className="h-3 w-3 text-[#C71C1C]" />
                       )}
                     </div>
                   </td>

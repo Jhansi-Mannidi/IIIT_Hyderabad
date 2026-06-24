@@ -49,7 +49,7 @@ export function ResearchKPITile({ kpi }: ResearchKPITileProps) {
               </span>
             )}
           </div>
-          <p className="font-['Courier_New',monospace] text-[20px] font-[700] text-[#0F1722] leading-none">
+          <p className="font-['Courier_New',monospace] text-[16px] font-[650] text-[#0F1722] leading-none">
             {formatValue(value)}
           </p>
         </div>

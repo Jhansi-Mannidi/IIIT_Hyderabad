@@ -12,7 +12,6 @@ import { CenterLeaderboard } from './CenterLeaderboard'
 import { PhDPipelineFunnel } from './PhDPipelineFunnel'
 import { FacultyProductivityChart } from './FacultyProductivityChart'
 import { ResearchAICard } from './ResearchAICard'
-import { ActiveFilterSummary } from './ActiveFilterSummary'
 import { useInteractions } from './InteractionProvider'
 import { applyDashboardFilters } from '@/lib/dashboardFiltering'
 
@@ -57,8 +56,6 @@ export function ResearchDashboard() {
             setDashboardFilters('Research', nextFilters)
           }}
         />
-        <ActiveFilterSummary dashboard="Research" filters={effectiveFilters} searchQuery={searchQuery} />
-
         {/* ── KPI Tiles ───────────────────────────────────────────────── */}
         <section aria-label="Research KPIs">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { ChevronDown, X } from 'lucide-react'
+import { AppliedFiltersInline } from './AppliedFiltersInline'
 
 interface FinanceFilterBarProps {
   onFiltersChange?: (filters: FinanceFilters) => void
@@ -77,8 +78,8 @@ export function FinanceFilterBar({ onFiltersChange }: FinanceFilterBarProps) {
             onChange={(e) => handleFilterChange('academicYear', e.target.value)}
             className="w-full px-3 py-2 text-[12px] bg-white border border-[#D1D8DF] rounded-[8px] appearance-none cursor-pointer text-[#0F1722] font-[500]"
           >
-            {ACADEMIC_YEARS.map(year => (
-              <option key={year} value={year}>{year}</option>
+            {ACADEMIC_YEARS.map((year, index) => (
+              <option key={year} value={year}>{index === 0 ? 'Select Academic Year' : year}</option>
             ))}
           </select>
           <ChevronDown size={14} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-[#5A6B7A]" />
@@ -91,8 +92,8 @@ export function FinanceFilterBar({ onFiltersChange }: FinanceFilterBarProps) {
             onChange={(e) => handleFilterChange('term', e.target.value)}
             className="w-full px-3 py-2 text-[12px] bg-white border border-[#D1D8DF] rounded-[8px] appearance-none cursor-pointer text-[#0F1722] font-[500]"
           >
-            {TERMS.map(t => (
-              <option key={t} value={t}>{t}</option>
+            {TERMS.map((t, index) => (
+              <option key={t} value={t}>{index === 0 ? 'Select Term' : t}</option>
             ))}
           </select>
           <ChevronDown size={14} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-[#5A6B7A]" />
@@ -105,8 +106,8 @@ export function FinanceFilterBar({ onFiltersChange }: FinanceFilterBarProps) {
             onChange={(e) => handleFilterChange('category', e.target.value)}
             className="w-full px-3 py-2 text-[12px] bg-white border border-[#D1D8DF] rounded-[8px] appearance-none cursor-pointer text-[#0F1722] font-[500]"
           >
-            {CATEGORIES.map(c => (
-              <option key={c} value={c}>{c}</option>
+            {CATEGORIES.map((c, index) => (
+              <option key={c} value={c}>{index === 0 ? 'Select Category' : c}</option>
             ))}
           </select>
           <ChevronDown size={14} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-[#5A6B7A]" />
@@ -119,8 +120,8 @@ export function FinanceFilterBar({ onFiltersChange }: FinanceFilterBarProps) {
             onChange={(e) => handleFilterChange('status', e.target.value)}
             className="w-full px-3 py-2 text-[12px] bg-white border border-[#D1D8DF] rounded-[8px] appearance-none cursor-pointer text-[#0F1722] font-[500]"
           >
-            {STATUSES.map(s => (
-              <option key={s} value={s}>{s}</option>
+            {STATUSES.map((s, index) => (
+              <option key={s} value={s}>{index === 0 ? 'Select Status' : s}</option>
             ))}
           </select>
           <ChevronDown size={14} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-[#5A6B7A]" />
@@ -133,8 +134,8 @@ export function FinanceFilterBar({ onFiltersChange }: FinanceFilterBarProps) {
             onChange={(e) => handleFilterChange('ageing', e.target.value)}
             className="w-full px-3 py-2 text-[12px] bg-white border border-[#D1D8DF] rounded-[8px] appearance-none cursor-pointer text-[#0F1722] font-[500]"
           >
-            {AGEING_OPTIONS.map(a => (
-              <option key={a} value={a}>{a === '90+' ? '>90 Days' : a}</option>
+            {AGEING_OPTIONS.map((a, index) => (
+              <option key={a} value={a}>{index === 0 ? 'Select Ageing' : a === '90+' ? '>90 Days' : a}</option>
             ))}
           </select>
           <ChevronDown size={14} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-[#5A6B7A]" />
@@ -147,13 +148,24 @@ export function FinanceFilterBar({ onFiltersChange }: FinanceFilterBarProps) {
             onChange={(e) => handleFilterChange('paymentChannel', e.target.value)}
             className="w-full px-3 py-2 text-[12px] bg-white border border-[#D1D8DF] rounded-[8px] appearance-none cursor-pointer text-[#0F1722] font-[500]"
           >
-            {CHANNELS.map(c => (
-              <option key={c} value={c}>{c}</option>
+            {CHANNELS.map((c, index) => (
+              <option key={c} value={c}>{index === 0 ? 'Select Payment Channel' : c}</option>
             ))}
           </select>
           <ChevronDown size={14} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-[#5A6B7A]" />
         </div>
       </div>
+      <AppliedFiltersInline
+        filters={filters}
+        defaults={{
+          academicYear: '2024-25',
+          term: 'Term 1',
+          category: 'All',
+          status: 'All',
+          ageing: 'All',
+          paymentChannel: 'All',
+        }}
+      />
     </div>
   )
 }

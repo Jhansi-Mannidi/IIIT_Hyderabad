@@ -169,7 +169,7 @@ export function AtRiskTriageBoard({
             onChange={(e) => setSortBy(e.target.value as any)}
             className="min-w-0 flex-1 rounded-[8px] border border-[#E8EEF5] bg-white px-3 py-2 text-xs font-semibold text-[#1F3864] focus:border-[#2E8B8B] focus:outline-none sm:flex-none"
           >
-            <option value="risk">By Risk Score</option>
+            <option value="risk">Select Sort</option>
             <option value="sgpa">By SGPA</option>
             <option value="attendance">By Attendance</option>
           </select>

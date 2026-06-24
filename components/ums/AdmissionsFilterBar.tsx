@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { X, ChevronDown } from 'lucide-react'
+import { AppliedFiltersInline } from './AppliedFiltersInline'
 
 interface AdmissionsFilterBarProps {
   onFiltersChange?: (filters: AdmissionsFilters) => void
@@ -64,7 +65,7 @@ export function AdmissionsFilterBar({ onFiltersChange }: AdmissionsFilterBarProp
             onChange={(e) => handleFilterChange('year', e.target.value ? parseInt(e.target.value) : undefined)}
             className="px-2 py-1.5 text-[11px] font-[500] border border-[#DFE7EF] rounded-[6px] bg-white text-[#0F1722] focus:outline-none focus:border-[#2E8B8B]"
           >
-            <option value="">All Years</option>
+            <option value="">Select Academic Year</option>
             <option value="2024">2024</option>
             <option value="2023">2023</option>
           </select>
@@ -78,7 +79,7 @@ export function AdmissionsFilterBar({ onFiltersChange }: AdmissionsFilterBarProp
             onChange={(e) => handleFilterChange('channel', e.target.value || undefined)}
             className="px-2 py-1.5 text-[11px] font-[500] border border-[#DFE7EF] rounded-[6px] bg-white text-[#0F1722] focus:outline-none focus:border-[#2E8B8B]"
           >
-            <option value="">All Channels</option>
+            <option value="">Select Channel</option>
             <option value="jee">JEE Mains</option>
             <option value="dasa">DASA</option>
             <option value="direct">Direct Admission</option>
@@ -93,7 +94,7 @@ export function AdmissionsFilterBar({ onFiltersChange }: AdmissionsFilterBarProp
             onChange={(e) => handleFilterChange('category', e.target.value || undefined)}
             className="px-2 py-1.5 text-[11px] font-[500] border border-[#DFE7EF] rounded-[6px] bg-white text-[#0F1722] focus:outline-none focus:border-[#2E8B8B]"
           >
-            <option value="">All Categories</option>
+            <option value="">Select Category</option>
             <option value="GEN">General (GEN)</option>
             <option value="OBC">OBC</option>
             <option value="SC">SC</option>
@@ -109,7 +110,7 @@ export function AdmissionsFilterBar({ onFiltersChange }: AdmissionsFilterBarProp
             onChange={(e) => handleFilterChange('stage', e.target.value || undefined)}
             className="px-2 py-1.5 text-[11px] font-[500] border border-[#DFE7EF] rounded-[6px] bg-white text-[#0F1722] focus:outline-none focus:border-[#2E8B8B]"
           >
-            <option value="">All Stages</option>
+            <option value="">Select Funnel Stage</option>
             <option value="Applied">Applied</option>
             <option value="Ranked">Ranked</option>
             <option value="Allotted">Allotted</option>
@@ -125,7 +126,7 @@ export function AdmissionsFilterBar({ onFiltersChange }: AdmissionsFilterBarProp
             onChange={(e) => handleFilterChange('state', e.target.value || undefined)}
             className="px-2 py-1.5 text-[11px] font-[500] border border-[#DFE7EF] rounded-[6px] bg-white text-[#0F1722] focus:outline-none focus:border-[#2E8B8B]"
           >
-            <option value="">All States</option>
+            <option value="">Select State</option>
             <option value="Delhi">Delhi</option>
             <option value="Maharashtra">Maharashtra</option>
             <option value="Karnataka">Karnataka</option>
@@ -141,13 +142,24 @@ export function AdmissionsFilterBar({ onFiltersChange }: AdmissionsFilterBarProp
             onChange={(e) => handleFilterChange('rankBand', e.target.value || undefined)}
             className="px-2 py-1.5 text-[11px] font-[500] border border-[#DFE7EF] rounded-[6px] bg-white text-[#0F1722] focus:outline-none focus:border-[#2E8B8B]"
           >
-            <option value="">All Ranks</option>
+            <option value="">Select Rank Band</option>
             <option value="1-2000">1-2000</option>
             <option value="2001-5000">2001-5000</option>
             <option value="5001-10000">5001-10000</option>
           </select>
         </div>
       </div>
+      <AppliedFiltersInline
+        filters={filters as Record<string, unknown>}
+        labels={{
+          year: 'Academic Year',
+          channel: 'Channel',
+          category: 'Category',
+          stage: 'Funnel Stage',
+          state: 'State',
+          rankBand: 'Rank Band',
+        }}
+      />
     </div>
   )
 }

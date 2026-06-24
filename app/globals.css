@@ -33,7 +33,7 @@
   --color-ink-300: #9AA6B4;
   --color-line:    #E4E8EF;
   --color-surface: #FFFFFF;
-  --color-canvas:  #F6F8FB;
+  --color-canvas:  #F8FAFD;
   --color-canvas-sunken: #EEF2F7;
 
   /* ── Semantic ── */
@@ -85,7 +85,7 @@
 
 :root {
   color-scheme: light;
-  --background: #F6F8FB;
+  --background: #F8FAFD;
   --foreground: #0F1722;
   --card: #FFFFFF;
   --card-foreground: #0F1722;
@@ -314,14 +314,677 @@ body {
 }
 
 body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: -1;
-  background:
-    radial-gradient(circle at 18% 8%, rgba(46, 139, 139, 0.10), transparent 28rem),
-    radial-gradient(circle at 85% 0%, rgba(197, 90, 17, 0.08), transparent 24rem);
+  content: none !important;
+  display: none !important;
+  background: none !important;
+}
+
+/* Absolute final dropdown arrow: every native select must show a chevron. */
+.ums-app-shell select,
+#main-content select,
+select {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  padding-right: 2rem !important;
+  background-color: #FFFFFF !important;
+  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%235A6675' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.7rem center !important;
+  background-size: 0.9rem 0.9rem !important;
+}
+
+.ums-app-shell[data-theme="dark"] select,
+.dark select {
+  background-color: #0B1728 !important;
+  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%23C5D0DE' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+}
+
+/* Admissions + Executive: keep main KPI cards large, shrink all other numbers. */
+#main-content :is(.executive-cockpit-dashboard, .admissions-dashboard) :is(
+  [data-metric],
+  [data-value],
+  .tabular-nums,
+  [class*="font-tabular"],
+  [class*="Courier"],
+  [class*="text-3xl"],
+  [class*="text-2xl"],
+  [class*="text-[34px]"],
+  [class*="text-[32px]"],
+  [class*="text-[30px]"],
+  [class*="text-[28px]"],
+  [class*="text-[26px]"],
+  [class*="text-[24px]"],
+  [class*="text-[22px]"],
+  [class*="text-[20px]"],
+  [class*="text-[18px]"],
+  [class*="text-[16px]"]
+) {
+  font-size: 0.78rem !important;
+  font-weight: 560 !important;
+  letter-spacing: -0.005em !important;
+  line-height: 1.2 !important;
+}
+
+#main-content :is(.ums-exec-kpi-grid, .admissions-kpi-grid) [data-metric] {
+  font-size: 1.75rem !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.04em !important;
+  line-height: 1 !important;
+}
+
+#main-content :is(.ums-exec-kpi-grid, .admissions-kpi-grid) :is(.tabular-nums):not([data-metric]) {
+  font-size: 0.72rem !important;
+  font-weight: 550 !important;
+}
+
+@media (max-width: 767px) {
+  #main-content :is(.executive-cockpit-dashboard, .admissions-dashboard) :is(
+    [data-metric],
+    [data-value],
+    .tabular-nums,
+    [class*="font-tabular"],
+    [class*="Courier"],
+    [class*="text-3xl"],
+    [class*="text-2xl"],
+    [class*="text-[34px]"],
+    [class*="text-[32px]"],
+    [class*="text-[30px]"],
+    [class*="text-[28px]"],
+    [class*="text-[26px]"],
+    [class*="text-[24px]"],
+    [class*="text-[22px]"],
+    [class*="text-[20px]"],
+    [class*="text-[18px]"],
+    [class*="text-[16px]"]
+  ) {
+    font-size: 0.76rem !important;
+  }
+
+  #main-content :is(.ums-exec-kpi-grid, .admissions-kpi-grid) [data-metric] {
+    font-size: clamp(1.35rem, 7vw, 1.75rem) !important;
+  }
+}
+
+/* Absolute final UI polish: small professional numbers and static text/layout. */
+#main-content :is(
+  [data-metric],
+  [data-value],
+  .tabular-nums,
+  [class*="font-tabular"],
+  [class*="Courier"],
+  [class*="text-3xl"],
+  [class*="text-2xl"],
+  [class*="text-[34px]"],
+  [class*="text-[32px]"],
+  [class*="text-[30px]"],
+  [class*="text-[28px]"],
+  [class*="text-[26px]"],
+  [class*="text-[24px]"],
+  [class*="text-[22px]"],
+  [class*="text-[20px]"],
+  [class*="text-[18px]"],
+  [class*="text-[16px]"]
+) {
+  font-size: 0.88rem !important;
+  font-weight: 580 !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1.18 !important;
+}
+
+#main-content :is(
+  section,
+  article,
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  [class*="rounded"][class*="border"]
+),
+#main-content :is(
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  span,
+  label,
+  button,
+  select,
+  input,
+  td,
+  th,
+  li
+) {
+  opacity: 1 !important;
+  transform: none !important;
+  translate: none !important;
+  scale: none !important;
+  rotate: none !important;
+  filter: none !important;
+  animation: none !important;
+}
+
+#main-content :is(.animate-count-up) {
+  animation: none !important;
+}
+
+@media (max-width: 767px) {
+  #main-content :is(
+    [data-metric],
+    [data-value],
+    .tabular-nums,
+    [class*="font-tabular"],
+    [class*="Courier"],
+    [class*="text-3xl"],
+    [class*="text-2xl"],
+    [class*="text-[34px]"],
+    [class*="text-[32px]"],
+    [class*="text-[30px]"],
+    [class*="text-[28px]"],
+    [class*="text-[26px]"],
+    [class*="text-[24px]"],
+    [class*="text-[22px]"],
+    [class*="text-[20px]"],
+    [class*="text-[18px]"],
+    [class*="text-[16px]"]
+  ) {
+    font-size: 0.84rem !important;
+  }
+}
+
+/* Final professional numeric scale across the full application. */
+#main-content :is(
+  [data-metric],
+  [data-value],
+  .tabular-nums,
+  [class*="font-tabular"],
+  [class*="Courier"],
+  [class*="text-2xl"],
+  [class*="text-3xl"],
+  [class*="text-[34px]"],
+  [class*="text-[32px]"],
+  [class*="text-[30px]"],
+  [class*="text-[28px]"],
+  [class*="text-[26px]"],
+  [class*="text-[24px]"],
+  [class*="text-[22px]"],
+  [class*="text-[20px]"],
+  [class*="text-[18px]"]
+) {
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.015em !important;
+  line-height: 1.15 !important;
+}
+
+#main-content :is(
+  .ums-exec-kpi-grid,
+  .admissions-kpi-grid,
+  section[aria-label*="KPI" i],
+  section[aria-label*="metric" i],
+  section[aria-label*="metrics" i]
+) :is(
+  [data-metric],
+  [data-value],
+  .tabular-nums,
+  [class*="font-tabular"],
+  [class*="Courier"],
+  [class*="text-2xl"],
+  [class*="text-3xl"],
+  [class*="text-[28px]"],
+  [class*="text-[26px]"],
+  [class*="text-[24px]"],
+  [class*="text-[22px]"],
+  [class*="text-[20px]"],
+  [class*="text-[18px]"]
+) {
+  font-size: 1.05rem !important;
+  font-weight: 650 !important;
+}
+
+@media (max-width: 767px) {
+  #main-content :is(
+    [data-metric],
+    [data-value],
+    .tabular-nums,
+    [class*="font-tabular"],
+    [class*="Courier"],
+    [class*="text-2xl"],
+    [class*="text-3xl"],
+    [class*="text-[34px]"],
+    [class*="text-[32px]"],
+    [class*="text-[30px]"],
+    [class*="text-[28px]"],
+    [class*="text-[26px]"],
+    [class*="text-[24px]"],
+    [class*="text-[22px]"],
+    [class*="text-[20px]"],
+    [class*="text-[18px]"]
+  ) {
+    font-size: 0.95rem !important;
+  }
+}
+
+/* Keep text/layout static while allowing charts inside cards to animate. */
+#main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  section[aria-label],
+  [class*="bg-white"][class*="rounded"],
+  [class*="rounded"][class*="border"]
+) {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+#main-content :is(
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  span,
+  label,
+  button,
+  select,
+  input,
+  td,
+  th
+) {
+  animation: none !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+#main-content :is(.animate-count-up) {
+  animation: none !important;
+}
+
+/* Global dropdown indicator for every native select field. */
+#main-content select,
+.ums-app-shell select {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  padding-right: 2rem !important;
+  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%235A6675' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.7rem center !important;
+  background-size: 0.9rem 0.9rem !important;
+}
+
+.ums-app-shell[data-theme="dark"] select {
+  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%23A8B6C8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+}
+
+/* Executive cockpit KPI values should match the smaller KPI scale used elsewhere. */
+#main-content .ums-exec-kpi-grid .chart-card [data-metric] {
+  font-size: 0.88rem !important;
+  font-weight: 620 !important;
+  letter-spacing: -0.015em !important;
+  line-height: 1.1 !important;
+}
+
+@media (max-width: 767px) {
+  #main-content .ums-exec-kpi-grid .chart-card [data-metric] {
+    font-size: clamp(0.86rem, 4vw, 1rem) !important;
+  }
+}
+
+/* Final responsive typography pass: light, dark, and mobile. */
+html,
+body,
+.ums-app-shell,
+#main-content,
+#main-content * {
+  font-family: var(--font-inter), Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif !important;
+}
+
+#main-content :is(h1, h2) {
+  font-size: clamp(1rem, 1.1vw, 1.25rem) !important;
+  font-weight: 650 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.22 !important;
+  color: #0F1722 !important;
+}
+
+#main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  section.bg-white,
+  article.bg-white,
+  [class*="bg-white"][class*="rounded"],
+  [class*="rounded"][class*="border"]
+) :is(h3, h4) {
+  font-size: 0.9rem !important;
+  font-weight: 650 !important;
+  letter-spacing: -0.015em !important;
+  line-height: 1.25 !important;
+  color: #0F1722 !important;
+}
+
+#main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  section.bg-white,
+  article.bg-white,
+  [class*="bg-white"][class*="rounded"],
+  [class*="rounded"][class*="border"]
+) :is(p, span, label, th, td, button, select, input):not([data-metric]):not(.tabular-nums) {
+  font-weight: 500 !important;
+  letter-spacing: -0.005em !important;
+}
+
+#main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  section.bg-white,
+  article.bg-white,
+  [class*="bg-white"][class*="rounded"],
+  [class*="rounded"][class*="border"]
+) :is([data-metric], [data-value], .tabular-nums, [class*="Courier"]) {
+  font-size: clamp(0.78rem, 0.88vw, 1rem) !important;
+  font-weight: 620 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.1 !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(h1, h2),
+.ums-app-shell[data-theme="dark"] #main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  section.bg-white,
+  article.bg-white,
+  [class*="bg-white"][class*="rounded"],
+  [class*="rounded"][class*="border"]
+) :is(h3, h4, [data-metric], [data-value], .tabular-nums, [class*="Courier"]) {
+  color: #F8FAFC !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  section.bg-white,
+  article.bg-white,
+  [class*="bg-white"][class*="rounded"],
+  [class*="rounded"][class*="border"]
+) :is(p, span, label, th, td, button, select, input):not([data-metric]):not(.tabular-nums) {
+  color: #C5D0DE !important;
+}
+
+@media (max-width: 767px) {
+  #main-content :is(h1, h2) {
+    font-size: clamp(1rem, 5vw, 1.25rem) !important;
+  }
+
+  #main-content :is(
+    .chart-card,
+    .ums-motion-card,
+    .executive-plain-card,
+    section.bg-white,
+    article.bg-white,
+    [class*="bg-white"][class*="rounded"],
+    [class*="rounded"][class*="border"]
+  ) :is(h3, h4) {
+    font-size: 0.88rem !important;
+  }
+
+  #main-content :is(
+    .chart-card,
+    .ums-motion-card,
+    .executive-plain-card,
+    section.bg-white,
+    article.bg-white,
+    [class*="bg-white"][class*="rounded"],
+    [class*="rounded"][class*="border"]
+  ) :is([data-metric], [data-value], .tabular-nums, [class*="Courier"]) {
+    font-size: clamp(0.82rem, 3.6vw, 1.05rem) !important;
+  }
+}
+
+/* App-wide typography: clean dashboard card font style. */
+html,
+body,
+.ums-app-shell,
+#main-content {
+  font-family: var(--font-inter), Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  font-feature-settings: "kern" 1, "ss01" 1;
+  text-rendering: geometricPrecision;
+}
+
+#main-content :is(h1, h2) {
+  color: #0F1722 !important;
+  font-size: clamp(1.05rem, 1.25vw, 1.35rem) !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.035em !important;
+  line-height: 1.15 !important;
+}
+
+#main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  section.bg-white,
+  article.bg-white,
+  [class*="bg-white"][class*="rounded"],
+  [class*="rounded"][class*="border"]
+) :is(h3, h4) {
+  color: #0F1722 !important;
+  font-size: 0.95rem !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.025em !important;
+  line-height: 1.2 !important;
+}
+
+#main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  section.bg-white,
+  article.bg-white,
+  [class*="bg-white"][class*="rounded"],
+  [class*="rounded"][class*="border"]
+) :is(p, span, label, th, td, button, select) {
+  font-family: inherit !important;
+}
+
+#main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  section.bg-white,
+  article.bg-white,
+  [class*="bg-white"][class*="rounded"],
+  [class*="rounded"][class*="border"]
+) :is(h3 + p, h4 + p) {
+  color: #5A6675 !important;
+  font-size: 0.8rem !important;
+  font-weight: 550 !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1.35 !important;
+}
+
+#main-content :is(select, input, button) {
+  font-family: inherit !important;
+}
+
+/* Final app-wide font tuning to match the clean ERP reference style. */
+html,
+body,
+.ums-app-shell,
+#main-content,
+#main-content * {
+  font-family: var(--font-inter), Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif !important;
+}
+
+#main-content :is(h1, h2) {
+  font-size: clamp(1rem, 1.15vw, 1.28rem) !important;
+  font-weight: 650 !important;
+  letter-spacing: -0.025em !important;
+  line-height: 1.2 !important;
+}
+
+#main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  section.bg-white,
+  article.bg-white,
+  [class*="bg-white"][class*="rounded"],
+  [class*="rounded"][class*="border"]
+) :is(h3, h4) {
+  font-size: 0.88rem !important;
+  font-weight: 650 !important;
+  letter-spacing: -0.015em !important;
+  line-height: 1.25 !important;
+}
+
+#main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  section.bg-white,
+  article.bg-white,
+  [class*="bg-white"][class*="rounded"],
+  [class*="rounded"][class*="border"]
+) :is(p, span, label, th, td, button, select, input) {
+  letter-spacing: -0.005em !important;
+}
+
+#main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  section.bg-white,
+  article.bg-white,
+  [class*="bg-white"][class*="rounded"],
+  [class*="rounded"][class*="border"]
+) :is(label, th, [class*="uppercase"]) {
+  font-size: 0.68rem !important;
+  font-weight: 550 !important;
+  letter-spacing: 0.015em !important;
+  color: #6B7280 !important;
+}
+
+#main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  section.bg-white,
+  article.bg-white,
+  [class*="bg-white"][class*="rounded"],
+  [class*="rounded"][class*="border"]
+) :is([data-metric], .tabular-nums) {
+  font-size: clamp(1.45rem, 1.75vw, 2rem) !important;
+  font-weight: 680 !important;
+  letter-spacing: -0.035em !important;
+  line-height: 1.05 !important;
+}
+
+#main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  section.bg-white,
+  article.bg-white,
+  [class*="bg-white"][class*="rounded"],
+  [class*="rounded"][class*="border"]
+) :is(h3 + p, h4 + p, p[class*="text-[#9AA6B4]"], p[class*="text-[#5A6675]"]) {
+  font-size: 0.78rem !important;
+  font-weight: 450 !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1.35 !important;
+}
+
+#main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  section.bg-white,
+  article.bg-white,
+  [class*="bg-white"][class*="rounded"],
+  [class*="rounded"][class*="border"]
+) :is(p, span, label, th, td, button, select, input):not([data-metric]):not(.tabular-nums) {
+  font-weight: 500 !important;
+}
+
+/* Final plain-white surfaces: cards and sidebar across the full application. */
+.ums-app-shell aside[aria-label="Domain navigation"],
+.ums-app-shell aside[aria-label="Domain navigation"] > div,
+.ums-app-shell aside[aria-label="Domain navigation"] nav,
+#main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  section.bg-white,
+  article.bg-white,
+  [class*="bg-white"][class*="rounded"],
+  [class*="rounded"][class*="border"]
+) {
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+.ums-app-shell aside[aria-label="Domain navigation"] {
+  border-right-color: #D8E0EE !important;
+}
+
+#main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  section.bg-white,
+  article.bg-white,
+  [class*="bg-white"][class*="rounded"],
+  [class*="rounded"][class*="border"]
+) {
+  border-color: #E5ECEF !important;
+}
+
+.ums-app-shell aside[aria-label="Domain navigation"]::before,
+.ums-app-shell aside[aria-label="Domain navigation"]::after,
+#main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  section.bg-white,
+  article.bg-white,
+  [class*="bg-white"][class*="rounded"],
+  [class*="rounded"][class*="border"]
+)::before,
+#main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  section.bg-white,
+  article.bg-white,
+  [class*="bg-white"][class*="rounded"],
+  [class*="rounded"][class*="border"]
+)::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  box-shadow: none !important;
+  animation: none !important;
+}
+
+#main-content :is(
+  .chart-card,
+  .ums-motion-card,
+  .executive-plain-card,
+  section.bg-white,
+  article.bg-white,
+  [class*="bg-white"][class*="rounded"],
+  [class*="rounded"][class*="border"]
+) > :is(.pointer-events-none, [aria-hidden]) {
+  display: none !important;
 }
 
 /* Dark-mode compatibility for the existing VoltusWave fixed hex utility palette. */
@@ -486,7 +1149,7 @@ button:hover {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #F6F8FB;
+  background: #F8FAFD;
 }
 ::-webkit-scrollbar-thumb {
   background: #D8E0EE;
@@ -512,7 +1175,7 @@ button:hover {
 
 /* ── Final theme harmonization: keep fixed hex utility classes visually consistent ── */
 :root {
-  --vw-shell: #F3F6FA;
+  --vw-shell: #F8FAFD;
   --vw-surface: rgba(255, 255, 255, 0.94);
   --vw-surface-strong: #FFFFFF;
   --vw-surface-muted: #EEF3F8;
@@ -536,10 +1199,9 @@ button:hover {
 }
 
 body {
-  background:
-    radial-gradient(circle at 16% 0%, var(--vw-glow-teal), transparent 30rem),
-    radial-gradient(circle at 88% 4%, var(--vw-glow-orange), transparent 26rem),
-    var(--vw-shell) !important;
+  background: #F8FAFD !important;
+  background-color: #F8FAFD !important;
+  background-image: none !important;
 }
 
 .dark body,
@@ -548,10 +1210,9 @@ body {
 .dark .bg-\[\#F8FAFB\],
 .dark .bg-\[\#F5F8FB\],
 .dark .bg-\[\#EEF2F7\] {
-  background:
-    radial-gradient(circle at 18% 0%, rgba(46, 139, 139, 0.10), transparent 34rem),
-    radial-gradient(circle at 86% 12%, rgba(91, 141, 239, 0.10), transparent 28rem),
-    var(--vw-shell) !important;
+  background: #07101D !important;
+  background-color: #07101D !important;
+  background-image: none !important;
 }
 
 .dark .bg-white,
@@ -654,9 +1315,9 @@ section.bg-white {
 
 /* ── Professional dashboard composition layer ─────────────────────────────── */
 #main-content {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0)),
-    var(--vw-shell);
+  background: #F8FAFD !important;
+  background-color: #F8FAFD !important;
+  background-image: none !important;
 }
 
 #main-content > div {
@@ -810,10 +1471,9 @@ section.bg-white {
 }
 
 .dark #main-content {
-  background:
-    radial-gradient(circle at 14% 0%, rgba(46, 139, 139, 0.10), transparent 30rem),
-    radial-gradient(circle at 88% 8%, rgba(91, 141, 239, 0.10), transparent 28rem),
-    var(--vw-shell) !important;
+  background: #07101D !important;
+  background-color: #07101D !important;
+  background-image: none !important;
 }
 
 .dark #main-content .rounded-\[12px\].border,
@@ -907,20 +1567,18 @@ section.bg-white {
 .ums-app-shell[data-theme="light"],
 .ums-app-shell[data-theme="light"] #main-content,
 .ums-app-shell[data-theme="light"] #main-content > div {
-  background:
-    radial-gradient(circle at 16% -10%, rgba(46, 139, 139, 0.12), transparent 30rem),
-    radial-gradient(circle at 86% 0%, rgba(197, 90, 17, 0.08), transparent 24rem),
-    #F3F6FA !important;
+  background: #F8FAFD !important;
+  background-color: #F8FAFD !important;
+  background-image: none !important;
   color: #0F1722 !important;
 }
 
 .ums-app-shell[data-theme="dark"],
 .ums-app-shell[data-theme="dark"] #main-content,
 .ums-app-shell[data-theme="dark"] #main-content > div {
-  background:
-    radial-gradient(circle at 18% -8%, rgba(46, 139, 139, 0.16), transparent 34rem),
-    radial-gradient(circle at 86% 6%, rgba(91, 141, 239, 0.12), transparent 30rem),
-    linear-gradient(180deg, #07101D 0%, #08111F 48%, #050B14 100%) !important;
+  background: #07101D !important;
+  background-color: #07101D !important;
+  background-image: none !important;
   color: #F8FAFC !important;
 }
 
@@ -1886,7 +2544,7 @@ section.bg-white {
    Many dashboard modules use fixed Tailwind hex utilities. Keep the design
    system consistent by remapping those utilities inside the themed app shell. */
 .ums-app-shell[data-theme="light"] {
-  --ums-theme-canvas: #F3F6FA;
+  --ums-theme-canvas: #F8FAFD;
   --ums-theme-surface: #FFFFFF;
   --ums-theme-surface-soft: #F8FAFD;
   --ums-theme-surface-muted: #EEF2F8;
@@ -2769,15 +3427,15 @@ section.bg-white {
   }
 
   .ums-app-shell {
-    background:
-      radial-gradient(circle at 18% -6%, rgba(46, 139, 139, 0.10), transparent 18rem),
-      linear-gradient(180deg, #F7FAFD 0%, #EEF3F8 100%) !important;
+    background: #F8FAFD !important;
+    background-color: #F8FAFD !important;
+    background-image: none !important;
   }
 
   .ums-app-shell[data-theme="dark"] {
-    background:
-      radial-gradient(circle at 18% -6%, rgba(46, 139, 139, 0.16), transparent 18rem),
-      linear-gradient(180deg, #07101D 0%, #050B14 100%) !important;
+    background: #07101D !important;
+    background-color: #07101D !important;
+    background-image: none !important;
   }
 
   .ums-app-shell > header {
@@ -3001,19 +3659,17 @@ section.bg-white {
 .ums-app-shell[data-theme="light"],
 .ums-app-shell[data-theme="light"] #main-content,
 .ums-app-shell[data-theme="light"] #main-content > div {
-  background:
-    radial-gradient(circle at 16% -12%, rgba(21, 132, 126, 0.14), transparent 30rem),
-    radial-gradient(circle at 92% 8%, rgba(37, 99, 167, 0.11), transparent 24rem),
-    linear-gradient(180deg, #F4F8FC 0%, #EAF1F8 100%) !important;
+  background: #F8FAFD !important;
+  background-color: #F8FAFD !important;
+  background-image: none !important;
 }
 
 .ums-app-shell[data-theme="dark"],
 .ums-app-shell[data-theme="dark"] #main-content,
 .ums-app-shell[data-theme="dark"] #main-content > div {
-  background:
-    radial-gradient(circle at 16% -12%, rgba(21, 132, 126, 0.20), transparent 30rem),
-    radial-gradient(circle at 92% 8%, rgba(37, 99, 167, 0.22), transparent 24rem),
-    linear-gradient(180deg, #071629 0%, #030A14 100%) !important;
+  background: #07101D !important;
+  background-color: #07101D !important;
+  background-image: none !important;
 }
 
 #main-content :is(.chart-card, .ums-motion-card, section.bg-white, [class*="bg-white"][class*="rounded"]) {
@@ -3162,7 +3818,7 @@ section.bg-white {
   }
 
   #main-content .ums-exec-kpi-grid .chart-card [data-metric] {
-    font-size: clamp(1.35rem, 8vw, 1.8rem) !important;
+    font-size: clamp(0.86rem, 4vw, 1rem) !important;
     white-space: normal !important;
   }
 
@@ -3412,4 +4068,183 @@ section.bg-white {
 
 #main-content :is(.chart-card, .ums-motion-card, .executive-plain-card) > .pointer-events-none.absolute.inset-0 {
   display: none !important;
+}
+
+/* Final plain app background: remove all body/page background shades. */
+html,
+body,
+body::before,
+.ums-app-shell,
+#main-content,
+#main-content > div,
+#main-content :is(.flex-1.overflow-y-auto, [class*="overflow-y-auto"]) {
+  background-image: none !important;
+}
+
+body::before {
+  content: none !important;
+  display: none !important;
+}
+
+html,
+body,
+.ums-app-shell,
+#main-content,
+#main-content > div,
+#main-content :is(.flex-1.overflow-y-auto, [class*="overflow-y-auto"]) {
+  background-color: #F8FAFD !important;
+}
+
+.ums-app-shell[data-theme="dark"],
+.ums-app-shell[data-theme="dark"] #main-content,
+.ums-app-shell[data-theme="dark"] #main-content > div,
+.ums-app-shell[data-theme="dark"] #main-content :is(.flex-1.overflow-y-auto, [class*="overflow-y-auto"]) {
+  background-color: #07101D !important;
+}
+
+/* Strongest app-shell background reset: keep every page canvas flat. */
+html,
+body,
+body::before,
+.ums-app-shell[data-theme],
+.ums-app-shell[data-theme] #main-content,
+.ums-app-shell[data-theme] #main-content > div,
+.ums-app-shell[data-theme] #main-content > div > div,
+.ums-app-shell[data-theme] #main-content :is(
+  .flex-1.overflow-y-auto,
+  [class*="overflow-y-auto"],
+  .executive-cockpit-dashboard,
+  .attendance-dashboard
+) {
+  background: #F8FAFD !important;
+  background-color: #F8FAFD !important;
+  background-image: none !important;
+}
+
+.ums-app-shell[data-theme="dark"],
+.ums-app-shell[data-theme="dark"] #main-content,
+.ums-app-shell[data-theme="dark"] #main-content > div,
+.ums-app-shell[data-theme="dark"] #main-content > div > div,
+.ums-app-shell[data-theme="dark"] #main-content :is(
+  .flex-1.overflow-y-auto,
+  [class*="overflow-y-auto"],
+  .executive-cockpit-dashboard,
+  .attendance-dashboard
+) {
+  background: #07101D !important;
+  background-color: #07101D !important;
+  background-image: none !important;
+}
+
+.ums-app-shell[data-theme="light"],
+.ums-app-shell[data-theme="light"] #main-content,
+.ums-app-shell[data-theme="light"] #main-content > div,
+.ums-app-shell[data-theme="light"] #main-content > div > div,
+.ums-app-shell[data-theme="light"] #main-content :is(
+  .flex-1.overflow-y-auto,
+  [class*="overflow-y-auto"],
+  .executive-cockpit-dashboard,
+  .attendance-dashboard
+) {
+  background: #F8FAFD !important;
+  background-color: #F8FAFD !important;
+  background-image: none !important;
+}
+
+body::before {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+}
+
+/* Executive Cockpit + Admissions Funnel final card consistency. */
+#main-content :is(.executive-cockpit-dashboard, .admissions-dashboard) {
+  background: #F8FAFD !important;
+}
+
+.ums-app-shell[data-theme="dark"] #main-content :is(.executive-cockpit-dashboard, .admissions-dashboard) {
+  background: #07101D !important;
+}
+
+#main-content :is(.executive-cockpit-dashboard, .admissions-dashboard) :is(.chart-card, .ums-motion-card, .executive-plain-card, section.bg-white, article.bg-white) {
+  border-radius: 12px !important;
+  padding: 1rem !important;
+  border-color: #E4E8EF !important;
+}
+
+#main-content :is(.executive-cockpit-dashboard, .admissions-dashboard) :is(.ums-exec-kpi-grid, .admissions-kpi-grid) > * {
+  min-height: 148px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+}
+
+#main-content :is(.executive-cockpit-dashboard, .admissions-dashboard) :is(.ums-exec-kpi-grid, .admissions-kpi-grid) :is([data-metric], .tabular-nums) {
+  font-size: 1rem !important;
+  font-weight: 650 !important;
+  letter-spacing: -0.015em !important;
+  line-height: 1.05 !important;
+}
+
+#main-content :is(.executive-cockpit-dashboard, .admissions-dashboard) :is(.ums-exec-kpi-grid, .admissions-kpi-grid) :is([class*="text-[10.5px]"], [class*="text-[11px]"], [class*="uppercase"]) {
+  font-weight: 650 !important;
+  letter-spacing: 0.055em !important;
+}
+
+@media (max-width: 767px) {
+  #main-content :is(.executive-cockpit-dashboard, .admissions-dashboard) {
+    padding: 0.875rem !important;
+  }
+
+  #main-content :is(.executive-cockpit-dashboard, .admissions-dashboard) :is(.chart-card, .ums-motion-card, .executive-plain-card, section.bg-white, article.bg-white) {
+    padding: 0.875rem !important;
+  }
+}
+
+/* Admissions Funnel detail charts: keep secondary metric values compact. */
+#main-content .admissions-dashboard :is(.admissions-chart-metric, .admissions-chart-metric.tabular-nums) {
+  font-size: 0.5rem !important;
+  font-weight: 620 !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1.12 !important;
+}
+
+#main-content .admissions-dashboard :is(.admissions-chart-metric-large, .admissions-chart-metric-large.tabular-nums) {
+  font-size: 1rem !important;
+  font-weight: 680 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.05 !important;
+}
+
+@media (max-width: 767px) {
+  #main-content .admissions-dashboard :is(.admissions-chart-metric, .admissions-chart-metric.tabular-nums) {
+    font-size: 0.78rem !important;
+  }
+
+  #main-content .admissions-dashboard :is(.admissions-chart-metric-large, .admissions-chart-metric-large.tabular-nums) {
+    font-size: 0.92rem !important;
+  }
+}
+
+/* Executive Cockpit movers table: keep change percentages compact. */
+#main-content .executive-cockpit-dashboard .executive-mover-change {
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.005em !important;
+  line-height: 1.1 !important;
+}
+
+#main-content .executive-cockpit-dashboard .executive-plain-card table .executive-mover-change,
+#main-content .executive-cockpit-dashboard .executive-plain-card .executive-mover-change.executive-mover-change {
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.005em !important;
+  line-height: 1.05 !important;
+}
+
+@media (max-width: 767px) {
+  #main-content .executive-cockpit-dashboard .executive-mover-change {
+    font-size: 0.74rem !important;
+  }
 }

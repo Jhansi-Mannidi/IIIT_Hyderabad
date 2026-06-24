@@ -12,7 +12,6 @@ import { VoucherFlowChart } from './VoucherFlowChart'
 import { FixedAssetsTable } from './FixedAssetsTable'
 import { BankReconTable } from './BankReconTable'
 import { InstitutionalFinanceAICard } from './InstitutionalFinanceAICard'
-import { ActiveFilterSummary } from './ActiveFilterSummary'
 import { useInteractions } from './InteractionProvider'
 import { applyDashboardFilters } from '@/lib/dashboardFiltering'
 
@@ -54,8 +53,6 @@ export function InstitutionalFinanceDashboard() {
             setDashboardFilters('Institutional Finance', nextFilters)
           }}
         />
-        <ActiveFilterSummary dashboard="Institutional Finance" filters={effectiveFilters} searchQuery={searchQuery} />
-
         {/* KPI Strip */}
         <section aria-label="Finance KPIs">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">

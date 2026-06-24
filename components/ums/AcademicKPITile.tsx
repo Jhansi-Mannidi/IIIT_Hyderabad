@@ -47,7 +47,7 @@ export function AcademicKPITile({
 
       {/* Value + Unit */}
       <div className="flex items-baseline gap-1 mb-3">
-        <span className="text-2xl font-tabular-nums font-bold text-[#1F3864]">{value}</span>
+        <span className="text-[16px] font-tabular-nums font-[650] text-[#1F3864]">{value}</span>
         {unit && <span className="text-xs text-[#6B7C99]">{unit}</span>}
       </div>
 

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { ChevronDown, X } from 'lucide-react'
+import { AppliedFiltersInline } from './AppliedFiltersInline'
 
 export interface ResearchFilters {
   publishYear: string
@@ -98,14 +99,15 @@ export function ResearchFilterBar({ onFiltersChange }: ResearchFilterBarProps) {
               onChange={e => handleChange(key, e.target.value)}
               className="w-full px-3 py-2 text-[12px] bg-white border border-[#D1D8DF] rounded-[8px] appearance-none cursor-pointer text-[#0F1722] font-[500]"
             >
-              {options.map(opt => (
-                <option key={opt} value={opt}>{opt}</option>
+              {options.map((opt, index) => (
+                <option key={opt} value={opt}>{index === 0 ? `Select ${label}` : opt}</option>
               ))}
             </select>
             <ChevronDown size={14} className="absolute right-2 bottom-[9px] pointer-events-none text-[#5A6B7A]" />
           </div>
         ))}
       </div>
+      <AppliedFiltersInline filters={filters} defaults={DEFAULTS} />
     </div>
   )
 }

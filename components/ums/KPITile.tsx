@@ -75,7 +75,7 @@ export function KPITile({ metric, onClick }: KPITileProps) {
           )}
           <span
             title={metric.label}
-            className="block max-w-full whitespace-normal text-[10.5px] font-[800] uppercase leading-4 tracking-[0.075em] text-[#5A6675] sm:truncate"
+            className="block max-w-full whitespace-normal text-[10.5px] font-[650] uppercase leading-4 tracking-[0.055em] text-[#5A6675] sm:truncate"
           >
             {metric.label}
           </span>
@@ -83,7 +83,7 @@ export function KPITile({ metric, onClick }: KPITileProps) {
         {badge && (
           <span
             className={cn(
-              'max-w-[58px] flex-shrink-0 truncate text-[9px] font-[800] px-1.5 py-0.5 rounded-full border leading-4',
+              'max-w-[58px] flex-shrink-0 truncate rounded-full border px-1.5 py-0.5 text-[9px] font-[650] leading-4',
               badge.cls,
             )}
             title={badge.label}
@@ -97,7 +97,7 @@ export function KPITile({ metric, onClick }: KPITileProps) {
       <div className={cn('animate-count-up mt-2 min-h-[34px]')}>
         <span
           data-metric
-          className="block truncate text-[clamp(1.55rem,2.1vw,1.85rem)] font-[800] leading-none tracking-[-0.035em] text-[#14223D] tabular-nums"
+          className="block truncate text-[16px] font-[650] leading-none tracking-[-0.015em] text-[#14223D] tabular-nums"
           title={metric.value}
         >
           {metric.value}
@@ -109,7 +109,7 @@ export function KPITile({ metric, onClick }: KPITileProps) {
         <div className="min-w-0 flex-1">
           <span
             className={cn(
-              'inline-flex items-center gap-1 text-[11px] font-[800]',
+              'inline-flex items-center gap-1 text-[9.5px] font-[650]',
               deltaColor,
             )}
           >
@@ -129,7 +129,7 @@ export function KPITile({ metric, onClick }: KPITileProps) {
             <span className="truncate pr-2 text-[9.5px] font-[700] uppercase tracking-[0.055em] text-[#9AA6B4]" title={metric.targetLabel}>
               {metric.targetLabel}
             </span>
-            <span className="text-[10px] font-[600] text-[#5A6675] tabular-nums">
+            <span className="text-[9px] font-[550] text-[#5A6675] tabular-nums">
               {progress.toFixed(0)}%
             </span>
           </div>

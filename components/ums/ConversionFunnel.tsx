@@ -56,7 +56,7 @@ export function ConversionFunnel({ data, onStageClick }: ConversionFunnelProps) 
                     )}
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[12px] font-[700] text-[#0F1722] tabular-nums">{stage.count.toLocaleString()}</span>
+                    <span className="admissions-chart-metric text-[12px] font-[650] text-[#0F1722] tabular-nums">{stage.count.toLocaleString()}</span>
                     {idx > 0 && (
                       <span className="text-[11px] font-[600] text-[#2E8B8B] px-2 py-0.5 rounded-[4px] bg-[#E8F5F5]">
                         {conversionRate.toFixed(1)}%
@@ -106,25 +106,25 @@ export function ConversionFunnel({ data, onStageClick }: ConversionFunnelProps) 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-[#DFE7EF]">
         <div className="flex flex-col gap-1">
           <span className="text-[11px] text-[#5A6B7A]">Overall Conversion</span>
-          <span className="text-[14px] font-[700] text-[#0F1722] tabular-nums">
+          <span className="admissions-chart-metric text-[13px] font-[650] text-[#0F1722] tabular-nums">
             {((data[data.length - 1].count / data[0].count) * 100).toFixed(1)}%
           </span>
         </div>
         <div className="flex flex-col gap-1">
           <span className="text-[11px] text-[#5A6B7A]">Total Lost</span>
-          <span className="text-[14px] font-[700] text-[#B2566B] tabular-nums">
+          <span className="admissions-chart-metric text-[13px] font-[650] text-[#B2566B] tabular-nums">
             {(data[0].count - data[data.length - 1].count).toLocaleString()}
           </span>
         </div>
         <div className="flex flex-col gap-1">
           <span className="text-[11px] text-[#5A6B7A]">Largest Drop</span>
-          <span className="text-[14px] font-[700] text-[#1F3864] tabular-nums">
+          <span className="admissions-chart-metric text-[13px] font-[650] text-[#1F3864] tabular-nums">
             Applied → Ranked ({((data[1].count / data[0].count) * 100).toFixed(1)}%)
           </span>
         </div>
         <div className="flex flex-col gap-1">
           <span className="text-[11px] text-[#5A6B7A]">Final Enrolled</span>
-          <span className="text-[14px] font-[700] text-[#2E8B8B] tabular-nums">
+          <span className="admissions-chart-metric text-[13px] font-[650] text-[#2E8B8B] tabular-nums">
             {data[data.length - 1].count.toLocaleString()}
           </span>
         </div>

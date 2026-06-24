@@ -10,7 +10,6 @@ import { EmployeePunctualityHeatmap } from './EmployeePunctualityHeatmap'
 import { CourseAttendanceGauges } from './CourseAttendanceGauges'
 import { DepartmentComplianceChart } from './DepartmentComplianceChart'
 import { AttendanceAICard } from './AttendanceAICard'
-import { ActiveFilterSummary } from './ActiveFilterSummary'
 import { useInteractions } from './InteractionProvider'
 import { applyDashboardFilters } from '@/lib/dashboardFiltering'
 
@@ -52,8 +51,6 @@ export function AttendanceDashboard() {
             setDashboardFilters('Attendance', nextFilters)
           }}
         />
-        <ActiveFilterSummary dashboard="Attendance" filters={effectiveFilters} searchQuery={searchQuery} plain />
-
         {/* KPI Strip */}
         <section aria-label="Attendance KPIs">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
